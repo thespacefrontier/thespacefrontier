@@ -1,12 +1,14 @@
 using Content.Shared.Inventory;
 // TSF edit start
 using Robust.Shared.Serialization;
+// end
 
 namespace Content.Shared.Medical;
 
 [ByRefEvent]
 public readonly record struct TargetDefibrillatedEvent(EntityUid User, Entity<DefibrillatorComponent> Defibrillator);
 
+// start
 [Serializable, NetSerializable]
 public sealed class DefibrillatedTargetSoundEvent : EntityEventArgs;
 // TSF edit end
