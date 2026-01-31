@@ -24,9 +24,13 @@ public sealed class TSFDamageOverlay : Overlay
 
     public float DamageStrength;
     public float CritStrength;
+    public float AdrenalineStrength;
+    public float BloodLossStrength;
 
     private float _lerpDamageStrength;
     private float _lerpCritStrength;
+    private float _lerpAdrenalineStrength;
+    private float _lerpBloodLossStrength;
 
     public TSFDamageOverlay()
     {
@@ -45,8 +49,10 @@ public sealed class TSFDamageOverlay : Overlay
         var dt = (float)_timing.FrameTime.TotalSeconds;
         _lerpDamageStrength += (DamageStrength - _lerpDamageStrength) * Math.Clamp(dt * 6f, 0f, 1f);
         _lerpCritStrength += (CritStrength - _lerpCritStrength) * Math.Clamp(dt * 6f, 0f, 1f);
+        _lerpAdrenalineStrength += (AdrenalineStrength - _lerpAdrenalineStrength) * Math.Clamp(dt * 8f, 0f, 1f);
+        _lerpBloodLossStrength += (BloodLossStrength - _lerpBloodLossStrength) * Math.Clamp(dt * 4f, 0f, 1f);
 
-        return _lerpDamageStrength > 0.01f || _lerpCritStrength > 0.01f;
+        return _lerpDamageStrength > 0.01f || _lerpCritStrength > 0.01f || _lerpAdrenalineStrength > 0.01f || _lerpBloodLossStrength > 0.01f;
     }
 
     protected override void Draw(in OverlayDrawArgs args)
@@ -58,6 +64,8 @@ public sealed class TSFDamageOverlay : Overlay
         _shader.SetParameter("SCREEN_TEXTURE", ScreenTexture);
         _shader.SetParameter("DamageStrength", _lerpDamageStrength);
         _shader.SetParameter("CritStrength", _lerpCritStrength);
+        _shader.SetParameter("AdrenalineStrength", _lerpAdrenalineStrength);
+        _shader.SetParameter("BloodLossStrength", _lerpBloodLossStrength);
         handle.UseShader(_shader);
         handle.DrawRect(args.WorldBounds, Color.White);
         handle.UseShader(null);

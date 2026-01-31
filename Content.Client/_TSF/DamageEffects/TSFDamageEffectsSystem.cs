@@ -32,6 +32,14 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
     private const float DamageMusicRampSpeed = 1.2f;
     private float _mufflingCurrent;
     private const float MufflingRampSpeed = 1.5f;
+    private FixedPoint2 _prevTotalDamage;
+    private bool _hasPrevDamage;
+    private float _adrenalineRemaining;
+    private float _adrenalineCooldown;
+    private const float AdrenalineDuration = 2.2f;
+    private static readonly FixedPoint2 AdrenalineMinDelta = FixedPoint2.New(4);
+    private const float AdrenalineTriggerCooldown = 1f;
+    private const string AirlossGroup = "Airloss";
 
     public override void Initialize()
     {
@@ -74,7 +82,12 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
         {
             _overlay.DamageStrength = 0f;
             _overlay.CritStrength = 0f;
+            _overlay.AdrenalineStrength = 0f;
+            _overlay.BloodLossStrength = 0f;
         }
+        _hasPrevDamage = false;
+        _adrenalineRemaining = 0f;
+        _adrenalineCooldown = 0f;
     }
 
     private void OnMobStateChanged(MobStateChangedEvent ev)
@@ -99,15 +112,30 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
             return;
 
         var uid = local.Value;
+        if (TryComp(uid, out DamageableComponent? damageable))
+        {
+            var delta = damageable.TotalDamage - _prevTotalDamage;
+            if (_hasPrevDamage && delta > AdrenalineMinDelta && _adrenalineCooldown <= 0f)
+            {
+                _adrenalineRemaining = AdrenalineDuration;
+                _adrenalineCooldown = AdrenalineTriggerCooldown;
+            }
+            _prevTotalDamage = damageable.TotalDamage;
+            _hasPrevDamage = true;
+        }
+        _adrenalineRemaining = Math.Max(0f, _adrenalineRemaining - frameTime);
+        _adrenalineCooldown = Math.Max(0f, _adrenalineCooldown - frameTime);
+        _overlay.AdrenalineStrength = _adrenalineRemaining > 0f ? (_adrenalineRemaining / AdrenalineDuration) : 0f;
+
         UpdateOverlayIntensity(uid);
 
         float targetMuffling = 0f;
-        if (TryComp(uid, out DamageableComponent? dmg) && TryComp(uid, out MobThresholdsComponent? th) && th.ShowOverlays
-            && dmg.TotalDamage >= DamageMusicThreshold && _mobThreshold.TryGetIncapThreshold(uid, out var critThresh, th))
+        if (damageable != null && TryComp(uid, out MobThresholdsComponent? th) && th.ShowOverlays
+            && damageable.TotalDamage >= DamageMusicThreshold && _mobThreshold.TryGetIncapThreshold(uid, out var critThresh, th))
         {
             var range = critThresh.Value - DamageMusicThreshold;
             if (range > FixedPoint2.Zero)
-                targetMuffling = ((dmg.TotalDamage - DamageMusicThreshold) / range).Float();
+                targetMuffling = ((damageable.TotalDamage - DamageMusicThreshold) / range).Float();
             targetMuffling = Math.Clamp(targetMuffling, 0f, 1f);
         }
         _mufflingCurrent += (targetMuffling - _mufflingCurrent) * Math.Clamp(MufflingRampSpeed * frameTime, 0f, 1f);
@@ -127,7 +155,7 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
             return;
 
         float targetGain = 0f;
-        if (TryComp(uid, out DamageableComponent? damageable) && TryComp(uid, out MobThresholdsComponent? thresholds)
+        if (damageable != null && TryComp(uid, out MobThresholdsComponent? thresholds)
             && thresholds.ShowOverlays && damageable.TotalDamage >= DamageMusicThreshold
             && _mobThreshold.TryGetIncapThreshold(uid, out var critThreshold, thresholds))
         {
@@ -150,20 +178,28 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
         {
             _overlay.DamageStrength = 0f;
             _overlay.CritStrength = 0f;
+            _overlay.BloodLossStrength = 0f;
             return;
         }
         if (!thresholds.ShowOverlays)
         {
             _overlay.DamageStrength = 0f;
             _overlay.CritStrength = 0f;
+            _overlay.BloodLossStrength = 0f;
             return;
         }
         if (!_mobThreshold.TryGetIncapThreshold(entity, out var critThreshold, thresholds))
         {
             _overlay.DamageStrength = 0f;
             _overlay.CritStrength = 0f;
+            _overlay.BloodLossStrength = 0f;
             return;
         }
+
+        if (damageable.DamagePerGroup.TryGetValue(AirlossGroup, out var airloss) && critThreshold.HasValue)
+            _overlay.BloodLossStrength = Math.Clamp((airloss / critThreshold.Value).Float(), 0f, 1f);
+        else
+            _overlay.BloodLossStrength = 0f;
 
         var thresh = critThreshold.Value;
         switch (mobState.CurrentState)
@@ -187,7 +223,7 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
             }
             case MobState.Critical:
                 _overlay.DamageStrength = 0f;
-                if (_mobThreshold.TryGetDeadPercentage(entity, damageable.TotalDamage, out var critPct))
+                if (_mobThreshold.TryGetDeadPercentage(entity, damageable.TotalDamage, out var critPct) && critPct.HasValue)
                     _overlay.CritStrength = critPct.Value.Float();
                 else
                     _overlay.CritStrength = 0.5f;
