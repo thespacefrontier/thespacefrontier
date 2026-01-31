@@ -1,0 +1,7 @@
+- type: shader
+  id: TSFDamageVignette
+  kind: source
+  path: "/Textures/_TSF/Shaders/tsf_damage_vignette.swsl"
+  params:
+    DamageStrength: 0.0
+    CritStrength: 0.0
