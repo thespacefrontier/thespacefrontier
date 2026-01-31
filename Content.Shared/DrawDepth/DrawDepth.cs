@@ -108,9 +108,19 @@ namespace Content.Shared.DrawDepth
         BlastDoors = DrawDepthTag.Default + 9,
 
         /// <summary>
+        /// Perspective wall FOV corner overlay (TSF CustomFOV).
+        /// </summary>
+        WallFovOverlay = DrawDepthTag.Default + 9,
+
+        /// <summary>
         /// Stuff that needs to draw over most things, but not effects, like Kudzu.
         /// </summary>
         Overdoors = DrawDepthTag.Default + 10,
+
+        /// <summary>
+        /// Above FOV overlay for entities that must draw on top of wall FOV (TSF CustomFOV).
+        /// </summary>
+        AboveFovOverlay = DrawDepthTag.Default + 10,
 
         /// <summary>
         ///     Explosions, fire, melee swings. Whatever.
