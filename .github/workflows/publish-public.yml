@@ -1,4 +1,4 @@
-name: Publish Public
+name: Публикация публичного релиза
 
 concurrency:
   group: publish
@@ -10,6 +10,7 @@ on:
 
 jobs:
   build:
+    name: Сборка и публикация (public)
     runs-on: ubuntu-latest
 
     steps:
@@ -20,29 +21,29 @@ jobs:
       with:
         submodules: 'recursive'
 
-    - name: Setup .NET Core
+    - name: Установка .NET
       uses: actions/setup-dotnet@v4.1.0
       with:
         dotnet-version: 9.0.x
 
-    - name: Get Engine Tag
+    - name: Получить тег движка
       run: |
         cd RobustToolbox
         git fetch --depth=1
 
-    - name: Install dependencies
+    - name: Восстановить зависимости
       run: dotnet restore
 
-    - name: Build Packaging
+    - name: Сборка Content.Packaging
       run: dotnet build Content.Packaging --configuration Release --no-restore /m
 
-    - name: Package server
+    - name: Упаковка сервера
       run: dotnet run --project Content.Packaging server --platform win-x64 --platform linux-x64 --platform osx-x64 --platform linux-arm64
 
-    - name: Package client
+    - name: Упаковка клиента
       run: dotnet run --project Content.Packaging client --no-wipe-release
 
-    - name: Publish version
+    - name: Публикация версии
       run: Tools/publish_multi_request.py
       env:
         PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN_PUBLIC }}

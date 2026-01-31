@@ -1,4 +1,4 @@
-﻿name: "Labels: Review"
+name: "Метки: На проверке"
 
 on:
   pull_request_target:
@@ -6,11 +6,12 @@ on:
 
 jobs:
   add_label:
+    name: Добавить метку
     runs-on: ubuntu-latest
     steps:
     - uses: actions-ecosystem/action-add-labels@v1
       with:
-        labels: "S: Needs Review"
+        labels: "S: На проверке"
     - uses: actions-ecosystem/action-remove-labels@v1
       with:
-        labels: "S: Awaiting Changes"
+        labels: "S: Требуются изменения"

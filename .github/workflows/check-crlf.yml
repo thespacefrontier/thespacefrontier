@@ -1,4 +1,4 @@
-﻿name: CRLF Check
+name: Проверка окончаний строк (CRLF)
 
 on:
   pull_request:
@@ -6,10 +6,10 @@ on:
 
 jobs:
   build:
-    name: CRLF Check
+    name: Проверка CRLF
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4.2.2
-    - name: Check for CRLF
+    - name: Проверить окончания строк
       run: Tools/check_crlf.py

@@ -1,4 +1,4 @@
-﻿name: "Labels: Changes"
+name: "Метки: Требуются изменения"
 
 on:
   pull_request_review:
@@ -6,6 +6,7 @@ on:
 
 jobs:
   update_label:
+    name: Обновить метки
     permissions:
       pull-requests: write
     if: github.event.review.state == 'changes_requested'
@@ -13,7 +14,7 @@ jobs:
     steps:
     - uses: actions-ecosystem/action-add-labels@v1
       with:
-        labels: "Status: Awaiting Changes"
+        labels: "Status: Требуются изменения"
     - uses: actions-ecosystem/action-remove-labels@v1
       with:
-        labels: "Status: Needs Review"
+        labels: "Status: На проверке"

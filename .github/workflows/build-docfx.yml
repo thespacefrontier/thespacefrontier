@@ -1,4 +1,4 @@
-name: Build & Publish Docfx
+name: Сборка и публикация DocFX
 
 on:
   schedule:
@@ -6,35 +6,36 @@ on:
 
 jobs:
   docfx:
+   name: Сборка документации DocFX
    runs-on: ubuntu-latest
    steps:
     - uses: actions/checkout@v4.2.2
-    - name: Setup submodule
+    - name: Инициализация субмодулей
       run: |
         git submodule update --init --recursive
-    - name: Pull engine updates
+    - name: Обновить зависимости движка
       uses: space-wizards/submodule-dependency@v0.1.5
-    - name: Update Engine Submodules
+    - name: Обновить субмодули движка
       run: |
         cd RobustToolbox/
         git submodule update --init --recursive
-    - name: Setup .NET Core
+    - name: Установка .NET
       uses: actions/setup-dotnet@v4.1.0
       with:
         dotnet-version: 10.0.x
 
-    - name: Install dependencies
+    - name: Восстановить зависимости
       run: dotnet restore
 
-    - name: Build Project
+    - name: Сборка проекта
       run: dotnet build --no-restore
 
-    - name: Build DocFX
+    - name: Сборка DocFX
       uses: nikeee/docfx-action@v1.0.0
       with:
         args: Content.Docfx/docfx.json
 
-    - name: Publish Docfx Documentation on GitHub Pages
+    - name: Публикация документации на GitHub Pages
       uses: maxheld83/ghpages@master
       env:
         BUILD_DIR: Content.Docfx/_content-site

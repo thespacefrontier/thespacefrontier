@@ -1,4 +1,4 @@
-name: Update Contrib and Patreons in credits
+name: Обновление контрибьюторов и патронов в титрах
 
 on:
   workflow_dispatch:
@@ -7,6 +7,7 @@ on:
 
 jobs:
   get_credits:
+    name: Получить титры
     runs-on: ubuntu-latest
     # Hey there fork dev! If you like to include your own contributors in this then you can probably just change this to your own repo
     # Do this in dump_github_contributors.ps1 too into your own repo
@@ -17,7 +18,7 @@ jobs:
         with:
           ref: master
 
-      - name: Get this week's Contributors
+      - name: Получить контрибьюторов за неделю
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
@@ -41,10 +42,10 @@ jobs:
       #    commit_author: PJBot <pieterjan.briers+bot@gmail.com>
 
       # This will make a PR
-      - name: Set current date as env variable
+      - name: Установить текущую дату в переменную окружения
         run: echo "NOW=$(date +'%Y-%m-%dT%H-%M-%S')" >> $GITHUB_ENV
 
-      - name: Create Pull Request
+      - name: Создать Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           commit-message: Update Credits

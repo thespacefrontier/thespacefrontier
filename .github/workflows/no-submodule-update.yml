@@ -1,4 +1,4 @@
-name: No submodule update checker
+name: Проверка: без обновления субмодуля
 
 on:
   pull_request:
@@ -7,8 +7,8 @@ on:
 
 jobs:
   this_aint_right:
-    name: Submodule update in pr found
+    name: Обнаружено изменение субмодуля в PR
     runs-on: ubuntu-latest
     steps:
-      - name: Fail
+      - name: Ошибка
         run: exit 1

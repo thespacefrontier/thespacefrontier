@@ -1,10 +1,11 @@
-﻿name: "Labels: PR"
+name: "Метки: PR"
 
 on:
 - pull_request_target
 
 jobs:
   labeler:
+    name: Расстановка меток
     if: github.actor != 'IanComradeBot'
     permissions:
       contents: read
