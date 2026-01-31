@@ -1,4 +1,4 @@
-name: Close PRs on master
+name: Закрытие PR из ветки master
 
 on:
   pull_request_target:
@@ -6,6 +6,7 @@ on:
     
 jobs:
   run:
+    name: Закрыть PR
     runs-on: ubuntu-latest
     if: ${{github.head_ref == 'master' || github.head_ref == 'main' || github.head_ref == 'develop'}}
     

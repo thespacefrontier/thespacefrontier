@@ -1,4 +1,4 @@
-name: Diff RSIs
+name: Сравнение RSI
 
 on:
   pull_request_target:
@@ -7,13 +7,13 @@ on:
 
 jobs:
   diff:
-    name: Diff
+    name: Сравнение изменённых RSI
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Клонировать репозиторий
         uses: actions/checkout@v4.2.2
 
-      - name: Get changed files
+      - name: Получить изменённые файлы
         id: files
         uses: Ana06/get-changed-files@v2.3.0
         with:
@@ -22,7 +22,7 @@ jobs:
             **.rsi
             **.png
 
-      - name: Diff changed RSIs
+      - name: Сравнить изменённые RSI
         id: diff
         uses: space-wizards/RSIDiffBot@v1.1
         with:
@@ -34,7 +34,7 @@ jobs:
           headname: ${{ github.event.pull_request.head.repo.full_name }}
           headsha: ${{ github.event.pull_request.head.sha }}
 
-      - name: Potentially find comment
+      - name: Поиск комментария
         uses: peter-evans/find-comment@v1
         id: fc
         with:
@@ -42,7 +42,7 @@ jobs:
           comment-author: 'github-actions[bot]'
           body-includes: RSI Diff Bot
 
-      - name: Create comment if it doesn't exist
+      - name: Создать комментарий, если не существует
         if: steps.fc.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v1
         with:
@@ -50,7 +50,7 @@ jobs:
           body: |
             ${{ steps.diff.outputs.summary-details }}
 
-      - name: Update comment if it exists
+      - name: Обновить комментарий, если существует
         if: steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:
@@ -59,7 +59,7 @@ jobs:
           body: |
             ${{ steps.diff.outputs.summary-details }}
 
-      - name: Update comment to read that it has been edited
+      - name: Добавить пометку об обновлении комментария
         if: steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:

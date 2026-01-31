@@ -1,4 +1,4 @@
-﻿name: "Labels: Approve"
+name: "Метки: Одобрено"
 
 on:
   pull_request_review:
@@ -6,6 +6,7 @@ on:
 
 jobs:
   remove_label:
+    name: Удалить метки
     permissions:
       pull-requests: write
     if: github.event.review.state == 'approved'
@@ -14,5 +15,5 @@ jobs:
     - uses: actions-ecosystem/action-remove-labels@v1
       with:
         labels: |
-          Status: Needs Review
-          Status: Awaiting Changes
+          Status: На проверке
+          Status: Требуются изменения

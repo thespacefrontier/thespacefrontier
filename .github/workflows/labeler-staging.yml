@@ -1,4 +1,4 @@
-name: "Labels: Branch staging"
+name: "Метки: Ветка staging"
 
 on:
   pull_request_target:
@@ -9,8 +9,9 @@ on:
 
 jobs:
   add_label:
+    name: Метка ветки staging
     runs-on: ubuntu-latest
     steps:
     - uses: actions-ecosystem/action-add-labels@v1
       with:
-        labels: "Branch: Staging"
+        labels: "Ветка: Staging"

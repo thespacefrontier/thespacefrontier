@@ -1,4 +1,4 @@
-﻿name: Benchmarks
+name: Бенчмарки
 on:
   workflow_dispatch:
   schedule:
@@ -8,19 +8,19 @@ concurrency: benchmarks
 
 jobs:
   benchmark:
-    name: Run Benchmarks
+    name: Запуск бенчмарков
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4.2.2
       with:
         submodules: 'recursive'
-    - name: Get Engine version
+    - name: Получить версию движка
       run: |
         cd RobustToolbox
         git fetch --depth=1
         echo "::set-output name=out::$(git rev-parse HEAD)"
       id: engine_version
-    - name: Run script on centcomm
+    - name: Запуск скрипта на centcomm
       uses: appleboy/ssh-action@master
       with:
         host: centcomm.spacestation14.io

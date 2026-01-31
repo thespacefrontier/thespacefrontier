@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   id: Airlock
   parent: BaseStructure
   name: airlock
@@ -141,6 +141,7 @@
   - type: RadiationBlocker
     resistance: 3
   - type: Occluder
+#  - type: FoVOverlay  # TSF perspective-wall-fov // ДО МАССОВОГО РЕСПРАЙТА ШЛЮЗОВ
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: StrongMetallic

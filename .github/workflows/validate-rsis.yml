@@ -1,4 +1,4 @@
-name: RSI Validator
+name: Валидатор RSI
 
 on:
   push:
@@ -10,14 +10,14 @@ on:
 
 jobs:
   validate_rsis:
-    name: Validate RSIs
+    name: Проверка RSI
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.2.2
-      - name: Setup Submodule
+      - name: Инициализация субмодулей
         run: git submodule update --init
       # Corvax-Secrets-Start
-      - name: Setup secrets
+      - name: Настройка секретов
         env:
           SSH_KEY: ${{ secrets.SECRETS_PRIVATE_KEY }}
         if: ${{ env.SSH_KEY != '' }}
@@ -29,11 +29,11 @@ jobs:
           echo "StrictHostKeyChecking no" >> ~/.ssh/config
           git -c submodule.Secrets.update=checkout submodule update --init
       # Corvax-Secrets-End
-      - name: Pull engine updates
+      - name: Обновить зависимости движка
         uses: space-wizards/submodule-dependency@v0.1.5
-      - name: Install Python dependencies
+      - name: Установить зависимости Python
         run: |
           pip3 install --ignore-installed --user pillow jsonschema
-      - name: Validate RSIs
+      - name: Проверить RSI
         run: |
           python3 RobustToolbox/Schemas/validate_rsis.py Resources/

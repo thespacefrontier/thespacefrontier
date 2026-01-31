@@ -1,15 +1,16 @@
-name: "Labels: Size"
+name: "Метки: Размер"
 on: pull_request_target
 jobs:
   size-label:
+    name: Метка размера PR
     runs-on: ubuntu-latest
     steps:
-      - name: size-label
+      - name: Определить размер
         uses: "pascalgn/size-label-action@v0.5.5"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
-          # Custom size configuration
+          # Настройка порогов размера
           sizes: >
             {
               "0": "XS",
