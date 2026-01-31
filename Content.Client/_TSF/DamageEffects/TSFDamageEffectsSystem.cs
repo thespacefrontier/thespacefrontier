@@ -86,6 +86,7 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
             _overlay.BloodLossStrength = 0f;
         }
         _hasPrevDamage = false;
+        _adrenalineRemaining = 0f;
         _adrenalineCooldown = 0f;
     }
 
@@ -129,12 +130,12 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
         UpdateOverlayIntensity(uid);
 
         float targetMuffling = 0f;
-        if (TryComp(uid, out DamageableComponent? dmg) && TryComp(uid, out MobThresholdsComponent? th) && th.ShowOverlays
-            && dmg.TotalDamage >= DamageMusicThreshold && _mobThreshold.TryGetIncapThreshold(uid, out var critThresh, th))
+        if (damageable != null && TryComp(uid, out MobThresholdsComponent? th) && th.ShowOverlays
+            && damageable.TotalDamage >= DamageMusicThreshold && _mobThreshold.TryGetIncapThreshold(uid, out var critThresh, th))
         {
             var range = critThresh.Value - DamageMusicThreshold;
             if (range > FixedPoint2.Zero)
-                targetMuffling = ((dmg.TotalDamage - DamageMusicThreshold) / range).Float();
+                targetMuffling = ((damageable.TotalDamage - DamageMusicThreshold) / range).Float();
             targetMuffling = Math.Clamp(targetMuffling, 0f, 1f);
         }
         _mufflingCurrent += (targetMuffling - _mufflingCurrent) * Math.Clamp(MufflingRampSpeed * frameTime, 0f, 1f);
@@ -154,13 +155,13 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
             return;
 
         float targetGain = 0f;
-        if (TryComp(uid, out DamageableComponent? dmgComp) && TryComp(uid, out MobThresholdsComponent? thresholds)
-            && thresholds.ShowOverlays && dmgComp.TotalDamage >= DamageMusicThreshold
+        if (damageable != null && TryComp(uid, out MobThresholdsComponent? thresholds)
+            && thresholds.ShowOverlays && damageable.TotalDamage >= DamageMusicThreshold
             && _mobThreshold.TryGetIncapThreshold(uid, out var critThreshold, thresholds))
         {
             var range = critThreshold.Value - DamageMusicThreshold;
             if (range > FixedPoint2.Zero)
-                targetGain = ((dmgComp.TotalDamage - DamageMusicThreshold) / range).Float();
+                targetGain = ((damageable.TotalDamage - DamageMusicThreshold) / range).Float();
             targetGain = Math.Clamp(targetGain, 0f, 1f);
         }
 
