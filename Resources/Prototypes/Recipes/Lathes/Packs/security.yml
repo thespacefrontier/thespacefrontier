@@ -73,7 +73,7 @@
   - MagazineShotgunSlug
   - SpeedLoaderMagnum
   - SpeedLoaderMagnumEmpty
-  - ShrapnelPayload
+  # - ShrapnelPayload # No LatheRecipePrototype
 
 - type: latheRecipePack
   id: SecurityWeaponsStatic
@@ -88,13 +88,10 @@
 - type: latheRecipePack
   id: SecurityEquipment
   recipes:
-  # Orion-Start
-  - EnergyDomeTurtle
+  # Orion-Start (EnergyDomeTurtle, HoloprojectorSecurityAdvanced, AntiMindControlDevice - no LatheRecipePrototype)
   # Orion-End
   - ClothingBackpackElectropack
   - HoloprojectorSecurity
-  - HoloprojectorSecurityAdvanced
-  - AntiMindControlDevice
   - PortableRecharger
   - PowerCageHigh
   - PowerCageMedium

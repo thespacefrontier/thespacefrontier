@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseMagazineHighCaliber
+  parent: BaseMagazineHeavyRifle762
   id: MagazineHighCaliberAP
   name: "magazine (.50 anti-materiel)"
   components:

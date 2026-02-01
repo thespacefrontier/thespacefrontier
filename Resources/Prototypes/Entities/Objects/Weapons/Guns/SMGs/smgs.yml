@@ -134,7 +134,6 @@
   - type: EmitSoundOnLand
     sound:
       collection: SMGDrop
-  - type: RestrictGunshotsByUserTag # Goobstation
     doesntContain:
     - Oni
     messages:
@@ -142,7 +141,6 @@
     - oni-cannot-shoot-guns-2
     - oni-cannot-shoot-guns-3
   # Goobstation edit end
-  - type: Multishot # Goobstation V
     missChance: 0.4
     spreadMultiplier: 3
     spreadAddition: 50 #very hard to hold two of these steady let alone steady while shooting them
@@ -341,7 +339,6 @@
     zeroVisible: true
   - type: Appearance
   # Goobstation
-  - type: Multishot
     missChance: 0.3
   - type: Item
     shape:

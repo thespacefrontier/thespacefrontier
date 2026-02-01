@@ -115,10 +115,7 @@
     price: 500
   - type: UseDelay
     delay: 1
-  - type: UseDelayBlockShoot # Orion
-  - type: Multishot # Goobstation V
     missChance: 0.4 #MISS CHANCE DOESNT WORK LMAO
-  - type: RestrictGunshotsByUserTag # Goobstation
     doesntContain:
     - Oni
     messages:
@@ -154,7 +151,6 @@
     magState: mag
     steps: 4
     zeroVisible: true
-  - type: RestrictGunshotsByUserTag # Goobstation
     doesntContain:
     - Oni
     messages:
@@ -202,13 +198,11 @@
     - type: ContainerContainer
       containers:
         ballistic-ammo: !type:Container
-    - type: ProjectileBatteryAmmoProvider
       proto: CartridgeLightRifle
       fireCost: 100
     - type: Battery
       maxCharge: 10000
       startingCharge: 10000
-    - type: RestrictGunshotsByUserTag # Goobstation
       doesntContain:
       - Oni
       messages:

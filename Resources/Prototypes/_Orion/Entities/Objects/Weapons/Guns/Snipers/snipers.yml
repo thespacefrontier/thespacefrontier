@@ -55,8 +55,6 @@
     pvsIncrease: 0.5
   - type: UseDelay
     delay: 1
-  - type: UseDelayBlockShoot
-
 - type: entity
   parent: [ BaseWeaponSniper, BaseSecurityContraband ]
   id: WeaponSniperRemington700
@@ -88,7 +86,6 @@
     unwieldOnUse: false
   - type: UseDelay
     delay: 0.7
-  - type: UseDelayBlockShoot
   - type: GunRequiresWield
   - type: SpeedModifiedOnWield
     sprintModifier: 0.8

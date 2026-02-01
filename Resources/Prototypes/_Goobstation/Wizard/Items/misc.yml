@@ -43,15 +43,6 @@
       - Belt
   - type: Item
     sprite: _Goobstation/Wizard/Objects/scroll.rsi
-  - type: UserInterface
-    interfaces:
-      enum.WizardTeleportUiKey.Key:
-        type: WizardTeleportBoundUserInterface
-  - type: ActivatableUI
-    inHandsOnly: true
-    singleUser: true
-    key: enum.WizardTeleportUiKey.Key
-  - type: TeleportScroll
   - type: StaticPrice
     price: 1000
 
@@ -61,9 +52,7 @@
   parent: ScrollTeleport
   id: ScrollTeleportApprentice
   suffix: Apprentice
-  components:
-  - type: TeleportScroll
-    usesLeft: 1
+  components: []
 
 - type: entity
   name: lightning bolt spell packet
@@ -82,20 +71,8 @@
     netsync: false
   - type: LightFade
     duration: 5
-  - type: Trail
-    scale: 0.8
-    frequency: 0.046
-    lifetime: 1
-    lerpTime: 0.03
-    particleAmount: 0
-    shader: unshaded
-    sprite:
-      sprite: /Textures/Effects/lightning.rsi
-      state: yellow_lightning
-  - type: ThrownLightning
-  - type: FadingTimedDespawn
-    lifetime: 0
-    fadeOutTime: 5
+  - type: TimedDespawn
+    lifetime: 5
   - type: ThrowingAngle
     angle: 180
   - type: EmbeddableProjectile
@@ -142,8 +119,6 @@
     - ApprenticeSanguine
     - ApprenticeRobeless
     - ApprenticeChaos
-  - type: GrantTargetObjectiveOnGhostTakeover
-    objective: KeepWizardAliveObjective
   - type: StaticPrice
     price: 1000
 
@@ -192,16 +167,6 @@
         Quantity: 5
   - type: StaticPrice
     price: 25000
-
-- type: entity
-  name: passenger ID card
-  parent: AgentIDCard
-  id: WizardIDCard
-  suffix: Wizard
-  components:
-  - type: Access
-    tags:
-    - Wizard
 
 - type: entity
   parent: BaseCrowbar

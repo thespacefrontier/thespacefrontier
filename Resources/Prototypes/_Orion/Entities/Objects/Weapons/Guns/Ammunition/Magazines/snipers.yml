@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseMagazineHighCaliber
+  parent: BaseMagazineHeavyRifle762
   id: MagazineRifleSR50
   name: rifle magazine (.50 BMG)
   description: Standard EarthGov type of heavy magazines.

@@ -124,7 +124,6 @@
   - type: EmitSoundOnLand
     sound:
       collection: ShotgunsDrop
-  - type: RestrictGunshotsByUserTag
     doesntContain:
     - Oni
     messages:
@@ -201,7 +200,6 @@
   - type: Appearance
   - type: StaticPrice
     price: 5000
-  - type: RestrictGunshotsByUserTag # Goobstation
     doesntContain:
     - Oni
     messages:
@@ -211,7 +209,7 @@
 
 - type: entity
   name: double-barreled shotgun
-  parent: [BaseWeaponShotgun, BaseGunWieldable, BaseSecurityBartenderZookeeperContraband]
+  parent: [BaseWeaponShotgun, BaseGunWieldable, BaseSecurityContraband]
   id: WeaponShotgunDoubleBarreled
   description: An immortal classic. Uses 12 Gauge shotgun shells.
   components:

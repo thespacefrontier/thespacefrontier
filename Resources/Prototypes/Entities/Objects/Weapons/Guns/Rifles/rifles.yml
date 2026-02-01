@@ -151,7 +151,6 @@
       gun_chamber: !type:ContainerSlot
   - type: StaticPrice
     price: 500
-  - type: Multishot # Goobstation V
     missChance: 0.4
     spreadMultiplier: 3
     spreadAddition: 60 #youre not multifiring a rifle
@@ -169,7 +168,6 @@
   - type: EmitSoundOnPickup
     sound:
       collection: RiflesPickUp
-  - type: RestrictGunshotsByUserTag # Goobstation
     doesntContain:
     - Oni
     messages:
@@ -400,33 +398,4 @@
     zeroVisible: true
   - type: Appearance
 
-- type: entity
-  name: Foam Force Astro Ace
-  parent: [BaseWeaponShotgun, BaseGunWieldable]
-  id: WeaponRifleFoam
-  description: A premium foam rifle of the highest quality. Its plastic feels rugged, and its mechanisms sturdy.
-  components:
-  - type: Sprite
-    sprite: Objects/Weapons/Guns/Rifles/foam_rifle.rsi
-  - type: Clothing
-    sprite: Objects/Weapons/Guns/Rifles/foam_rifle.rsi
-  - type: Item
-    sprite: Objects/Weapons/Guns/Rifles/foam_rifle_inhand_64x.rsi
-  - type: BallisticAmmoProvider
-    whitelist:
-      tags:
-      - BulletFoam
-    capacity: 10
-    proto: BulletFoam
-  - type: GunRequiresWield #remove when inaccuracy on spreads is fixed
-  - type: Gun
-    fireRate: 2
-    selectedMode: SemiAuto
-    availableModes:
-    - SemiAuto
-    soundGunshot:
-      path: /Audio/Effects/thunk.ogg
-    soundEmpty:
-      path: /Audio/Weapons/Guns/Empty/empty.ogg
-    clumsyProof: true
-  - type: PacifismAllowedGun
+# WeaponRifleFoam: duplicate removed (defined in Entities/Objects/Fun/weapons.yml)

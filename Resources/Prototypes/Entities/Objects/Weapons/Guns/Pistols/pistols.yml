@@ -171,11 +171,9 @@
   - type: Appearance
   - type: StaticPrice
     price: 500
-  - type: Multishot # Goobstation V
     missChance: 0.4
     spreadMultiplier: 2
     spreadAddition: 40
-  - type: RestrictGunshotsByUserTag # Goobstation
     doesntContain:
     - Oni
     messages:
@@ -262,7 +260,6 @@
   - type: ContainerContainer
     containers:
       ballistic-ammo: !type:Container
-  - type: ProjectileBatteryAmmoProvider
     proto: BulletPistol
     fireCost: 100
   - type: Battery
@@ -393,5 +390,4 @@
         whitelist:
           tags:
             - CartridgeMagnum
-  - type: Multishot #Goob
     spreadMultiplier: 30

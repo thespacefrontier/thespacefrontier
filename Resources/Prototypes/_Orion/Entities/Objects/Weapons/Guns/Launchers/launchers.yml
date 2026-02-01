@@ -42,39 +42,6 @@
   - type: GunRequiresWield
 
 - type: entity
-  parent: [WeaponFlareGun, BaseGunWieldable, BaseSecurityContraband]
-  id: WeaponLauncherM81
-  name: M-81
-  description: A lightweight single-shot grenade launcher used by the UEG for area blockades and large explosions or riot police units.
-  suffix: Lethal
-  components:
-  - type: Sprite
-    sprite: _Goobstation/Objects/Weapons/Guns/Launchers/riotlauncher.rsi
-    layers:
-      - state: base
-        map: ["enum.GunVisualLayers.Base"]
-  - type: Clothing
-    sprite: _Goobstation/Objects/Weapons/Guns/Launchers/riotlauncher.rsi
-    slots:
-    - Back
-    - suitStorage
-  - type: Item
-    size: Huge
-    sprite: _Goobstation/Objects/Weapons/Guns/Launchers/riotlauncher.rsi
-  - type: GunRequiresWield
-  - type: Gun
-    fireRate: 1
-    soundGunshot:
-      path: /Audio/_Orion/Weapons/Guns/Launchers/underbarrel_grenadelauncher.ogg
-  - type: ItemSlots
-    slots:
-      gun_chamber:
-        priority: 1
-        whitelist:
-          tags:
-            - Grenade
-
-- type: entity
   parent: [BaseMajorContraband, BaseWeaponLauncher]
   id: WeaponLauncherRL5
   name: RL-5

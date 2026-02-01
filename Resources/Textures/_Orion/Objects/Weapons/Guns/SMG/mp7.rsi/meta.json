@@ -7,33 +7,14 @@
         "y": 32
     },
     "states": [
-	{
-		"name": "icon"
-	},
-	{
-		"name": "bolt-open"
-	},
-	{
-		"name": "base"
-	},
-	{
-		"name": "mag-0"
+    {
+        "name": "base"
     },
     {
-        "name": "inhand-left",
-        "directions": 4
+        "name": "bolt-open"
     },
     {
-        "name": "inhand-right",
-        "directions": 4
-    },
-    {
-        "name": "equipped-BACKPACK",
-        "directions": 4
-    },
-    {
-        "name": "equipped-SUITSTORAGE",
-        "directions": 4
+        "name": "mag-0"
     },
     {
         "name": "wielded-inhand-left",

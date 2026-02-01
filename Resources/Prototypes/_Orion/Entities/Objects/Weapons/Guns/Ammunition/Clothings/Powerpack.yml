@@ -49,8 +49,6 @@
   - type: Appearance
   - type: UseDelay
     delay: 1.5
-  - type: UseDelayBlockShoot
-
 - type: entity
   parent: [ BaseItem, BaseCentcommContraband ]
   id: BasePowerpackEnergy
@@ -77,7 +75,6 @@
   - type: Battery
     maxCharge: 500000
     startingCharge: 500000
-  - type: HitscanBatteryAmmoProvider
     fireCost: 100
   - type: ClothingSpeedModifier
     sprintModifier: 0.8
@@ -88,7 +85,6 @@
     slots:
       item:
         priority: 2
-        startingItem: WeaponMinigunPulse
         whitelist:
           tags:
           - SlotMinigunEnergy
@@ -104,8 +100,6 @@
     price: 8000
   - type: UseDelay
     delay: 0.5
-  - type: UseDelayBlockShoot
-
 # Fills
 - type: entity
   parent: BasePowerpackRifle
@@ -133,6 +127,4 @@
   parent: BasePowerpackEnergy
   id: PowerpackEnergyPulse
   name: powerpack (pulse)
-  components:
-  - type: HitscanBatteryAmmoProvider
-    proto: Pulse
+  components: []

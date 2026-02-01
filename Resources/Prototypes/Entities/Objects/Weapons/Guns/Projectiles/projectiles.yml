@@ -462,8 +462,6 @@
     - EmitterBolt
   - type: TimedDespawn
     lifetime: 3
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   name: watcher bolt
   id: WatcherBolt
@@ -661,8 +659,6 @@
     intensitySlope: 3
     totalIntensity: 150
     maxTileBreak: 1
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   id: BulletCharge
   name: charge bolt
@@ -757,8 +753,6 @@
   - type: Reflective
     reflective:
     - Energy
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   parent: AnomalousParticleDelta
   id: AnomalousParticleDeltaStrong
@@ -770,8 +764,6 @@
     stabilityPerDestabilizingHit: 0.08
     healthPerWeakeningeHit: -0.1
     stabilityPerWeakeningeHit: -0.2
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   parent: AnomalousParticleDelta
   id: AnomalousParticleEpsilon
@@ -789,8 +781,6 @@
       shader: unshaded
   - type: AnomalousParticle
     particleType: Epsilon
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   parent: AnomalousParticleEpsilon
   id: AnomalousParticleEpsilonStrong
@@ -802,8 +792,6 @@
     stabilityPerDestabilizingHit: 0.08
     healthPerWeakeningeHit: -0.1
     stabilityPerWeakeningeHit: -0.2
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   parent: AnomalousParticleDelta
   id: AnomalousParticleZeta
@@ -821,8 +809,6 @@
       shader: unshaded
   - type: AnomalousParticle
     particleType: Zeta
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   parent: AnomalousParticleZeta
   id: AnomalousParticleZetaStrong
@@ -834,8 +820,6 @@
     stabilityPerDestabilizingHit: 0.08
     healthPerWeakeningeHit: -0.1
     stabilityPerWeakeningeHit: -0.2
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   parent: AnomalousParticleDelta
   id: AnomalousParticleOmegaStrong
@@ -864,8 +848,6 @@
     damage:
       types:
         Heat: 20
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   parent: AnomalousParticleDelta
   id: AnomalousParticleSigma
@@ -883,8 +865,6 @@
       shader: unshaded
   - type: AnomalousParticle
     particleType: Sigma
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   parent: AnomalousParticleSigma
   id: AnomalousParticleSigmaStrong
@@ -893,8 +873,6 @@
   components:
   - type: AnomalousParticle
     particleType: Sigma
-  - type: SmartLinkBlacklist  # Goobstation
-
 # Launcher projectiles (grenade / rocket)
 - type: entity
   id: BulletRocket
@@ -917,8 +895,6 @@
     radius: 3.5
     color: orange
     energy: 0.5
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   id: BulletWeakRocket
   name: weak rocket
@@ -940,8 +916,6 @@
     radius: 3.5
     color: orange
     energy: 0.5
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   id: BulletGrenadeBaton
   name: baton grenade
@@ -962,8 +936,6 @@
   - type: StaminaDamageOnCollide
     damage: 80
     overtime: 50 # Goobstation
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   id: BulletGrenadeBlast
   name: blast grenade
@@ -980,8 +952,6 @@
     totalIntensity: 150 # a ~2 tile radius
     intensitySlope: 5
     maxIntensity: 10
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   id: BulletGrenadeFlash
   name: flash grenade
@@ -999,10 +969,6 @@
   - type: ActiveTimerTrigger
     timeRemaining: 0.3
   - type: DeleteOnTrigger
-  - type: Flashbang # Goobstation
-    minProtectionRange: 7 # Can't stun/knockdown people wearing any ear protection
-  - type: SmartLinkBlacklist  # Goobstation
-
 # This is supposed to spawn shrapnel and stuff so uhh... TODO?
 - type: entity
   id: BulletGrenadeFrag
@@ -1020,8 +986,6 @@
     totalIntensity: 175 # about a ~6 tile radius
     intensitySlope: 1
     maxIntensity: 10
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   parent: BaseBulletTrigger
   id: BulletGrenadeCleanade
@@ -1042,7 +1006,7 @@
       reagents:
       - ReagentId: SpaceCleaner
         Quantity: 30
-  - type: SoundOnTrigger
+  - type: EmitSoundOnTrigger
     sound: /Audio/Items/smoke_grenade_smoke.ogg
   - type: ExplodeOnTrigger
   - type: Explosive
@@ -1051,8 +1015,6 @@
     intensitySlope: 1
     maxIntensity: 0.01
     tileBreakScale: 0.01
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   id: BulletGrenadeEMP
   name: EMP rocket
@@ -1073,8 +1035,6 @@
     radius: 3.5
     color: blue
     energy: 0.5
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   id: BulletCap
   name: cap bullet
@@ -1090,8 +1050,6 @@
     damage:
       types:
         Piercing: 0
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   id: BulletAcid
   name: acid spit
@@ -1108,8 +1066,6 @@
     - state: xeno_toxic
   - type: Ammo
     muzzleFlash: null
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   id: BulletWaterShot
   name: water
@@ -1152,8 +1108,6 @@
     transferAmountPercentage: 1
   - type: Appearance
   - type: VaporVisuals
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   id: BulletHivebot
   name: hivebot bullet
@@ -1186,8 +1140,6 @@
     radius: 1
     color: orange
     energy: 0.5
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   id: GrapplingHook
   name: grappling hook
@@ -1222,8 +1174,6 @@
         - Impassable
         - HighImpassable
   - type: GrapplingProjectile
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   name : disabler bolt smg
   id: BulletDisablerSmg
@@ -1375,8 +1325,6 @@
     - HideContextMenu
   - type: Ammo # Goobstation
     muzzleFlash: null
-  - type: SmartLinkBlacklist  # Goobstation
-
 - type: entity
   name: laser bolt
   id: BulletLaser

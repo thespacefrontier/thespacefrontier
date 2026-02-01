@@ -249,6 +249,78 @@
   files:
     - /Audio/Ambience/shipambience.ogg
 
+# Weapon drop/land and pickup (referenced by gun prototypes)
+- type: soundCollection
+  id: RiflesDrop
+  files:
+    - /Audio/Effects/metal_thud1.ogg
+    - /Audio/Effects/metal_thud2.ogg
+    - /Audio/Effects/metal_thud3.ogg
+- type: soundCollection
+  id: RiflesPickUp
+  files:
+    - /Audio/Items/toolbox_insert.ogg
+- type: soundCollection
+  id: PistolsDrop
+  files:
+    - /Audio/Effects/metal_thud1.ogg
+    - /Audio/Effects/metal_thud2.ogg
+    - /Audio/Effects/metal_thud3.ogg
+- type: soundCollection
+  id: PistolsPickUp
+  files:
+    - /Audio/Items/toolbox_insert.ogg
+- type: soundCollection
+  id: SnipersDrop
+  files:
+    - /Audio/Effects/metal_thud1.ogg
+    - /Audio/Effects/metal_thud2.ogg
+    - /Audio/Effects/metal_thud3.ogg
+- type: soundCollection
+  id: SnipersPickUp
+  files:
+    - /Audio/Items/toolbox_insert.ogg
+- type: soundCollection
+  id: SMGDrop
+  files:
+    - /Audio/Effects/metal_thud1.ogg
+    - /Audio/Effects/metal_thud2.ogg
+    - /Audio/Effects/metal_thud3.ogg
+- type: soundCollection
+  id: SMGPickUp
+  files:
+    - /Audio/Items/toolbox_insert.ogg
+- type: soundCollection
+  id: ShotgunsDrop
+  files:
+    - /Audio/Effects/metal_thud1.ogg
+    - /Audio/Effects/metal_thud2.ogg
+    - /Audio/Effects/metal_thud3.ogg
+- type: soundCollection
+  id: ShotgunsPickUp
+  files:
+    - /Audio/Items/toolbox_insert.ogg
+- type: soundCollection
+  id: RevolversDrop
+  files:
+    - /Audio/Effects/metal_thud1.ogg
+    - /Audio/Effects/metal_thud2.ogg
+    - /Audio/Effects/metal_thud3.ogg
+- type: soundCollection
+  id: RevolversPickUp
+  files:
+    - /Audio/Items/toolbox_insert.ogg
+- type: soundCollection
+  id: LasersDrop
+  files:
+    - /Audio/Effects/metal_thud1.ogg
+    - /Audio/Effects/metal_thud2.ogg
+    - /Audio/Effects/metal_thud3.ogg
+- type: soundCollection
+  id: LasersPickUp
+  files:
+    - /Audio/Items/toolbox_insert.ogg
+
 # Rules
 - type: rules
   id: AlwaysTrue

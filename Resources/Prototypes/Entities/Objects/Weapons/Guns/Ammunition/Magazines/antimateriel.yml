@@ -1,0 +1,48 @@
+# Magazine for .60 anti-materiel (sniper). Referenced by WeaponSniperHeavy startingItem/whitelist.
+- type: entity
+  id: BaseMagazineAntiMateriel
+  parent: [ BaseItem, BaseSecurityContraband ]
+  abstract: true
+  name: magazine (.60 anti-materiel)
+  components:
+  - type: Tag
+    tags:
+      - MagazineAntiMateriel
+  - type: Item
+    size: Small
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    whitelist:
+      tags:
+        - CartridgeAntiMateriel
+    capacity: 10
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
+  - type: Sprite
+    sprite: _Orion/Objects/Weapons/Guns/Ammunition/Magazines/Snipers/sr127_mag.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: mag
+    steps: 2
+    zeroVisible: false
+  - type: Appearance
+
+- type: entity
+  id: MagazineAntiMateriel
+  parent: BaseMagazineAntiMateriel
+  name: magazine (.60 anti-materiel)
+  description: A magazine of .60 anti-materiel rounds.
+  components:
+  - type: BallisticAmmoProvider
+    proto: CartridgeAntiMateriel
+  - type: Sprite
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
