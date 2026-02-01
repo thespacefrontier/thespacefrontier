@@ -871,6 +871,9 @@
 # Tagged entities always have BallisticAmmoProviderComponent.
 
 - type: Tag
+  id: MagazineAntiMateriel # .60 high caliber magazines for sniper rifles like WeaponSniperHristov, Musket.
+
+- type: Tag
   id: MagazineDebug # WeaponPistolDebug
 
 - type: Tag
