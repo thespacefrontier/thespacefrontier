@@ -174,7 +174,6 @@
     startingCharge: 1000
   - type: StaticPrice
     price: 500
-    speed: 0.9
   # Goobstation edit start
   - type: EmitSoundOnPickup
     sound:
@@ -212,8 +211,6 @@
     - SemiAuto
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/laser.ogg
-    proto: RedLightLaser
-    fireCost: 50
   - type: ItemSlots
     slots:
       cell_slot:
@@ -318,12 +315,6 @@
       shader: unshaded
   - type: Item
     sprite: Objects/Weapons/Guns/Battery/svalinn.rsi
-    doesntContain:
-    - Oni
-    messages:
-    - oni-cannot-shoot-guns-1
-    - oni-cannot-shoot-guns-2
-    - oni-cannot-shoot-guns-3
   - type: MagazineVisuals
     magState: mag
     steps: 5
@@ -359,13 +350,6 @@
     - state: mag-unshaded-4
       map: ["enum.GunVisualLayers.MagUnshaded"]
       shader: unshaded
-  - type: Item
-    doesntContain:
-    - Oni
-    messages:
-    - oni-cannot-shoot-guns-1
-    - oni-cannot-shoot-guns-2
-    - oni-cannot-shoot-guns-3
   - type: BatteryAmmoProvider
     proto: RedMediumLaser
     fireCost: 62.5
@@ -389,12 +373,6 @@
     - state: mag-unshaded-4
       map: ["enum.GunVisualLayers.MagUnshaded"]
       shader: unshaded
-    doesntContain:
-    - Oni
-    messages:
-    - oni-cannot-shoot-guns-1
-    - oni-cannot-shoot-guns-2
-    - oni-cannot-shoot-guns-3
   - type: MagazineVisuals
     magState: mag
     steps: 5
@@ -429,8 +407,6 @@
       path: /Audio/Effects/Lightning/lightningshock.ogg
       params:
         variation: 0.2
-    proto: TeslaGunBullet
-    fireCost: 300
   - type: BatteryAmmoProvider
     proto: TeslaGunBullet
     fireCost: 300
@@ -465,8 +441,6 @@
     selectedMode: SemiAuto
     availableModes:
     - SemiAuto
-    proto: RedLaserPractice
-    fireCost: 62.5
   - type: BatteryAmmoProvider
     proto: RedLaserPractice
     fireCost: 62.5
@@ -505,8 +479,6 @@
     selectedMode: SemiAuto
     availableModes:
     - SemiAuto
-    proto: RedLaser
-    fireCost: 62.5
   # Goobstation
   - type: Item
     size: Large
@@ -539,13 +511,13 @@
     - SemiAuto
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/laser3.ogg
-    proto: LightPulse # Goobstation
+  - type: BatteryAmmoProvider
+    proto: LightPulse
     fireCost: 200
   - type: Battery
     maxCharge: 2000
     startingCharge: 2000
   - type: BatterySelfRecharger # Goobstation - CentComm Job Revamp
-    autoRecharge: true
     autoRechargeRate: 40
 
 - type: entity
@@ -577,8 +549,6 @@
       - FullAuto
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/laser3.ogg
-    proto: Pulse
-    fireCost: 200
   - type: BatteryAmmoProvider
     proto: Pulse
     fireCost: 200
@@ -619,10 +589,8 @@
     fireRate: 1.5
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/laser3.ogg
-    proto: HeavyPulse # Goobstation - Start
-    fireCost: 100
   - type: BatteryAmmoProvider
-    proto: HeavyPulse
+    proto: Pulse
     fireCost: 100
   - type: Battery
     maxCharge: 40000
@@ -661,8 +629,6 @@
     fireRate: 1.5
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/laser_cannon.ogg
-    proto: RedHeavyLaser
-    fireCost: 100
   - type: BatteryAmmoProvider
     proto: RedHeavyLaser
     fireCost: 100
@@ -735,8 +701,6 @@
   - type: Gun
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/laser3.ogg
-    proto: XrayLaser
-    fireCost: 100
   - type: BatteryAmmoProvider
     proto: XrayLaser
     fireCost: 100
@@ -745,16 +709,7 @@
     steps: 5
     zeroVisible: true
   - type: Appearance
-    doesntContain:
-    - Oni
-    messages:
-    - oni-cannot-shoot-guns-1
-    - oni-cannot-shoot-guns-2
-    - oni-cannot-shoot-guns-3
   # Goobstation
-  - type: Tag
-    tags:
-    - Rifle
   - type: Item
     size: Huge
     shape:
@@ -791,8 +746,6 @@
     #projectileSpeed: 35 # Goobstation - nuh uh
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/taser2.ogg
-    proto: BulletDisablerPractice
-    fireCost: 62.5
   - type: BatteryAmmoProvider
     proto: BulletDisablerPractice
     fireCost: 62.5
@@ -822,9 +775,6 @@
     slots:
       - suitStorage
       - Belt
-  - type: Gun
-    proto: BulletDisabler
-    fireCost: 62.5
   - type: BatteryAmmoProvider
     proto: BulletDisabler
     fireCost: 62.5
@@ -906,8 +856,6 @@
   - type: Gun
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/taser.ogg
-    proto: BulletTaser
-    fireCost: 200
   - type: BatteryAmmoProvider
     proto: BulletTaser
     fireCost: 200
@@ -982,20 +930,11 @@
   - type: Gun
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/laser_cannon.ogg
-    proto: RedMediumLaser
-    fireCost: 100
   - type: BatteryAmmoProvider
     proto: RedMediumLaser
     fireCost: 100
   - type: BatterySelfRecharger
-    autoRecharge: true
     autoRechargeRate: 30
-    doesntContain:
-    - Oni
-    messages:
-    - oni-cannot-shoot-guns-1
-    - oni-cannot-shoot-guns-2
-    - oni-cannot-shoot-guns-3
   - type: MagazineVisuals
     magState: mag
     steps: 5
@@ -1031,8 +970,6 @@
     fireRate: 1.5
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/taser2.ogg
-    proto: AnomalousParticleDeltaStrong
-    fireCost: 100
   - type: BatteryAmmoProvider
     proto: AnomalousParticleDeltaStrong
     fireCost: 100
@@ -1092,10 +1029,10 @@
     fireRate: 0.5
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/laser_clown.ogg
+  - type: BatteryAmmoProvider
     proto: RedMediumLaser
     fireCost: 100
   - type: BatterySelfRecharger
-    autoRecharge: true
     autoRechargeRate: 10
   - type: StaticPrice
     price: 750
@@ -1125,8 +1062,6 @@
     fireRate: 2
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/laser_cannon.ogg
-    proto: BulletLaserSpread
-    fireCost: 150
   - type: BatteryAmmoProvider
     proto: BulletLaserSpread
     fireCost: 150
@@ -1156,9 +1091,7 @@
     maxCharge: 1050 # Goobstation
     startingCharge: 1050
   - type: BatterySelfRecharger
-    autoRecharge: true
     autoRechargeRate: 24
-    autoRechargePause: true
     autoRechargePauseTime: 30
 
 - type: entity
@@ -1193,7 +1126,8 @@
     fireRate: 1
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/taser2.ogg
-    proto: BulletTemperatureCold # Goobstation
+  - type: BatteryAmmoProvider
+    proto: BulletTemperatureCold
     fireCost: 100
   - type: BatteryWeaponFireModes
     fireModes:
@@ -1206,12 +1140,6 @@
     startingCharge: 2500 # 1000 -> 2500
   - type: StaticPrice
     price: 100
-  - type: GenericVisualizer # Goobstation
-    visuals:
-      enum.EnergyGunFireModeVisuals.State:
-        Firemode:
-          Cooling: { state: mode-cooling }
-          Heating: { state: mode-heating }
 
 - type: entity
   name: xenoborg laser gun
@@ -1223,9 +1151,6 @@
   parent: [WeaponAdvancedLaser, BaseXenoborgContraband]
   id: XenoborgHeavyLaserGun
   components:
-  - type: Gun
-    proto: RedHeavyLaser
-    fireCost: 100
   - type: BatteryAmmoProvider
     proto: RedHeavyLaser
     fireCost: 100

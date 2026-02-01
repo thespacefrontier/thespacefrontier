@@ -1198,10 +1198,16 @@
   id: ReptilianFood # SpecialDigestible: OrganReptilianStomach
 
 - type: Tag
+  id: Rifle # Energy guns / wieldable rifles category
+
+- type: Tag
   id: RifleStock # ConstructionGraph: ImprovisedShotgunGraph
 
 - type: Tag
   id: Ring # CargoBounty: BountyRing
+
+- type: Tag
+  id: WeaponDisabler # Disabler weapon type
 
 - type: Tag
   id: RipleyCentralControlModule # ConstructionGraph: Ripley
