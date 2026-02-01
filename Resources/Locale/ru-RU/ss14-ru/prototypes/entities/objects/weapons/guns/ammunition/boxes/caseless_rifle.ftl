@@ -1,6 +1,10 @@
-ent-BaseMagazineBoxCaselessRifle = коробка патронов (.25 безгильзовые)
+ent-BaseMagazineBoxCaselessRifle = коробка патронов (9.5мм безгильзовые)
     .desc = { ent-BaseItem.desc }
-ent-MagazineBoxCaselessRifle = коробка патронов (.25 безгильзовые)
-    .desc = Картонная коробка с безгильзовыми патронами .25 калибра. Предназначена для хранения кинетических боеприпасов общего назначения.
-ent-MagazineBoxCaselessRiflePractice = коробка патронов (.25 безгильзовые учебные)
-    .desc = Картонная коробка с безгильзовыми патронами .25 калибра. Предназначена для хранения безвредных меловых боеприпасов.
+ent-MagazineBoxCaselessRifle10x24 = коробка патронов (9.5мм безгильзовые)
+    .desc = { ent-BaseMagazineBoxCaselessRifle.desc }
+ent-MagazineBoxCaselessRifleBig = коробка патронов (9.5мм безгильзовые)
+    .desc = { ent-BaseMagazineBoxCaselessRifle.desc }
+ent-MagazineBoxCaselessRifle = коробка патронов (9.5мм безгильзовые)
+    .desc = { ent-BaseMagazineBoxCaselessRifle.desc }
+ent-MagazineBoxCaselessRiflePractice = коробка патронов (9.5мм безгильзовые учебные)
+    .desc = { ent-BaseMagazineBoxCaselessRifle.desc }

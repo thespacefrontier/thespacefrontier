@@ -1,3 +1,15 @@
+# SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Aidenkrz <aiden@djkraz.com>
+# SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
+# SPDX-FileCopyrightText: 2025 SX_7 <sn1.test.preria.2002@gmail.com>
+# SPDX-FileCopyrightText: 2025 Solstice <solsticeofthewinter@gmail.com>
+# SPDX-FileCopyrightText: 2025 Speebro <100388782+Speebr0@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Speebro <speebro@notreal.com>
+# SPDX-FileCopyrightText: 2025 deltanedas <39013340+deltanedas@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 pheenty <fedorlukin2006@gmail.com>
+# SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
 ## Static recipes
 
 - type: latheRecipePack
@@ -16,14 +28,16 @@
   id: SecurityPracticeStatic
   recipes:
   - BoxShotgunPractice
-  - MagazineBoxLightRiflePractice
+  # - MagazineBoxLightRiflePractice # Goobstation - remove light rifle
   - MagazineBoxMagnumPractice
   - MagazineBoxPistolPractice
   - MagazineBoxRiflePractice
+  - MagazineBoxRifle762Practice # Orion: New 7.62mm
   - WeaponDisablerPractice
   - WeaponLaserCarbinePractice
   - MagazineLightRiflePractice
   - MagazineRiflePractice
+  - MagazineRifle762Practice # Orion: New 7.62mm
   - MagazinePistolPractice
   - SpeedLoaderMagnumPractice
   - MagazinePistolSubMachineGunPractice
@@ -35,12 +49,17 @@
   recipes:
   - BoxLethalshot
   - BoxShotgunSlug
-  - MagazineBoxLightRifle
+  # - MagazineBoxLightRifle # Goobstation - remove light rifle
   - MagazineBoxMagnum
   - MagazineBoxPistol
   - MagazineBoxRifle
-  - MagazineLightRifle
-  - MagazineLightRifleEmpty
+  # Orion-Start: New 7.62mm
+  - MagazineBoxRifle762
+  - MagazineRifle762
+  - MagazineRifle762Empty
+  # Orion-End
+  # - MagazineLightRifle # Goobstation - remove light rifle
+  # - MagazineLightRifleEmpty # Goobstation - remove light rifle
   - MagazinePistol
   - MagazinePistolEmpty
   - MagazinePistolSubMachineGun
@@ -49,8 +68,12 @@
   - MagazinePistolSubMachineGunTopMountedEmpty
   - MagazineRifle
   - MagazineRifleEmpty
+  - MagazineShotgun
+  - MagazineShotgunEmpty
+  - MagazineShotgunSlug
   - SpeedLoaderMagnum
   - SpeedLoaderMagnumEmpty
+  - ShrapnelPayload
 
 - type: latheRecipePack
   id: SecurityWeaponsStatic
@@ -65,8 +88,13 @@
 - type: latheRecipePack
   id: SecurityEquipment
   recipes:
+  # Orion-Start
+  - EnergyDomeTurtle
+  # Orion-End
   - ClothingBackpackElectropack
   - HoloprojectorSecurity
+  - HoloprojectorSecurityAdvanced
+  - AntiMindControlDevice
   - PortableRecharger
   - PowerCageHigh
   - PowerCageMedium
@@ -83,13 +111,8 @@
   - ShuttleGunSvalinnMachineGunCircuitboard
 
 - type: latheRecipePack
-  parent:
-  - ScienceExplosives # sec gets everything for modular grenade making that sci does
   id: SecurityExplosives
   recipes:
-  - CableDetStack1
-  - EmptyDetonator
-  - ExplosivePayload
   - GrenadeBlast
   - GrenadeEMP
   - GrenadeFlash
@@ -103,16 +126,22 @@
   - BoxShotgunIncendiary
   - BoxShotgunUranium
   - BoxShellTranquilizer
-  - MagazineBoxLightRifleIncendiary
-  - MagazineBoxLightRifleUranium
+  # - MagazineBoxLightRifleIncendiary # Goobstation - remove light rifle
+  # - MagazineBoxLightRifleUranium # Goobstation - remove light rifle
   - MagazineBoxMagnumIncendiary
   - MagazineBoxMagnumUranium
   - MagazineBoxPistolIncendiary
   - MagazineBoxPistolUranium
   - MagazineBoxRifleIncendiary
   - MagazineBoxRifleUranium
-  - MagazineLightRifleIncendiary
-  - MagazineLightRifleUranium
+  # Orion-Start: New 7.62mm
+  - MagazineBoxRifle762Incendiary
+  - MagazineBoxRifle762Uranium
+  - MagazineRifle762Incendiary
+  - MagazineRifle762Uranium
+  # Orion-End
+  # - MagazineLightRifleIncendiary # Goobstation - remove light rifle
+  # - MagazineLightRifleUranium # Goobstation - remove light rifle
   - MagazinePistolIncendiary
   - MagazinePistolUranium
   - MagazinePistolSubMachineGunIncendiary
@@ -132,7 +161,7 @@
   - WeaponLaserCannon
   - WeaponLaserCarbine
   - WeaponXrayCannon
-  - WeaponTemperatureGun
+  - WeaponTemperatureGun # Goobstation
 
 - type: latheRecipePack
   id: SecurityDisablers

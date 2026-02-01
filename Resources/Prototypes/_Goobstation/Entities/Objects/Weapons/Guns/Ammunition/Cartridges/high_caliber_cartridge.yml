@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+# SPDX-FileCopyrightText: 2024 a_person <40855173+a-person5660@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
+# SPDX-FileCopyrightText: 2025 pheenty <fedorlukin2006@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  parent: [ BaseCartridge, BaseMajorContraband ]
+  id: CartridgeHighCaliber
+  name: cartridge (.50 anti-materiel)
+  components:
+  - type: Tag
+    tags:
+    - Cartridge
+    - CartridgeHighCaliber
+  - type: CartridgeAmmo
+    proto: BulletHighCaliber
+  - type: Sprite
+    sprite: _Orion/Objects/Weapons/Guns/Ammunition/Casings/50BMG_casing.rsi # Orion-Edit: New sprites
+    layers:
+    - state: base # Orion-Edit: New sprites
+      map: ["enum.AmmoVisualLayers.Base"]
+  - type: Appearance
+  - type: SpentAmmoVisuals
+    state: base # Orion: New sprites
+  - type: StaticPrice
+    price: 20
+
+- type: entity
+  parent: CartridgeHighCaliber # Orion-Edit: Parent shortens code
+  id: CartridgeHighCaliberExplosive
+  name: cartridge (.50 high-explosive incendiary)
+  components:
+  # Orion-Edit-Start: Due to parent code was shortened
+  - type: CartridgeAmmo
+    proto: BulletHighCaliberExplosive
+  - type: Sprite
+    layers:
+    - state: incendiary
+      map: ["enum.AmmoVisualLayers.Base"]
+  - type: SpentAmmoVisuals
+    state: incendiary
+  # Orion-Edit-End

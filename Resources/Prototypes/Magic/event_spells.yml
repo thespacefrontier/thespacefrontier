@@ -1,3 +1,13 @@
+# SPDX-FileCopyrightText: 2024 AJCM <AJCM@tutanota.com>
+# SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 ActiveMammmoth <140334666+ActiveMammmoth@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 ActiveMammmoth <kmcsmooth@gmail.com>
+# SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 gus <august.eymann@gmail.com>
+# SPDX-FileCopyrightText: 2025 keronshb <54602815+keronshb@users.noreply.github.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: entity
   parent: BaseAction
   id: ActionSummonGhosts
@@ -30,7 +40,6 @@
       state: base
   - type: InstantAction
     event: !type:RandomGlobalSpawnSpellEvent
-      makeSurvivorAntagonist: true
       spawns:
       - id: WeaponPistolViper
         orGroup: Guns
@@ -56,7 +65,7 @@
         orGroup: Guns
       - id: WeaponRifleLecter
         orGroup: Guns
-      - id: WeaponShotgunBulldog
+      - id: WeaponShotgunZauer # Orion-Edit: Replaced WeaponShotgunBulldog
         orGroup: Guns
       - id: WeaponShotgunDoubleBarreled
         orGroup: Guns
@@ -180,7 +189,6 @@
       state: magicmissile
   - type: InstantAction
     event: !type:RandomGlobalSpawnSpellEvent
-      makeSurvivorAntagonist: true
       spawns:
       - id: SpawnSpellbook
         orGroup: Magics
@@ -203,6 +211,8 @@
       - id: WeaponWandCluwne
         orGroup: Magics
       - id: WeaponWandPolymorphBread
+        orGroup: Magics
+      - id: WeaponStaffHealing
         orGroup: Magics
       - id: WeaponStaffPolymorphDoor
         orGroup: Magics
