@@ -1,0 +1,9 @@
+- type: trait
+  id: PoorBloodClotting
+  name: trait-poor-blood-clotting-name
+  description: trait-poor-blood-clotting-desc
+  category: Disabilities
+  specials:
+  - !type:ApplyStatusEffectSpecial
+    statusEffects:
+    - StatusEffectCoagulopathy

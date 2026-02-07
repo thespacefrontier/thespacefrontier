@@ -185,6 +185,10 @@
         type: HumanoidMarkingModifierBoundUserInterface
       enum.StrippingUiKey.Key:
         type: StrippableBoundUserInterface
+      # TSF start
+      enum.SurgeryUiKey.Key:
+        type: SurgeryBoundUserInterface
+      # TSF end
   - type: Puller
   - type: Speech
     speechSounds: Alto
@@ -346,3 +350,9 @@
     interfaces:
       enum.HumanoidMarkingModifierKey.Key: # sure, this can go here too
         type: HumanoidMarkingModifierBoundUserInterface
+      enum.StrippingUiKey.Key:
+        type: StrippableBoundUserInterface
+      # TSF start
+      enum.SurgeryUiKey.Key:
+        type: SurgeryBoundUserInterface
+      # TSF end

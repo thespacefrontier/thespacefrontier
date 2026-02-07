@@ -1,0 +1,17 @@
+- type: reagent
+  id: Morphine
+  name: reagent-name-morphine
+  group: Medicine
+  desc: reagent-desc-morphine
+  physicalDesc: reagent-physical-desc-cloudy
+  allowedDepartments:
+  - Medical
+  flavor: medicine
+  color: "#8B7355"
+  metabolisms:
+    Medicine:
+      effects:
+      - !type:ModifyStatusEffect
+        effectProto: StatusEffectPainNumbness
+        time: 8
+        type: Update

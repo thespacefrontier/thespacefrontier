@@ -5,3 +5,7 @@
   params:
     DamageStrength: 0.0
     CritStrength: 0.0
+    AdrenalineStrength: 0.0
+    BloodLossStrength: 0.0
+    ShockStrength: 0.0
+    Consciousness: 1.0

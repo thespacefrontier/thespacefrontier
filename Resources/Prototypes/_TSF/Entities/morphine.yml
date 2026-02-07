@@ -1,0 +1,33 @@
+- type: entity
+  suffix: morphine
+  parent: PrefilledSyringe
+  id: SyringeMorphine
+  name: morphine syringe
+  description: A syringe filled with morphine. Reduces pain and helps maintain consciousness.
+  components:
+  - type: Label
+    currentLabel: reagent-name-morphine
+  - type: SolutionContainerManager
+    solutions:
+      injector:
+        maxVol: 15
+        reagents:
+        - ReagentId: Morphine
+          Quantity: 15
+
+- type: entity
+  id: ChemistryBottleMorphine
+  suffix: morphine
+  parent: BaseChemistryBottleFilled
+  name: morphine bottle
+  description: A bottle of morphine. Used to reduce severe pain.
+  components:
+  - type: Label
+    currentLabel: reagent-name-morphine
+  - type: SolutionContainerManager
+    solutions:
+      drink:
+        maxVol: 30
+        reagents:
+        - ReagentId: Morphine
+          Quantity: 30

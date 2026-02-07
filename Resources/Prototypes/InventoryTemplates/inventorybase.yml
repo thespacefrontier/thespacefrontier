@@ -11,7 +11,14 @@
   id: StripableInventoryBase
   components:
   - type: Strippable
+  # TSF start
+  - type: SurgeryPatient
+  # TSF end
   - type: UserInterface
     interfaces:
       enum.StrippingUiKey.Key:
         type: StrippableBoundUserInterface
+      # TSF start
+      enum.SurgeryUiKey.Key:
+        type: SurgeryBoundUserInterface
+      # TSF end

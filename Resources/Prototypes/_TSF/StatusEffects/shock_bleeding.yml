@@ -1,0 +1,23 @@
+- type: entity
+  parent: BloodstreamStatusEffectDebuff
+  id: StatusEffectCoagulopathy
+  name: tsf-status-effect-coagulopathy
+  components:
+  - type: HemophiliaStatusEffect
+    bleedReductionMultiplier: 0.5
+    bleedAmountMultiplier: 1.4
+
+- type: entity
+  parent: BloodstreamStatusEffectDebuff
+  id: StatusEffectHypovolemicShock
+  name: tsf-status-effect-hypovolemic-shock
+  components:
+  - type: StatusEffect
+    whitelist:
+      components:
+      - Bloodstream
+      - MobState
+      requireAll: true
+  - type: MovementModStatusEffect
+    walkSpeedModifier: 0.72
+    sprintSpeedModifier: 0.72
