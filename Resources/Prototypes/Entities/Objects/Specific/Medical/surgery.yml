@@ -189,7 +189,7 @@
   - type: Stack
     stackType: BoneGel
     count: 1
-    maxCount: 5
+    maxCountOverride: 5
 
 # Saws
 
