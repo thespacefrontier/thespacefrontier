@@ -4,6 +4,7 @@ using Content.Shared.Damage.Events;
 using Content.Shared.Damage.Systems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Humanoid;
+using Content.Shared.Mobs.Systems;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Enums;
@@ -22,6 +23,7 @@ public sealed class TSFPainCrySystem : EntitySystem
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly TSFLimbDamageTriggerSystem _limbTrigger = default!;
 
     private static readonly SoundSpecifier[] MaleCries = new SoundSpecifier[]
@@ -71,6 +73,8 @@ public sealed class TSFPainCrySystem : EntitySystem
 
         var total = damageDelta.GetTotal();
         if (total < MinDamageForCry)
+            return;
+        if (_mobState.IsDead(ent) || _mobState.IsCritical(ent))
             return;
         var now = _timing.CurTime;
         if (_cooldownUntil.TryGetValue(ent, out var until) && now < until)
