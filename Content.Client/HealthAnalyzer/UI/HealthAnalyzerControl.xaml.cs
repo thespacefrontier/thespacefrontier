@@ -7,6 +7,8 @@ using Content.Shared.FixedPoint;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.IdentityManagement;
+// TSF edit
+using Content.Shared._TSF.Surgery;
 using Content.Shared.MedicalScanner;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -128,6 +130,23 @@ public sealed partial class HealthAnalyzerControl : BoxContainer
                 Margin = new Thickness(0, 4),
                 MaxWidth = 300
             });
+
+        // TSF edit start - Limb status (broken/dislocated)
+        var showLimbStatus = state.LimbStatus is { Count: > 0 };
+        LimbStatusDivider.Visible = showLimbStatus;
+        LimbStatusContainer.Visible = showLimbStatus;
+        LimbStatusContainer.RemoveAllChildren();
+        if (showLimbStatus)
+        {
+            foreach (var entry in state.LimbStatus!)
+            {
+                var condText = entry.Condition == LimbCondition.Broken
+                    ? Loc.GetString("tsf-surgery-limb-condition-broken")
+                    : Loc.GetString("tsf-surgery-limb-condition-dislocated");
+                LimbStatusContainer.AddChild(new Label { Text = $"{entry.PartName}: {condText}" });
+            }
+        }
+        // TSF edit end
 
         // Damage Groups
 

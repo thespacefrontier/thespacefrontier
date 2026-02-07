@@ -8,7 +8,7 @@ using Robust.Shared.Serialization;
 namespace Content.Shared.Hands.Components;
 
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentPause]
-[Access(typeof(SharedHandsSystem))]
+[Access(typeof(SharedHandsSystem), Other = AccessPermissions.ReadExecute)]
 public sealed partial class HandsComponent : Component
 {
     /// <summary>

@@ -40,12 +40,13 @@ public sealed class DamageOverlayUiController : UIController
             return;
         if (mobState.CurrentState != MobState.Dead)
             UpdateOverlays(args.Entity, mobState);
-        _overlayManager.AddOverlay(_overlay);
+        // TSF: ванильная виньетка отключена, используется TSFDamageOverlay
+        // _overlayManager.AddOverlay(_overlay);
     }
 
     private void OnPlayerDetached(LocalPlayerDetachedEvent args)
     {
-        _overlayManager.RemoveOverlay(_overlay);
+        // _overlayManager.RemoveOverlay(_overlay);
         ClearOverlay();
     }
 

@@ -42,6 +42,13 @@
 
     </BoxContainer>
 
+    <!-- TSF edit start -->
+    <PanelContainer Name="LimbStatusDivider" Visible="False" StyleClasses="LowDivider" />
+
+    <BoxContainer Name="LimbStatusContainer" Visible="False" Margin="0 5" Orientation="Vertical">
+    </BoxContainer>
+    <!-- TSF edit end -->
+
     <PanelContainer StyleClasses="LowDivider" />
 
     <BoxContainer

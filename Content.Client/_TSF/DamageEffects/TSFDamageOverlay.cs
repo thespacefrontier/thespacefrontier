@@ -26,11 +26,15 @@ public sealed class TSFDamageOverlay : Overlay
     public float CritStrength;
     public float AdrenalineStrength;
     public float BloodLossStrength;
+    public float ShockStrength;
+    public float Consciousness;
 
     private float _lerpDamageStrength;
     private float _lerpCritStrength;
     private float _lerpAdrenalineStrength;
     private float _lerpBloodLossStrength;
+    private float _lerpShockStrength;
+    private float _lerpConsciousness;
 
     public TSFDamageOverlay()
     {
@@ -51,8 +55,11 @@ public sealed class TSFDamageOverlay : Overlay
         _lerpCritStrength += (CritStrength - _lerpCritStrength) * Math.Clamp(dt * 6f, 0f, 1f);
         _lerpAdrenalineStrength += (AdrenalineStrength - _lerpAdrenalineStrength) * Math.Clamp(dt * 8f, 0f, 1f);
         _lerpBloodLossStrength += (BloodLossStrength - _lerpBloodLossStrength) * Math.Clamp(dt * 4f, 0f, 1f);
+        _lerpShockStrength += (ShockStrength - _lerpShockStrength) * Math.Clamp(dt * 5f, 0f, 1f);
+        _lerpConsciousness += (Consciousness - _lerpConsciousness) * Math.Clamp(dt * 4f, 0f, 1f);
 
-        return _lerpDamageStrength > 0.01f || _lerpCritStrength > 0.01f || _lerpAdrenalineStrength > 0.01f || _lerpBloodLossStrength > 0.01f;
+        return _lerpDamageStrength > 0.01f || _lerpCritStrength > 0.01f || _lerpAdrenalineStrength > 0.01f || _lerpBloodLossStrength > 0.01f
+            || _lerpShockStrength > 0.01f || _lerpConsciousness < 0.99f;
     }
 
     protected override void Draw(in OverlayDrawArgs args)
@@ -66,6 +73,8 @@ public sealed class TSFDamageOverlay : Overlay
         _shader.SetParameter("CritStrength", _lerpCritStrength);
         _shader.SetParameter("AdrenalineStrength", _lerpAdrenalineStrength);
         _shader.SetParameter("BloodLossStrength", _lerpBloodLossStrength);
+        _shader.SetParameter("ShockStrength", _lerpShockStrength);
+        _shader.SetParameter("Consciousness", _lerpConsciousness);
         handle.UseShader(_shader);
         handle.DrawRect(args.WorldBounds, Color.White);
         handle.UseShader(null);
