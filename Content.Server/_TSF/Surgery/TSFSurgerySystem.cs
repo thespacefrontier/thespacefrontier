@@ -95,18 +95,6 @@ public sealed class TSFSurgerySystem : EntitySystem
                 },
             });
         }
-
-        // Test verbs: create a dislocated or broken limb for testing.
-        args.Verbs.Add(new InteractionVerb
-        {
-            Text = Loc.GetString("tsf-surgery-dislocate-limb-test-verb"),
-            Act = () => DislocateRandomLimb(args.Target, body),
-        });
-        args.Verbs.Add(new InteractionVerb
-        {
-            Text = Loc.GetString("tsf-surgery-break-limb-test-verb"),
-            Act = () => BreakRandomLimb(args.Target, body),
-        });
     }
 
     private static string GetPartDisplayName(BodyPartComponent part)
@@ -136,45 +124,6 @@ public sealed class TSFSurgerySystem : EntitySystem
             return false;
         var enumerator = _inventory.GetSlotEnumerator((target, null), flags);
         return enumerator.NextItem(out _);
-    }
-
-    /// <summary>Debug/test: set a random limb to dislocated so you can try the repair verb.</summary>
-    public void DislocateRandomLimb(EntityUid bodyUid, BodyComponent body)
-    {
-        var candidates = new List<EntityUid>();
-        foreach (var (partUid, part) in _body.GetBodyChildren(bodyUid, body))
-        {
-            if (part.PartType is BodyPartType.Arm or BodyPartType.Leg or BodyPartType.Hand or BodyPartType.Foot)
-                candidates.Add(partUid);
-        }
-        if (candidates.Count == 0)
-            return;
-        var chosen = _random.Pick(candidates);
-        var comp = EnsureComp<LimbConditionComponent>(chosen);
-        comp.Condition = LimbCondition.Dislocated;
-        Dirty(chosen, comp);
-        _movementSpeed.RefreshMovementSpeedModifiers(bodyUid);
-        _audio.PlayPvs(_random.Pick(CrunchSounds), bodyUid, AudioParams.Default.WithVolume(0.4f));
-    }
-
-    /// <summary>Debug/test: set a random limb to broken so you can test debuffs/analyzer.</summary>
-    public void BreakRandomLimb(EntityUid bodyUid, BodyComponent body)
-    {
-        var candidates = new List<EntityUid>();
-        foreach (var (partUid, part) in _body.GetBodyChildren(bodyUid, body))
-        {
-            if (part.PartType is BodyPartType.Arm or BodyPartType.Leg or BodyPartType.Hand or BodyPartType.Foot)
-                candidates.Add(partUid);
-        }
-        if (candidates.Count == 0)
-            return;
-        var chosen = _random.Pick(candidates);
-        var comp = EnsureComp<LimbConditionComponent>(chosen);
-        comp.Condition = LimbCondition.Broken;
-        comp.FractureStep = FractureSurgeryStep.None;
-        Dirty(chosen, comp);
-        _movementSpeed.RefreshMovementSpeedModifiers(bodyUid);
-        _audio.PlayPvs(_random.Pick(CrunchSounds), bodyUid, AudioParams.Default.WithVolume(0.4f));
     }
 
     private void StartReduceDislocation(EntityUid user, EntityUid target, EntityUid partUid)
