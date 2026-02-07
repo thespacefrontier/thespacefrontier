@@ -1,2 +1,2 @@
-tsf-status-effect-coagulopathy = Coagulopathy
-tsf-status-effect-hypovolemic-shock = Hypovolemic shock
+ent-StatusEffectCoagulopathy = Coagulopathy
+ent-StatusEffectHypovolemicShock = Hypovolemic shock
