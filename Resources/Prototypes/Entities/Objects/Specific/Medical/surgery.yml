@@ -178,6 +178,8 @@
   parent: BaseToolSurgery
   description: Medical gel that promotes bone healing. Use on an open fracture site after incision and retraction.
   components:
+  - type: StaticPrice
+    price: 0  # Stackable: price comes from stack prototype
   - type: Sprite
     sprite: _TSF/Medical/bone_gel.rsi
     state: bone-gel
