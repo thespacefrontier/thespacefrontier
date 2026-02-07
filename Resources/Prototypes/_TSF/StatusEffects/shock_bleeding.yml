@@ -1,7 +1,6 @@
 - type: entity
   parent: BloodstreamStatusEffectDebuff
   id: StatusEffectCoagulopathy
-  name: tsf-status-effect-coagulopathy
   components:
   - type: HemophiliaStatusEffect
     bleedReductionMultiplier: 0.5
@@ -10,7 +9,6 @@
 - type: entity
   parent: BloodstreamStatusEffectDebuff
   id: StatusEffectHypovolemicShock
-  name: tsf-status-effect-hypovolemic-shock
   components:
   - type: StatusEffect
     whitelist:
