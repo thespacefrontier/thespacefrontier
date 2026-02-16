@@ -57,11 +57,12 @@ public sealed class DefibrillatorTest : InteractionTest
         var deathDamage = new DamageSpecifier(ProtoMan.Index(BluntDamageTypeId), deathThreshold);
 
         // TSF edit start — for TSF brain death model, set brain damage instead of threshold damage
-        if (SEntMan.TryGetComponent<Content.Shared._TSF.Organs.TSFOrganDamageComponent>(STarget.Value, out var organs))
+        var isTSF = SEntMan.TryGetComponent<Content.Shared._TSF.Organs.TSFOrganDamageComponent>(STarget.Value, out var organs);
+        if (isTSF)
         {
             await Server.WaitPost(() =>
             {
-                organs.Brain = 0.75f; // above death threshold (0.7)
+                organs!.Brain = 1.0f; // irreversible brain death (>= 0.9)
                 SEntMan.Dirty(STarget.Value, organs);
             });
         }
@@ -78,7 +79,7 @@ public sealed class DefibrillatorTest : InteractionTest
         {
             Assert.That(targetMobState.CurrentState, Is.EqualTo(MobState.Dead), "Target mob did not die from deadly damage amount.");
             // TSF edit — for TSF model, skip damage threshold check (death is from brain, not total damage)
-            if (!SEntMan.HasComponent<Content.Shared._TSF.Organs.TSFOrganDamageComponent>(STarget.Value))
+            if (!isTSF)
                 Assert.That(targetDamageable.TotalDamage, Is.EqualTo(deathThreshold), "Target mob had the wrong total damage amount after being killed.");
         });
 
@@ -97,11 +98,26 @@ public sealed class DefibrillatorTest : InteractionTest
         Assert.Multiple(() =>
         {
             Assert.That(targetMobState.CurrentState, Is.EqualTo(MobState.Dead), "Target mob was revived despite being over the death damage threshold.");
-            Assert.That(targetDamageable.TotalDamage, Is.GreaterThan(deathThreshold), "Target mob did not take damage from being defibrillated.");
+            // TSF edit — skip damage check for TSF entities (death is from brain >= 0.9, not total damage)
+            if (!isTSF)
+                Assert.That(targetDamageable.TotalDamage, Is.GreaterThan(deathThreshold), "Target mob did not take damage from being defibrillated.");
         });
 
         // Set the damage halfway between the crit and death thresholds so that the target can be revived.
-        await Server.WaitPost(() => damageableSystem.SetDamage((STarget.Value, targetDamageable), critDamage));
+        // TSF edit start — for TSF, set brain to revivable window (0.7-0.9)
+        if (isTSF)
+        {
+            await Server.WaitPost(() =>
+            {
+                organs!.Brain = 0.75f; // revivable window
+                SEntMan.Dirty(STarget.Value, organs);
+            });
+        }
+        else
+        {
+            await Server.WaitPost(() => damageableSystem.SetDamage((STarget.Value, targetDamageable), critDamage));
+        }
+        // TSF edit end
         await RunTicks(3);
 
         // Check that the target is still dead.
