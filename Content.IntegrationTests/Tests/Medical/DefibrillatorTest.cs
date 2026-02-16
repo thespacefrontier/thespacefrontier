@@ -104,13 +104,19 @@ public sealed class DefibrillatorTest : InteractionTest
         });
 
         // Set the damage halfway between the crit and death thresholds so that the target can be revived.
-        // TSF edit start — for TSF, set brain to revivable window (0.7-0.9)
+        // TSF edit start — for TSF, set brain to revivable window (0.7-0.9) and add shock to keep in crit
         if (isTSF)
         {
             await Server.WaitPost(() =>
             {
                 organs!.Brain = 0.75f; // revivable window
                 SEntMan.Dirty(STarget.Value, organs);
+                // Add shock so ConsciousnessSystem keeps mob in Critical after defib
+                if (SEntMan.TryGetComponent<Content.Shared._TSF.Pain.TSFPainComponent>(STarget.Value, out var pain))
+                {
+                    pain.Shock = 80f; // high shock → low consciousness → stays Critical
+                    SEntMan.Dirty(STarget.Value, pain);
+                }
             });
         }
         else

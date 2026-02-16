@@ -9,6 +9,7 @@ using Content.Shared.Interaction.Events;
 using Content.Shared.Item;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
+using Content.Shared.Mobs; // TSF edit — for MobState enum
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
@@ -167,6 +168,9 @@ public sealed class SuicideSystem : EntitySystem
         {
             organs.Brain = 1.0f; // instant brain death
             Dirty(victim, organs);
+            // Force immediate death state change (TSFDeathConditionSystem will do this on next tick anyway)
+            if (TryComp<MobStateComponent>(victim, out var mobStateComp))
+                _mobState.ChangeMobState(victim, MobState.Dead, mobStateComp);
             args.Handled = true;
             return;
         }

@@ -5,13 +5,10 @@
   id: PillIbuprofen
   components:
   - type: Sprite
-    sprite: _TSF/Medical/ibuprofen_pill.rsi
+    sprite: Objects/Specific/Chemistry/pills.rsi
     state: icon
-    layers:
-    - state: icon
-      map: ["enum.SolutionContainerLayers.Fill"]
   - type: Pill
-    pillType: 20
+    pillType: 21
   - type: Label
     currentLabel: reagent-name-ibuprofen
   - type: SolutionContainerManager
