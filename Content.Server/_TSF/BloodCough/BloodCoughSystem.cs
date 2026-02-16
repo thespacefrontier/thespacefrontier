@@ -1,6 +1,8 @@
 using Content.Server.Body.Systems;
+using Content.Server.Chat.Systems;
 using Content.Server.Fluids.EntitySystems;
 using Content.Shared.Body.Components;
+using Content.Shared.Chat;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Humanoid;
@@ -22,6 +24,7 @@ namespace Content.Server._TSF.BloodCough;
 public sealed class BloodCoughSystem : EntitySystem
 {
     [Dependency] private readonly BloodstreamSystem _bloodstream = default!;
+    [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
@@ -132,5 +135,8 @@ public sealed class BloodCoughSystem : EntitySystem
             MovementModStatusSystem.BloodCoughSlowdown,
             TimeSpan.FromSeconds(SlowdownSeconds),
             SlowdownMultiplier);
+
+        // Show third-person emote message in chat (no extra sound — CoughBlood has no EmoteSounds)
+        _chat.TryEmoteWithChat(uid, "CoughBlood", ChatTransmitRange.Normal, ignoreActionBlocker: true);
     }
 }

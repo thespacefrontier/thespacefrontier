@@ -33,12 +33,12 @@ public sealed class TSFLimbDamageTriggerSystem : EntitySystem
         new SoundPathSpecifier("/Audio/_TSF/Effects/BrokenParts/broken_part4.ogg"),
         new SoundPathSpecifier("/Audio/_TSF/Effects/BrokenParts/broken_part5.ogg"),
     };
-    private const float DamageDislocateChance = 0.25f;
+    private const float DamageDislocateChance = 0.06f; 
     private const float DamageThreshold = 15f;
 
     /// <summary>Fractures only from strong brute (Blunt). Higher threshold and separate chance.</summary>
     private const float FractureBluntThreshold = 28f;
-    private const float FractureChance = 0.18f;
+    private const float FractureChance = 0.04f; 
     private const string BluntDamageType = "Blunt";
 
     public override void Initialize()

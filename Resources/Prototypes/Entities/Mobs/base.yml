@@ -116,14 +116,15 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      100: Critical
-      200: Dead
-  - type: MobStateActions
-    actions:
-      Critical:
-      - ActionCritSuccumb
-      - ActionCritFakeDeath
-      - ActionCritLastWords
+      # TSF edit: removed 100:Critical and 200:Dead — death/crit now handled by TSF organ & consciousness systems
+  # TSF edit start — crit buttons disabled (consciousness system handles crit)
+  #- type: MobStateActions
+  #  actions:
+  #    Critical:
+  #    - ActionCritSuccumb
+  #    - ActionCritFakeDeath
+  #    - ActionCritLastWords
+  # TSF edit end
   - type: Deathgasp
   - type: HealthExaminable
     examinableTypes:

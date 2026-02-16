@@ -208,14 +208,51 @@ public abstract class SharedDefibrillatorSystem : EntitySystem
             if (_mobState.IsDead(target, targetMobState))
                 _damageable.TryChangeDamage(target, ent.Comp.ZapHeal, true, origin: user);
 
-            if (TryComp<MobThresholdsComponent>(target, out var targetThresholds) &&
-                TryComp<DamageableComponent>(target, out var targetDamageable) &&
-                _mobThreshold.TryGetThresholdForState(target, MobState.Dead, out var threshold, targetThresholds) &&
-                targetDamageable.TotalDamage < threshold)
+            // TSF edit start — brain death model: defib revives brain damage 0.7-0.9 → 0.65
+            var tsfRevived = false;
+            if (TryComp<Content.Shared._TSF.Organs.TSFOrganDamageComponent>(target, out var organs))
             {
-                _mobState.ChangeMobState(target, MobState.Critical, targetMobState, user);
-                failedRevive = false;
+                if (organs.Brain >= 0.9f)
+                {
+                    // Brain too damaged — irreversible death
+                    _chat.TrySendInGameICMessage(ent.Owner, Loc.GetString("defibrillator-brain-dead"),
+                        InGameICChatType.Speak, true);
+                }
+                else if (organs.Brain >= organs.BrainDeathThreshold)
+                {
+                    // Revivable window: drop brain to just below death threshold
+                    organs.Brain = organs.BrainDeathThreshold - 0.05f; // 0.65
+                    organs.HeartStopped = false;
+                    if (organs.Heart >= organs.HeartStopThreshold)
+                        organs.Heart = organs.HeartStopThreshold - 0.1f; // restart heart
+                    Dirty(target, organs);
+                    _mobState.ChangeMobState(target, MobState.Critical, targetMobState, user);
+                    tsfRevived = true;
+                    failedRevive = false;
+                }
+                else if (_mobState.IsDead(target, targetMobState))
+                {
+                    // Dead from other causes but brain is OK — just revive to Critical
+                    _mobState.ChangeMobState(target, MobState.Critical, targetMobState, user);
+                    tsfRevived = true;
+                    failedRevive = false;
+                }
             }
+            // TSF edit end
+
+            // TSF edit start 
+            if (!tsfRevived)
+            {
+                if (TryComp<MobThresholdsComponent>(target, out var targetThresholds) &&
+                    TryComp<DamageableComponent>(target, out var targetDamageable) &&
+                    _mobThreshold.TryGetThresholdForState(target, MobState.Dead, out var threshold, targetThresholds) &&
+                    targetDamageable.TotalDamage < threshold)
+                {
+                    _mobState.ChangeMobState(target, MobState.Critical, targetMobState, user);
+                    failedRevive = false;
+                }
+            }
+            // TSF edit end
 
             if (_mind.TryGetMind(target, out var mindUid, out var mindComp) &&
                 _player.TryGetSessionById(mindComp.UserId, out var playerSession))

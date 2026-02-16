@@ -1,0 +1,34 @@
+# TSF organ-healing reagents
+
+# Thiamine (Vitamin B1) — heals ALL organs including brain (slowly).
+# Speeds up organ healing ~4x. Here: heals -0.02/tick for all organs.
+- type: reagent
+  id: Thiamine
+  name: reagent-name-thiamine
+  group: Medicine
+  desc: reagent-desc-thiamine
+  physicalDesc: reagent-physical-desc-translucent
+  flavor: medicine
+  color: "#F5E6AB"
+  metabolisms:
+    Medicine:
+      effects:
+      - !type:TSFOrganHeal
+        organ: AllWithBrain
+        amount: -0.02
+        maxBrainHealThreshold: 0.4
+
+- type: reagent
+  id: Ibuprofen
+  name: reagent-name-ibuprofen
+  group: Medicine
+  desc: reagent-desc-ibuprofen
+  physicalDesc: reagent-physical-desc-opaque
+  flavor: bitter
+  color: "#E8D5B7"
+  metabolisms:
+    Medicine:
+      effects:
+      - !type:TSFPainkiller
+        strength: 0.4
+        painReduction: 2
