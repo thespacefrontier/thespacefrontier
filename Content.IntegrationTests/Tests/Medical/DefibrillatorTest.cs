@@ -56,15 +56,30 @@ public sealed class DefibrillatorTest : InteractionTest
         var critDamage = new DamageSpecifier(ProtoMan.Index(BluntDamageTypeId), (critThreshold + deathThreshold) / 2);
         var deathDamage = new DamageSpecifier(ProtoMan.Index(BluntDamageTypeId), deathThreshold);
 
-        // Kill the target by applying blunt damage.
-        await Server.WaitPost(() => damageableSystem.SetDamage((STarget.Value, targetDamageable), deathDamage));
+        // TSF edit start — for TSF brain death model, set brain damage instead of threshold damage
+        if (SEntMan.TryGetComponent<Content.Shared._TSF.Organs.TSFOrganDamageComponent>(STarget.Value, out var organs))
+        {
+            await Server.WaitPost(() =>
+            {
+                organs.Brain = 0.75f; // above death threshold (0.7)
+                SEntMan.Dirty(STarget.Value, organs);
+            });
+        }
+        else
+        {
+            // Fallback for non-TSF entities: kill via damage threshold
+            await Server.WaitPost(() => damageableSystem.SetDamage((STarget.Value, targetDamageable), deathDamage));
+        }
+        // TSF edit end
         await RunTicks(3);
 
         // Check that the target is dead.
         Assert.Multiple(() =>
         {
             Assert.That(targetMobState.CurrentState, Is.EqualTo(MobState.Dead), "Target mob did not die from deadly damage amount.");
-            Assert.That(targetDamageable.TotalDamage, Is.EqualTo(deathThreshold), "Target mob had the wrong total damage amount after being killed.");
+            // TSF edit — for TSF model, skip damage threshold check (death is from brain, not total damage)
+            if (!SEntMan.HasComponent<Content.Shared._TSF.Organs.TSFOrganDamageComponent>(STarget.Value))
+                Assert.That(targetDamageable.TotalDamage, Is.EqualTo(deathThreshold), "Target mob had the wrong total damage amount after being killed.");
         });
 
         // Spawn a defib and activate it.

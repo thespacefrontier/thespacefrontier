@@ -162,6 +162,16 @@ public sealed class SuicideSystem : EntitySystem
         var selfMessage = Loc.GetString("suicide-command-default-text-self");
         _popup.PopupEntity(selfMessage, victim, victim);
 
+        // TSF edit start — suicide must kill brain to death
+        if (TryComp<Content.Shared._TSF.Organs.TSFOrganDamageComponent>(victim, out var organs))
+        {
+            organs.Brain = 1.0f; // instant brain death
+            Dirty(victim, organs);
+            args.Handled = true;
+            return;
+        }
+        // TSF edit end
+
         if (args.DamageSpecifier != null)
         {
             _suicide.ApplyLethalDamage(victim, args.DamageSpecifier);

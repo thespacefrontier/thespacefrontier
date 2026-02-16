@@ -7,6 +7,11 @@
   - type: Sprite
     sprite: _TSF/Medical/ibuprofen_pill.rsi
     state: icon
+    layers:
+    - state: icon
+      map: ["enum.SolutionContainerLayers.Fill"]
+  - type: Pill
+    pillType: 20
   - type: Label
     currentLabel: reagent-name-ibuprofen
   - type: SolutionContainerManager
