@@ -111,7 +111,13 @@ public sealed class TSFLimbDamageTriggerSystem : EntitySystem
         foreach (var (partUid, part) in _body.GetBodyChildren(bodyUid, body))
         {
             if (part.PartType is BodyPartType.Arm or BodyPartType.Leg or BodyPartType.Hand or BodyPartType.Foot)
+            {
+                // TSF edit — skip limbs already dislocated or broken (don't downgrade fractures)
+                if (TryComp<LimbConditionComponent>(partUid, out var existing)
+                    && existing.Condition is LimbCondition.Dislocated or LimbCondition.Broken)
+                    continue;
                 candidates.Add(partUid);
+            }
         }
         if (candidates.Count == 0)
             return;

@@ -47,8 +47,8 @@ public sealed class BloodCoughSystem : EntitySystem
         new SoundPathSpecifier("/Audio/_TSF/Cough/Female/female_cough4.ogg"),
     };
 
-    /// <summary> Chance per check to trigger blood cough. Temporarily 100% for testing. </summary>
-    private const float TriggerChance = 1f;
+    /// <summary> Chance per check to trigger blood cough. </summary>
+    private const float TriggerChance = 0.35f;
     /// <summary> Minimum bleed amount to allow trigger (fairly large bleeding only). </summary>
     private const float MinBleedAmountForCough = 4f;
     /// <summary> How often we roll for each entity. </summary>

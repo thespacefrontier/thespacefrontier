@@ -217,6 +217,7 @@ public abstract class SharedDefibrillatorSystem : EntitySystem
                     // Brain too damaged — irreversible death
                     _chat.TrySendInGameICMessage(ent.Owner, Loc.GetString("defibrillator-brain-dead"),
                         InGameICChatType.Speak, true);
+                    tsfRevived = true; // TSF edit — prevent fallback threshold revival
                 }
                 else if (organs.Brain >= organs.BrainDeathThreshold)
                 {
