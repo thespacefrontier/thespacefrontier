@@ -112,7 +112,6 @@ public sealed class TSFLimbDamageTriggerSystem : EntitySystem
         {
             if (part.PartType is BodyPartType.Arm or BodyPartType.Leg or BodyPartType.Hand or BodyPartType.Foot)
             {
-                // TSF edit — skip limbs already dislocated or broken (don't downgrade fractures)
                 if (TryComp<LimbConditionComponent>(partUid, out var existing)
                     && existing.Condition is LimbCondition.Dislocated or LimbCondition.Broken)
                     continue;
