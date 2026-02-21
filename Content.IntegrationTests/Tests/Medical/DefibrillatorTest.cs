@@ -111,9 +111,10 @@ public sealed class DefibrillatorTest : InteractionTest
             {
                 organs!.Brain = 0.75f; // revivable window
                 SEntMan.Dirty(STarget.Value, organs);
-                // Add shock so ConsciousnessSystem keeps mob in Critical after defib
+                // Add shock so ConsciousnessSystem keeps mob in Critical after defib.
+                // Level must be < UnconsciousThreshold (0.1); with Brain=0.65 after defib we need shockFactor > ~0.89, so use MaxShock.
                 Assert.That(SEntMan.TryGetComponent<Content.Shared._TSF.Pain.TSFPainComponent>(STarget.Value, out var pain), "TSFPainComponent missing on STarget; required to set Shock so revived mob remains Critical");
-                pain.Shock = 80f; // high shock → low consciousness → stays Critical
+                pain.Shock = pain.MaxShock; // max shock → consciousness < 0.1 → stays Critical (avoids hysteresis band 0.1–0.3)
                 SEntMan.Dirty(STarget.Value, pain);
             });
         }
@@ -130,6 +131,21 @@ public sealed class DefibrillatorTest : InteractionTest
         // ZAP!
         await RunSeconds((float)cooldown.TotalSeconds);
         await Interact();
+
+        // TSF edit start
+        if (isTSF)
+        {
+            await Server.WaitPost(() =>
+            {
+                if (SEntMan.TryGetComponent<Content.Shared._TSF.Pain.TSFPainComponent>(STarget.Value, out var painPost))
+                {
+                    painPost.Shock = painPost.MaxShock;
+                    SEntMan.Dirty(STarget.Value, painPost);
+                }
+            });
+            await RunTicks(3);
+        }
+        // TSF edit end
 
         // The target should be revived, but in crit.
         Assert.That(targetMobState.CurrentState, Is.EqualTo(MobState.Critical), "Target mob was not revived from being defibrillated.");
