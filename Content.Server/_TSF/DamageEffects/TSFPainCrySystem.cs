@@ -1,47 +1,28 @@
 using Content.Server._TSF.Surgery;
+using Content.Server.Chat.Systems;
+using Content.Shared.Chat;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Events;
 using Content.Shared.Damage.Systems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Humanoid;
 using Content.Shared.Mobs.Systems;
-using Robust.Shared.Audio;
-using Robust.Shared.Audio.Systems;
-using Robust.Shared.Enums;
-using Robust.Shared.GameObjects;
-using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
 namespace Content.Server._TSF.DamageEffects;
 
 /// <summary>
-/// Plays pain cry sounds at the damaged entity so all clients in PVS hear it (not just the victim).
+/// Makes the character scream in pain when taking damage.
 /// Cooldown prevents spam from rapid fire.
 /// </summary>
 public sealed class TSFPainCrySystem : EntitySystem
 {
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly TSFLimbDamageTriggerSystem _limbTrigger = default!;
 
-    private static readonly SoundSpecifier[] MaleCries = new SoundSpecifier[]
-    {
-        new SoundPathSpecifier("/Audio/Voice/Human/cry_male_1.ogg"),
-        new SoundPathSpecifier("/Audio/Voice/Human/cry_male_2.ogg"),
-        new SoundPathSpecifier("/Audio/Voice/Human/cry_male_3.ogg"),
-        new SoundPathSpecifier("/Audio/Voice/Human/cry_male_4.ogg"),
-    };
-    private static readonly SoundSpecifier[] FemaleCries = new SoundSpecifier[]
-    {
-        new SoundPathSpecifier("/Audio/Voice/Human/cry_female_1.ogg"),
-        new SoundPathSpecifier("/Audio/Voice/Human/cry_female_2.ogg"),
-        new SoundPathSpecifier("/Audio/Voice/Human/cry_female_3.ogg"),
-        new SoundPathSpecifier("/Audio/Voice/Human/cry_female_4.ogg"),
-    };
-
-    private static readonly FixedPoint2 MinDamageForCry = FixedPoint2.New(3);
+    private static readonly FixedPoint2 MinDamageForScream = FixedPoint2.New(3);
     private const float CooldownSeconds = 9.0f;
     private readonly Dictionary<EntityUid, TimeSpan> _cooldownUntil = new();
 
@@ -49,6 +30,7 @@ public sealed class TSFPainCrySystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<DamageableComponent, DamageChangedEvent>(OnDamageChanged);
+        SubscribeLocalEvent<HumanoidAppearanceComponent, EmoteEvent>(OnEmote);
         EntityManager.EntityDeleted += OnEntityDeleted;
     }
 
@@ -63,6 +45,15 @@ public sealed class TSFPainCrySystem : EntitySystem
         _cooldownUntil.Remove(entity.Owner);
     }
 
+    private void OnEmote(EntityUid uid, HumanoidAppearanceComponent comp, ref EmoteEvent args)
+    {
+        if (args.Handled)
+            return;
+
+        if (args.Emote.ID == "ScreamPain")
+            args.Handled = true;
+    }
+
     private void OnDamageChanged(Entity<DamageableComponent> ent, ref DamageChangedEvent args)
     {
         if (args.DamageDelta == null || !args.DamageIncreased)
@@ -72,7 +63,7 @@ public sealed class TSFPainCrySystem : EntitySystem
         _limbTrigger.OnDamageChangedForLimb(ent.Owner, ref args);
 
         var total = damageDelta.GetTotal();
-        if (total < MinDamageForCry)
+        if (total < MinDamageForScream)
             return;
         if (_mobState.IsDead(ent) || _mobState.IsCritical(ent))
             return;
@@ -80,17 +71,13 @@ public sealed class TSFPainCrySystem : EntitySystem
         if (_cooldownUntil.TryGetValue(ent, out var until) && now < until)
             return;
 
-        if (!TryComp(ent, out HumanoidAppearanceComponent? appearance))
+        if (!HasComp<HumanoidAppearanceComponent>(ent))
             return;
 
-        var sound = appearance.Gender switch
-        {
-            Gender.Male => _random.Pick(MaleCries),
-            Gender.Female => _random.Pick(FemaleCries),
-            _ => _random.Prob(0.5f) ? _random.Pick(MaleCries) : _random.Pick(FemaleCries)
-        };
+        _chat.TryEmoteWithoutChat(ent, "Scream", ignoreActionBlocker: true);
 
-        _audio.PlayPvs(sound, ent, AudioParams.Default);
+        _chat.TryEmoteWithChat(ent, "ScreamPain", ChatTransmitRange.Normal, ignoreActionBlocker: true);
+
         _cooldownUntil[ent] = now + TimeSpan.FromSeconds(CooldownSeconds);
     }
 }
