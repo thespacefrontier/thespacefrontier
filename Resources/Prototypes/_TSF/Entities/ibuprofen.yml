@@ -6,9 +6,9 @@
   components:
   - type: Sprite
     sprite: Objects/Specific/Chemistry/pills.rsi
-    state: icon
+    state: pill22
   - type: Pill
-    pillType: 21
+    pillType: 22
   - type: Label
     currentLabel: reagent-name-ibuprofen
   - type: SolutionContainerManager

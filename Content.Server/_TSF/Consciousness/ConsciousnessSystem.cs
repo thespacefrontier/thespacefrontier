@@ -65,7 +65,7 @@ public sealed class ConsciousnessSystem : EntitySystem
                 _mobState.ChangeMobState(uid, MobState.Alive);
             }
 
-            // Ragdoll (fall down) when consciousness is low but not unconscious
+            // fall down when consciousness is low but not unconscious
             if (level < RagdollThreshold && !consciousness.Unconscious)
             {
                 _standing.Down(uid);
