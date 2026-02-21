@@ -112,11 +112,9 @@ public sealed class DefibrillatorTest : InteractionTest
                 organs!.Brain = 0.75f; // revivable window
                 SEntMan.Dirty(STarget.Value, organs);
                 // Add shock so ConsciousnessSystem keeps mob in Critical after defib
-                if (SEntMan.TryGetComponent<Content.Shared._TSF.Pain.TSFPainComponent>(STarget.Value, out var pain))
-                {
-                    pain.Shock = 80f; // high shock → low consciousness → stays Critical
-                    SEntMan.Dirty(STarget.Value, pain);
-                }
+                Assert.That(SEntMan.TryGetComponent<Content.Shared._TSF.Pain.TSFPainComponent>(STarget.Value, out var pain), "TSFPainComponent missing on STarget; required to set Shock so revived mob remains Critical");
+                pain.Shock = 80f; // high shock → low consciousness → stays Critical
+                SEntMan.Dirty(STarget.Value, pain);
             });
         }
         else
