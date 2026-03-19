@@ -1,124 +1,118 @@
 using Content.Shared._TSF.Consciousness;
-using Content.Shared._TSF.Organs;
-using Content.Shared._TSF.Pain;
-using Content.Shared.Body.Components;
-using Content.Shared.Body.Systems;
-using Content.Shared.Mobs;
+using Content.Shared.Damage.Components;
+using Content.Shared.FixedPoint;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Standing;
+using Content.Shared.StatusEffectNew;
+using Content.Shared.Traits.Assorted;
+using Robust.Server.GameObjects;
 
 namespace Content.Server._TSF.Consciousness;
 
-/// <summary>
-/// Consciousness model. Consciousness is a composite value derived from:
-///   - Blood volume (low blood → low consciousness)
-///   - Shock (high shock → low consciousness)
-///   - Brain damage (high damage → low consciousness)
-/// When consciousness drops below threshold → mob enters Critical state (unconscious).
-/// When it recovers above recovery threshold → mob returns to Alive.
-/// This system is the SOLE authority for the Critical state.
-/// </summary>
 public sealed class ConsciousnessSystem : EntitySystem
 {
-    [Dependency] private readonly MobStateSystem _mobState = default!;
+    [Dependency] private readonly MobThresholdSystem _mobThreshold = default!;
     [Dependency] private readonly StandingStateSystem _standing = default!;
-    [Dependency] private readonly SharedBloodstreamSystem _bloodstream = default!;
+    [Dependency] private readonly StatusEffectsSystem _statusEffects = default!;
 
-    /// <summary>Below this → unconscious (MobState.Critical).</summary>
-    private const float UnconsciousThreshold = 0.1f;
-
-    /// <summary>Above this → wake up (MobState.Alive). Hysteresis prevents flickering.</summary>
-    private const float RecoveryThreshold = 0.3f;
-
-    /// <summary>Below this → ragdoll (fall down but still conscious).</summary>
-    private const float RagdollThreshold = 0.4f;
+    private const float UnconsciousThreshold = 0.22f;
+    private const float PainToConsciousnessFactor = 0.85f;
+    private static readonly Dictionary<string, float> PainMultipliers = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Brute"] = 1f,
+        ["Burn"] = 1.2f,
+        ["Slash"] = 1.1f,
+        ["Piercing"] = 1f,
+        ["Blunt"] = 0.9f,
+        ["Caustic"] = 1f,
+        ["Poison"] = 0.8f,
+        ["Asphyxiation"] = 0.7f,
+        ["Bloodloss"] = 0.8f,
+    };
+    private const string AirlossGroup = "Airloss";
+    private const string ToxinGroup = "Toxin";
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
 
-        var query = EntityQueryEnumerator<ConsciousnessComponent, MobStateComponent>();
-        while (query.MoveNext(out var uid, out var consciousness, out var mobState))
+        // Lazy-add ConsciousnessComponent (can't subscribe to MobThresholdsComponent+ComponentStartup - MobThresholdSystem already does)
+        var ensureQuery = EntityQueryEnumerator<MobThresholdsComponent, DamageableComponent>();
+        while (ensureQuery.MoveNext(out var uid, out var thresholds, out _))
         {
-            if (mobState.CurrentState == MobState.Dead)
+            if (thresholds.ShowOverlays && !HasComp<ConsciousnessComponent>(uid))
+                EnsureComp<ConsciousnessComponent>(uid);
+        }
+
+        var query = EntityQueryEnumerator<ConsciousnessComponent, DamageableComponent, MobThresholdsComponent>();
+        while (query.MoveNext(out var uid, out var consciousness, out var damageable, out var thresholds))
+        {
+            if (!thresholds.ShowOverlays)
                 continue;
 
-            var level = CalculateConsciousness(uid);
+            if (!_mobThreshold.TryGetIncapThreshold(uid, out var critThreshold, thresholds) || !critThreshold.HasValue)
+            {
+                consciousness.Level = 1f;
+                consciousness.Unconscious = false;
+                Dirty(uid, consciousness);
+                continue;
+            }
+
+            var thresh = critThreshold.Value;
+            if (thresh <= FixedPoint2.Zero)
+            {
+                consciousness.Level = 1f;
+                consciousness.Unconscious = false;
+                Dirty(uid, consciousness);
+                continue;
+            }
+
+            float painLevel = 0f;
+            if (!_statusEffects.TryEffectsWithComp<PainNumbnessStatusEffectComponent>(uid, out _))
+            {
+                foreach (var painType in damageable.PainDamageGroups)
+                {
+                    var groupId = painType.ToString();
+                    if (damageable.DamagePerGroup.TryGetValue(groupId, out var pain))
+                        painLevel += pain.Float() * GetPainMultiplier(groupId);
+                }
+            }
+            else
+            {
+                painLevel = 0f;
+            }
+
+            float bloodLossContrib = 0f;
+            var deathLevel = FixedPoint2.Zero;
+            if (damageable.DamagePerGroup.TryGetValue(AirlossGroup, out var airloss))
+                deathLevel += airloss;
+            if (damageable.DamagePerGroup.TryGetValue(ToxinGroup, out var toxin))
+                deathLevel += toxin;
+            if (thresh > FixedPoint2.Zero)
+                bloodLossContrib = (deathLevel / thresh).Float();
+
+            var painRatio = (FixedPoint2.New(painLevel) / thresh).Float();
+            painRatio = Math.Clamp(painRatio, 0f, 1.5f);
+            var bloodRatio = Math.Clamp(bloodLossContrib, 0f, 1f);
+            var combined = painRatio * 0.85f + bloodRatio * 0.25f;
+            var level = Math.Clamp(1f - combined * PainToConsciousnessFactor, 0f, 1f);
 
             var wasUnconscious = consciousness.Unconscious;
             consciousness.Level = level;
+            consciousness.Unconscious = level < UnconsciousThreshold;
 
-            // Determine unconscious state with hysteresis
-            if (!wasUnconscious && level < UnconsciousThreshold)
-                consciousness.Unconscious = true;
-            else if (wasUnconscious && level > RecoveryThreshold)
-                consciousness.Unconscious = false;
-
-            // ── Trigger MobState changes ──
-            if (consciousness.Unconscious && mobState.CurrentState != MobState.Critical)
-            {
-                _mobState.ChangeMobState(uid, MobState.Critical);
-            }
-            else if (!consciousness.Unconscious && mobState.CurrentState == MobState.Critical)
-            {
-                _mobState.ChangeMobState(uid, MobState.Alive);
-            }
-
-            // Ragdoll (fall down) when consciousness is low but not unconscious
-            if (level < RagdollThreshold && !consciousness.Unconscious)
-            {
+            if (consciousness.Unconscious && !wasUnconscious)
                 _standing.Down(uid);
-            }
-            else if (level >= RagdollThreshold && !consciousness.Unconscious)
-            {
+            else if (!consciousness.Unconscious && wasUnconscious)
                 _standing.Stand(uid);
-            }
-
-            // Down when unconscious
-            if (consciousness.Unconscious)
-                _standing.Down(uid);
 
             Dirty(uid, consciousness);
         }
     }
 
-    /// <summary>
-    /// Consciousness formula:
-    /// consciousness = bloodFactor * (1 - brainDamage) * (1 - shockFactor)
-    /// Where bloodFactor = min(currentBlood / referenceBlood, 1)
-    ///       shockFactor = clamp(shock / shockMax, 0, 1)
-    /// </summary>
-    private float CalculateConsciousness(EntityUid uid)
+    private static float GetPainMultiplier(string damageGroupId)
     {
-        // ── Blood factor ──
-        var bloodFactor = 1f;
-        if (TryComp<BloodstreamComponent>(uid, out var blood))
-        {
-            var bloodLevel = _bloodstream.GetBloodLevel((uid, blood));
-            // GetBloodLevel returns 0-2 (MaxVolumeModifier), normalize to 0-1
-            bloodFactor = Math.Clamp(bloodLevel / 1f, 0f, 1f);
-        }
-
-        // ── Brain damage factor ──
-        var brainFactor = 0f;
-        if (TryComp<TSFOrganDamageComponent>(uid, out var organs))
-        {
-            brainFactor = Math.Clamp(organs.Brain, 0f, 1f);
-
-            // Heart stopped → additional consciousness penalty
-            if (organs.HeartStopped)
-                bloodFactor *= 0.3f;
-        }
-
-        // ── Shock factor ──
-        var shockFactor = 0f;
-        if (TryComp<TSFPainComponent>(uid, out var pain))
-        {
-            shockFactor = Math.Clamp(pain.Shock / pain.MaxShock, 0f, 1f);
-        }
-
-        var level = bloodFactor * (1f - brainFactor) * (1f - shockFactor * 0.8f);
-        return Math.Clamp(level, 0f, 1f);
+        return PainMultipliers.TryGetValue(damageGroupId, out var m) ? m : 1f;
     }
 }

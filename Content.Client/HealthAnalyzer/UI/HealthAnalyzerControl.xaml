@@ -47,11 +47,6 @@
 
     <BoxContainer Name="LimbStatusContainer" Visible="False" Margin="0 5" Orientation="Vertical">
     </BoxContainer>
-
-    <PanelContainer Name="OrganStatusDivider" Visible="False" StyleClasses="LowDivider" />
-
-    <BoxContainer Name="OrganStatusContainer" Visible="False" Margin="0 5" Orientation="Vertical">
-    </BoxContainer>
     <!-- TSF edit end -->
 
     <PanelContainer StyleClasses="LowDivider" />

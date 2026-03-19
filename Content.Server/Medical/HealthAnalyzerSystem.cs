@@ -1,12 +1,9 @@
 using Content.Server.Body.Systems;
 using Content.Server.Medical.Components;
 // TSF edit start
-using Content.Shared._TSF.Organs;
-using Content.Shared._TSF.Pain;
 using Content.Shared._TSF.Surgery;
 using Content.Shared._TSF.Surgery.Components;
 using Content.Shared.Body.Part;
-using Content.Shared.MedicalScanner;
 // TSF edit end
 using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
@@ -260,34 +257,6 @@ public sealed class HealthAnalyzerSystem : EntitySystem
         }
         // TSF edit end
 
-        // TSF edit start — organ status for analyzer
-        OrganStatusData? organStatus = null;
-        if (TryComp<TSFOrganDamageComponent>(entity, out var organs))
-        {
-            var osd = new OrganStatusData
-            {
-                Brain = organs.Brain,
-                Heart = organs.Heart,
-                LungLeft = organs.LungLeft,
-                LungRight = organs.LungRight,
-                Liver = organs.Liver,
-                Stomach = organs.Stomach,
-                Intestines = organs.Intestines,
-                Trachea = organs.Trachea,
-                Eyes = organs.Eyes,
-                HeartStopped = organs.HeartStopped,
-            };
-
-            if (TryComp<TSFPainComponent>(entity, out var pain))
-            {
-                osd.Pain = pain.Pain;
-                osd.Shock = pain.Shock;
-            }
-
-            organStatus = osd;
-        }
-        // TSF edit end
-
         return new HealthAnalyzerUiState(
             GetNetEntity(entity),
             bodyTemperature,
@@ -295,8 +264,7 @@ public sealed class HealthAnalyzerSystem : EntitySystem
             null,
             bleeding,
             unrevivable,
-            limbStatus, // TSF edit
-            organStatus // TSF edit
+            limbStatus // TSF edit
         );
     }
 }

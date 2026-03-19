@@ -33,12 +33,12 @@ public sealed class TSFLimbDamageTriggerSystem : EntitySystem
         new SoundPathSpecifier("/Audio/_TSF/Effects/BrokenParts/broken_part4.ogg"),
         new SoundPathSpecifier("/Audio/_TSF/Effects/BrokenParts/broken_part5.ogg"),
     };
-    private const float DamageDislocateChance = 0.06f; 
+    private const float DamageDislocateChance = 0.25f;
     private const float DamageThreshold = 15f;
 
     /// <summary>Fractures only from strong brute (Blunt). Higher threshold and separate chance.</summary>
     private const float FractureBluntThreshold = 28f;
-    private const float FractureChance = 0.04f; 
+    private const float FractureChance = 0.18f;
     private const string BluntDamageType = "Blunt";
 
     public override void Initialize()
@@ -111,12 +111,7 @@ public sealed class TSFLimbDamageTriggerSystem : EntitySystem
         foreach (var (partUid, part) in _body.GetBodyChildren(bodyUid, body))
         {
             if (part.PartType is BodyPartType.Arm or BodyPartType.Leg or BodyPartType.Hand or BodyPartType.Foot)
-            {
-                if (TryComp<LimbConditionComponent>(partUid, out var existing)
-                    && existing.Condition is LimbCondition.Dislocated or LimbCondition.Broken)
-                    continue;
                 candidates.Add(partUid);
-            }
         }
         if (candidates.Count == 0)
             return;

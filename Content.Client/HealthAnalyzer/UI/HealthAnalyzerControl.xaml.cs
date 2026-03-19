@@ -146,39 +146,6 @@ public sealed partial class HealthAnalyzerControl : BoxContainer
                 LimbStatusContainer.AddChild(new Label { Text = $"{entry.PartName}: {condText}" });
             }
         }
-
-        // Organ status (Z-City model)
-        var showOrgans = state.OrganStatus.HasValue;
-        OrganStatusDivider.Visible = showOrgans;
-        OrganStatusContainer.Visible = showOrgans;
-        OrganStatusContainer.RemoveAllChildren();
-        if (showOrgans)
-        {
-            var o = state.OrganStatus!.Value;
-            OrganStatusContainer.AddChild(new Label
-            {
-                Text = Loc.GetString("health-analyzer-window-organ-header"),
-                StyleClasses = { "LabelKeyText" }
-            });
-
-            AddOrganLine(Loc.GetString("health-analyzer-window-organ-brain"), o.Brain, 0.7f);
-            AddOrganLine(Loc.GetString("health-analyzer-window-organ-heart"), o.Heart, 0.9f, o.HeartStopped);
-            AddOrganLine(Loc.GetString("health-analyzer-window-organ-lung-l"), o.LungLeft, 0.8f);
-            AddOrganLine(Loc.GetString("health-analyzer-window-organ-lung-r"), o.LungRight, 0.8f);
-            AddOrganLine(Loc.GetString("health-analyzer-window-organ-liver"), o.Liver, 0.7f);
-            AddOrganLine(Loc.GetString("health-analyzer-window-organ-stomach"), o.Stomach, 0.5f);
-            AddOrganLine(Loc.GetString("health-analyzer-window-organ-trachea"), o.Trachea, 0.5f);
-            AddOrganLine(Loc.GetString("health-analyzer-window-organ-eyes"), o.Eyes, 0.5f);
-
-            if (o.Pain > 1f || o.Shock > 1f)
-            {
-                OrganStatusContainer.AddChild(new Label
-                {
-                    Text = $"{Loc.GetString("health-analyzer-window-pain")}: {o.Pain:F0} / {Loc.GetString("health-analyzer-window-shock")}: {o.Shock:F0}",
-                    Margin = new Thickness(0, 4, 0, 0)
-                });
-            }
-        }
         // TSF edit end
 
         // Damage Groups
@@ -191,29 +158,6 @@ public sealed partial class HealthAnalyzerControl : BoxContainer
 
         DrawDiagnosticGroups(damageSortedGroups, damagePerType);
     }
-
-    // TSF edit start
-    private void AddOrganLine(string name, float damage, float critThreshold, bool stopped = false)
-    {
-        if (damage < 0.01f && !stopped)
-            return;
-
-        var pct = (int)(damage * 100f);
-        var color = damage >= critThreshold ? Color.Red
-            : damage >= critThreshold * 0.5f ? Color.Orange
-            : damage > 0.01f ? Color.Yellow
-            : Color.Green;
-
-        var text = stopped ? $" · {name}: {pct}% [{Loc.GetString("health-analyzer-window-organ-stopped")}]"
-            : $" · {name}: {pct}%";
-
-        OrganStatusContainer.AddChild(new Label
-        {
-            Text = text,
-            FontColorOverride = color,
-        });
-    }
-    // TSF edit end
 
     private static string GetStatus(MobState mobState)
     {
