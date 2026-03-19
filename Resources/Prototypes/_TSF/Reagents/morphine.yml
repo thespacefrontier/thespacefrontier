@@ -15,6 +15,3 @@
         effectProto: StatusEffectPainNumbness
         time: 8
         type: Update
-      - !type:TSFPainkiller
-        strength: 0.9
-        painReduction: 5
