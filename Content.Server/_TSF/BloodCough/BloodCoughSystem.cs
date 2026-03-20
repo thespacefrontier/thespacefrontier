@@ -1,6 +1,8 @@
 using Content.Server.Body.Systems;
+using Content.Server.Chat.Systems;
 using Content.Server.Fluids.EntitySystems;
 using Content.Shared.Body.Components;
+using Content.Shared.Chat;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Humanoid;
@@ -22,6 +24,7 @@ namespace Content.Server._TSF.BloodCough;
 public sealed class BloodCoughSystem : EntitySystem
 {
     [Dependency] private readonly BloodstreamSystem _bloodstream = default!;
+    [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
@@ -44,8 +47,8 @@ public sealed class BloodCoughSystem : EntitySystem
         new SoundPathSpecifier("/Audio/_TSF/Cough/Female/female_cough4.ogg"),
     };
 
-    /// <summary> Chance per check to trigger blood cough. Temporarily 100% for testing. </summary>
-    private const float TriggerChance = 1f;
+    /// <summary> Chance per check to trigger blood cough. </summary>
+    private const float TriggerChance = 0.35f;
     /// <summary> Minimum bleed amount to allow trigger (fairly large bleeding only). </summary>
     private const float MinBleedAmountForCough = 4f;
     /// <summary> How often we roll for each entity. </summary>
@@ -132,5 +135,8 @@ public sealed class BloodCoughSystem : EntitySystem
             MovementModStatusSystem.BloodCoughSlowdown,
             TimeSpan.FromSeconds(SlowdownSeconds),
             SlowdownMultiplier);
+
+        // Show third-person emote message in chat (no extra sound — CoughBlood has no EmoteSounds)
+        _chat.TryEmoteWithChat(uid, "CoughBlood", ChatTransmitRange.Normal, ignoreActionBlocker: true);
     }
 }

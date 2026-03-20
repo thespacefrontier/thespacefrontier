@@ -10,6 +10,8 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.StatusEffectNew;
 using Content.Shared.Traits.Assorted;
 using Content.Shared._TSF.Consciousness;
+using Content.Shared._TSF.Organs;
+using Content.Shared._TSF.Pain;
 using Robust.Client.Audio;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
@@ -334,7 +336,17 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
 
         bool unconsciousMusic = TryComp(uid, out ConsciousnessComponent? compForMusic) && compForMusic.Unconscious
             || (TryComp(uid, out MobStateComponent? mobStateForMusic) && mobStateForMusic.CurrentState == MobState.Critical);
-        float targetGain = unconsciousMusic ? 1f : 0f;
+        float targetGain;
+        if (unconsciousMusic)
+        {
+            targetGain = 1f;
+        }
+        else
+        {
+            // Ramp music with pain: starts at 60% pain, full at 100%
+            var painForMusic = _overlay?.DamageStrength ?? 0f;
+            targetGain = painForMusic > 0.6f ? Math.Clamp((painForMusic - 0.6f) / 0.4f * 0.5f, 0f, 0.5f) : 0f;
+        }
 
         if (_damageMusicStream != null && Exists(_damageMusicStream) && TryComp(_damageMusicStream, out AudioComponent? musicComp))
         {
@@ -372,44 +384,13 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
         }
     }
 
+    // TSF edit — rewritten to use TSFPainComponent and ConsciousnessComponent instead of vanilla MobThresholds
     private void UpdateOverlayIntensity(EntityUid entity)
     {
         if (_overlay == null)
             return;
-        if (!TryComp(entity, out MobStateComponent? mobState) || !TryComp(entity, out DamageableComponent? damageable)
-            || !TryComp(entity, out MobThresholdsComponent? thresholds))
-        {
-            _overlay.DamageStrength = 0f;
-            _overlay.CritStrength = 0f;
-            _overlay.BloodLossStrength = 0f;
-            _overlay.Consciousness = 1f;
-            return;
-        }
-        if (!thresholds.ShowOverlays)
-        {
-            _overlay.DamageStrength = 0f;
-            _overlay.CritStrength = 0f;
-            _overlay.BloodLossStrength = 0f;
-            _overlay.Consciousness = 1f;
-            return;
-        }
-        if (mobState.CurrentState == MobState.Critical)
-        {
-            _overlay.DamageStrength = 0f;
-            _overlay.CritStrength = 1f;
-            _overlay.Consciousness = 0f;
-            if (_mobThreshold.TryGetIncapThreshold(entity, out var critThresh, thresholds) && critThresh.HasValue)
-            {
-                var deathLevel = FixedPoint2.Zero;
-                if (damageable.DamagePerGroup.TryGetValue(AirlossGroup, out var airloss))
-                    deathLevel += airloss;
-                if (damageable.DamagePerGroup.TryGetValue(ToxinGroup, out var toxin))
-                    deathLevel += toxin;
-                _overlay.BloodLossStrength = Math.Clamp((deathLevel / critThresh.Value).Float(), 0f, 1f);
-            }
-            return;
-        }
-        if (!_mobThreshold.TryGetIncapThreshold(entity, out var critThreshold, thresholds))
+
+        if (!TryComp(entity, out MobStateComponent? mobState))
         {
             _overlay.DamageStrength = 0f;
             _overlay.CritStrength = 0f;
@@ -418,58 +399,97 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
             return;
         }
 
-        if (critThreshold.HasValue)
+        if (TryComp(entity, out MobThresholdsComponent? thresholds) && !thresholds.ShowOverlays)
         {
-            var deathLevel = FixedPoint2.Zero;
-            if (damageable.DamagePerGroup.TryGetValue(AirlossGroup, out var airloss))
-                deathLevel += airloss;
-            if (damageable.DamagePerGroup.TryGetValue(ToxinGroup, out var toxin))
-                deathLevel += toxin;
-            _overlay.BloodLossStrength = Math.Clamp((deathLevel / critThreshold.Value).Float(), 0f, 1f);
+            _overlay.DamageStrength = 0f;
+            _overlay.CritStrength = 0f;
+            _overlay.BloodLossStrength = 0f;
+            _overlay.Consciousness = 1f;
+            return;
+        }
+
+        // ── Get TSF pain/consciousness data ──
+        var hasTsfPain = TryComp(entity, out TSFPainComponent? tsfPain);
+        var hasConsciousness = TryComp(entity, out ConsciousnessComponent? consciousness);
+        var hasOrgans = TryComp(entity, out TSFOrganDamageComponent? organs);
+
+        // Blood loss overlay from organ damage (heart/lung damage → blood loss feel)
+        if (hasOrgans)
+        {
+            var organDanger = Math.Max(organs!.Heart, Math.Max(organs.LungLeft, organs.LungRight));
+            _overlay.BloodLossStrength = Math.Clamp(organDanger, 0f, 1f);
         }
         else
+        {
             _overlay.BloodLossStrength = 0f;
+        }
 
-        var thresh = critThreshold.Value;
         switch (mobState.CurrentState)
         {
             case MobState.Alive:
             {
-                if (TryComp(entity, out ConsciousnessComponent? consciousness) && consciousness.Unconscious)
+                // Check if unconscious (consciousness system may set this before MobState changes)
+                if (hasConsciousness && consciousness!.Unconscious)
                 {
                     _overlay.DamageStrength = 0f;
                     _overlay.CritStrength = 1f;
                     _overlay.Consciousness = 0f;
                     break;
                 }
-                FixedPoint2 painLevel = FixedPoint2.Zero;
-                if (!_statusEffects.TryEffectsWithComp<PainNumbnessStatusEffectComponent>(entity, out _))
+
+                // Pain overlay: use TSFPainComponent.Pain directly (0-150 scale → 0-1 overlay)
+                float painRatio;
+                if (hasTsfPain)
                 {
-                    foreach (var painType in damageable.PainDamageGroups)
-                    {
-                        var key = painType.ToString();
-                        if (damageable.DamagePerGroup.TryGetValue(key, out var pain))
-                            painLevel += pain * FixedPoint2.New(GetPainMultiplier(key));
-                    }
+                    painRatio = Math.Clamp(tsfPain!.Pain / tsfPain.MaxPain, 0f, 1f);
                 }
-                var painRatio = (painLevel / thresh).Float();
-                _overlay.DamageStrength = Math.Clamp(painRatio, 0f, 1f);
-                if (_overlay.DamageStrength < 0.15f)
-                    _overlay.DamageStrength = 0f;
+                else if (TryComp(entity, out DamageableComponent? damageable))
+                {
+                    // Fallback: use vanilla damage for entities without TSFPainComponent
+                    FixedPoint2 painLevel = FixedPoint2.Zero;
+                    if (!_statusEffects.TryEffectsWithComp<PainNumbnessStatusEffectComponent>(entity, out _))
+                    {
+                        foreach (var painType in damageable.PainDamageGroups)
+                        {
+                            var key = painType.ToString();
+                            if (damageable.DamagePerGroup.TryGetValue(key, out var pain))
+                                painLevel += pain * FixedPoint2.New(GetPainMultiplier(key));
+                        }
+                    }
+                    // Use 100 as fallback threshold
+                    painRatio = Math.Clamp(painLevel.Float() / 100f, 0f, 1f);
+                }
+                else
+                {
+                    painRatio = 0f;
+                }
+
+                _overlay.DamageStrength = painRatio < 0.05f ? 0f : painRatio;
                 _overlay.CritStrength = 0f;
-                _overlay.Consciousness = TryComp(entity, out ConsciousnessComponent? c) ? c.Level : Math.Clamp(1f - painRatio * 0.8f, 0f, 1f);
+                _overlay.Consciousness = hasConsciousness ? consciousness!.Level : Math.Clamp(1f - painRatio * 0.8f, 0f, 1f);
                 break;
             }
             case MobState.Critical:
+            {
                 _overlay.DamageStrength = 0f;
                 _overlay.CritStrength = 1f;
+                _overlay.Consciousness = hasConsciousness ? consciousness!.Level : 0f;
+                break;
+            }
+            case MobState.Dead:
+            {
+                _overlay.DamageStrength = 0f;
+                _overlay.CritStrength = 0f;
                 _overlay.Consciousness = 0f;
                 break;
+            }
             default:
+            {
                 _overlay.DamageStrength = 0f;
                 _overlay.CritStrength = 0f;
                 _overlay.Consciousness = 1f;
                 break;
+            }
         }
     }
 
