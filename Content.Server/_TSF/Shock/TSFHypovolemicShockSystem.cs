@@ -5,9 +5,6 @@ using Content.Server.Body.Systems;
 
 namespace Content.Server._TSF.Shock;
 
-/// <summary>
-/// Applies or removes HypovolemicShock status when blood level is low.
-/// </summary>
 public sealed class TSFHypovolemicShockSystem : EntitySystem
 {
     [Dependency] private readonly BloodstreamSystem _bloodstream = default!;

@@ -47,7 +47,6 @@ public sealed class TSFSurgerySystem : EntitySystem
     private const float FractureBoneGelChance = 0.85f;
     private const float PainOnSuccess = 18f;
     private const float PainOnFail = 10f;
-    /// <summary>Reduced pain when patient is asleep (e.g. under nitrous oxide).</summary>
     private const float PainAsleepSuccess = 5f;
     private const float PainAsleepFail = 3f;
 
@@ -104,7 +103,6 @@ public sealed class TSFSurgerySystem : EntitySystem
             : part.PartType.ToString();
     }
 
-    /// <summary>Slot flags that cover this body part (e.g. gloves for hands). If any of these slots have an item, surgery on that part is blocked.</summary>
     private static SlotFlags GetSlotFlagsForBodyPart(BodyPartType partType)
     {
         return partType switch
@@ -278,7 +276,6 @@ public sealed class TSFSurgerySystem : EntitySystem
         }
 
         var success = _random.Prob(DislocationRepairChance);
-        // Pain from the procedure: higher when awake, reduced when asleep (e.g. nitrous oxide).
         var painAmount = HasComp<SleepingComponent>(target)
             ? (success ? PainAsleepSuccess : PainAsleepFail)
             : (success ? PainOnSuccess : PainOnFail);
@@ -341,7 +338,6 @@ public sealed class TSFSurgerySystem : EntitySystem
         SendSurgeryState(target);
     }
 
-    /// <returns>True if the user has the correct tool in hand (or no tool required); otherwise false and locale id for message.</returns>
     private bool TryCheckSurgeryTool(EntityUid user, SurgeryRequestAction action, out string messageLocId)
     {
         messageLocId = string.Empty;

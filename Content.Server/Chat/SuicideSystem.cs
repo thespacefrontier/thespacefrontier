@@ -73,14 +73,6 @@ public sealed class SuicideSystem : EntitySystem
         var suicideEvent = new SuicideEvent(victim);
         RaiseLocalEvent(victim, suicideEvent);
 
-        // TSF edit — when suicide was handled by environment (e.g. execution weapon), TSF only sets death in TSFDeathConditionSystem.Update() when brain >= threshold. Force immediate death so same-tick assertions (e.g. integration tests) see the body as dead.
-        if (suicideEvent.Handled && TryComp<Content.Shared._TSF.Organs.TSFOrganDamageComponent>(victim, out var tsfOrgans) && TryComp<MobStateComponent>(victim, out var tsfMobState))
-        {
-            tsfOrgans.Brain = 1.0f;
-            Dirty(victim, tsfOrgans);
-            _mobState.ChangeMobState(victim, MobState.Dead, tsfMobState);
-        }
-
         // Since the player is already dead the log will not contain their username.
         if (session != null)
         {
