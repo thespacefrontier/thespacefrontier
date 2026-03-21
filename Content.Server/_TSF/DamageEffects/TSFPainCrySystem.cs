@@ -14,10 +14,6 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._TSF.DamageEffects;
 
-/// <summary>
-/// Plays pain cry sounds at the damaged entity so all clients in PVS hear it (not just the victim).
-/// Cooldown prevents spam from rapid fire.
-/// </summary>
 public sealed class TSFPainCrySystem : EntitySystem
 {
     [Dependency] private readonly SharedAudioSystem _audio = default!;

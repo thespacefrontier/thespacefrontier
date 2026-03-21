@@ -37,7 +37,6 @@ public sealed class ConsciousnessSystem : EntitySystem
     {
         base.Update(frameTime);
 
-        // Lazy-add ConsciousnessComponent (can't subscribe to MobThresholdsComponent+ComponentStartup - MobThresholdSystem already does)
         var ensureQuery = EntityQueryEnumerator<MobThresholdsComponent, DamageableComponent>();
         while (ensureQuery.MoveNext(out var uid, out var thresholds, out _))
         {

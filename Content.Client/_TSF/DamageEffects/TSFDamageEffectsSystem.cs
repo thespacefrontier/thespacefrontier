@@ -70,7 +70,6 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
 
     private float _tinnitusEndTime;
     private const float TinnitusDuration = 6f;
-    /// <summary>Tinnitus from needles/injections when piercing damage exceeds this.</summary>
     private static readonly FixedPoint2 TinnitusPiercingThreshold = FixedPoint2.New(16);
     private static readonly FixedPoint2 DisorientationMinDelta = FixedPoint2.New(3);
 
@@ -226,7 +225,6 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
         TSFStatusMessageState.Message = null;
     }
 
-    /// <summary>Tinnitus only on: piercing (needles) damage > 16, or when brute and thermal (burn) damage apply at the same time.</summary>
     private bool ShouldTriggerTinnitus(DamageableComponent damageable)
     {
         var piercingDelta = FixedPoint2.Zero;
@@ -292,7 +290,6 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
                 if (delta >= DisorientationMinDelta)
                     _disorientationBurstTime = DisorientationBurstDuration;
 
-                // Tinnitus only on piercing (needles) > 16 or when brute and thermal (burn) hit at the same time.
                 if (delta > FixedPoint2.Zero && ShouldTriggerTinnitus(damageable))
                     _tinnitusEndTime = (float)_timing.RealTime.TotalSeconds + TinnitusDuration;
             }
@@ -478,7 +475,6 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
         return PainMultipliers.TryGetValue(damageGroupId.ToLowerInvariant(), out var m) ? m : 1f;
     }
 
-    /// <summary>One message at a time: show → hide → 30s cooldown → next if needed. Priority order blood/pain → after_unconscious.</summary>
     private void TryUpdateStatusMessage(EntityUid uid)
     {
         var now = _timing.RealTime.TotalSeconds;
@@ -493,14 +489,12 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
             return;
         }
 
-        // Current message expired → clear and start 30s cooldown
         if (TSFStatusMessageState.Message != null && now > TSFStatusMessageState.DisplayUntil)
         {
             TSFStatusMessageState.Message = null;
             _statusMessageCooldownUntil = now + StatusMessageCooldownAfterHide;
         }
 
-        // Can't show a new message until cooldown passed
         if (TSFStatusMessageState.Message != null || now < _statusMessageCooldownUntil)
             return;
 

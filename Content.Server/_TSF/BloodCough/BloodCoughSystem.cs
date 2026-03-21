@@ -14,11 +14,6 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._TSF.BloodCough;
 
-/// <summary>
-/// Very rarely makes players "cough blood" when they have fairly heavy bleeding.
-/// Triggers only when BleedAmount &gt;= threshold (large bleeding). Roll every 45s.
-/// Plays gender-specific cough sounds, spills a small blood puddle, and applies slowdown like vomiting.
-/// </summary>
 public sealed class BloodCoughSystem : EntitySystem
 {
     [Dependency] private readonly BloodstreamSystem _bloodstream = default!;
@@ -44,19 +39,12 @@ public sealed class BloodCoughSystem : EntitySystem
         new SoundPathSpecifier("/Audio/_TSF/Cough/Female/female_cough4.ogg"),
     };
 
-    /// <summary> Chance per check to trigger blood cough. Temporarily 100% for testing. </summary>
     private const float TriggerChance = 1f;
-    /// <summary> Minimum bleed amount to allow trigger (fairly large bleeding only). </summary>
     private const float MinBleedAmountForCough = 4f;
-    /// <summary> How often we roll for each entity. </summary>
     private static readonly TimeSpan CheckInterval = TimeSpan.FromSeconds(45);
-    /// <summary> Cooldown after coughing so it doesn't repeat immediately. </summary>
     private static readonly TimeSpan CooldownAfterCough = TimeSpan.FromSeconds(90);
-    /// <summary> Slowdown duration in seconds (like vomiting). </summary>
     private const float SlowdownSeconds = 3f;
-    /// <summary> Walk/sprint multiplier during cough (0.5 = half speed, like vomiting). </summary>
     private const float SlowdownMultiplier = 0.5f;
-    /// <summary> Amount of blood spilled (similar scale to vomit puddle: ~(40+40)/6). </summary>
     private static readonly FixedPoint2 BloodSpillAmount = FixedPoint2.New(18);
 
     private readonly Dictionary<EntityUid, TimeSpan> _nextRollAt = new();
@@ -118,7 +106,6 @@ public sealed class BloodCoughSystem : EntitySystem
 
         _audio.PlayPvs(sound, uid, AudioParams.Default.WithVariation(0.15f));
 
-        // Spill a small puddle of blood under the entity (direct spill so puddle always appears).
         if (TryComp(uid, out BloodstreamComponent? bloodComp)
             && _solutionContainer.ResolveSolution(uid, bloodComp.BloodSolutionName, ref bloodComp.BloodSolution))
         {

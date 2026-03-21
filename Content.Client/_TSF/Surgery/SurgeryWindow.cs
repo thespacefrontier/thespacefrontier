@@ -11,7 +11,6 @@ namespace Content.Client._TSF.Surgery;
 [GenerateTypedNameReferences]
 public sealed partial class SurgeryWindow : FancyWindow
 {
-    /// <summary>Invoked when user clicks an action: (part net entity, action).</summary>
     public Action<NetEntity, SurgeryRequestAction>? OnActionRequested;
 
     public SurgeryWindow()

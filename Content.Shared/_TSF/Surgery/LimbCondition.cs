@@ -1,11 +1,7 @@
-// TSF
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._TSF.Surgery;
 
-/// <summary>
-/// TSF limb state: used for status messages, health analyzer, and repair (e.g. reduce dislocation by hand).
-/// </summary>
 [Serializable, NetSerializable]
 public enum LimbCondition
 {
@@ -14,9 +10,6 @@ public enum LimbCondition
     Broken
 }
 
-/// <summary>
-/// Progress of realistic fracture surgery: incision → retractor → bone gel.
-/// </summary>
 [Serializable, NetSerializable]
 public enum FractureSurgeryStep
 {
@@ -25,9 +18,6 @@ public enum FractureSurgeryStep
     RetractorSpread
 }
 
-/// <summary>
-/// Which step of fracture surgery the DoAfter is performing.
-/// </summary>
 [Serializable, NetSerializable]
 public enum FractureSurgeryAction
 {

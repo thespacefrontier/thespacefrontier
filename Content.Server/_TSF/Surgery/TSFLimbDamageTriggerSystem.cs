@@ -13,10 +13,6 @@ using Robust.Shared.Random;
 
 namespace Content.Server._TSF.Surgery;
 
-/// <summary>
-/// When an entity takes significant blunt/slash damage, may set a random limb to Dislocated
-/// so surgery/analyzer can detect it. (MobStateChangedEvent cannot be used here due to single-subscriber limit.)
-/// </summary>
 public sealed class TSFLimbDamageTriggerSystem : EntitySystem
 {
     [Dependency] private readonly BodySystem _body = default!;
@@ -33,12 +29,11 @@ public sealed class TSFLimbDamageTriggerSystem : EntitySystem
         new SoundPathSpecifier("/Audio/_TSF/Effects/BrokenParts/broken_part4.ogg"),
         new SoundPathSpecifier("/Audio/_TSF/Effects/BrokenParts/broken_part5.ogg"),
     };
-    private const float DamageDislocateChance = 0.25f;
+    private const float DamageDislocateChance = 0.03f;
     private const float DamageThreshold = 15f;
 
-    /// <summary>Fractures only from strong brute (Blunt). Higher threshold and separate chance.</summary>
     private const float FractureBluntThreshold = 28f;
-    private const float FractureChance = 0.18f;
+    private const float FractureChance = 0.02f;
     private const string BluntDamageType = "Blunt";
 
     public override void Initialize()
@@ -46,7 +41,6 @@ public sealed class TSFLimbDamageTriggerSystem : EntitySystem
         base.Initialize();
     }
 
-    /// <summary>Called from TSFPainCrySystem (single DamageChangedEvent subscriber) to avoid duplicate subscription.</summary>
     public void OnDamageChangedForLimb(EntityUid uid, ref DamageChangedEvent args)
     {
         if (!args.DamageIncreased || args.DamageDelta == null)
@@ -57,7 +51,6 @@ public sealed class TSFLimbDamageTriggerSystem : EntitySystem
         if (total <= 0)
             return;
 
-        // Fractures: only from strong blunt (brute) damage
         if (args.DamageDelta.DamageDict.TryGetValue(BluntDamageType, out var bluntDelta) && bluntDelta >= FixedPoint2.New(FractureBluntThreshold))
         {
             if (_random.Prob(FractureChance))
