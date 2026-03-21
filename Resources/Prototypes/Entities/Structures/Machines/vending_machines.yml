@@ -1,4 +1,4 @@
-﻿# base
+# base
 
 - type: entity
   id: VendingMachine
@@ -73,7 +73,7 @@
   - type: TypingIndicator
     proto: robot
   - type: TTS # Corvax-TTS
-    voice: TrainingRobot
+    voice: Glados
   - type: Speech
     speechVerb: Robotic
     speechSounds: Vending
