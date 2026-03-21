@@ -25,6 +25,12 @@ public sealed class TSFAutonomousLobbyVoteSystem : EntitySystem
 
     public override void Initialize()
     {
+        if (_cfg.GetCVar(TSFCVars.TsfLockPlayerVoteMenu))
+        {
+            _cfg.SetCVar(CCVars.VotePresetEnabled, false);
+            _cfg.SetCVar(CCVars.VoteMapEnabled, false);
+        }
+
         base.Initialize();
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<RoundStartingEvent>(OnRoundStarting);
@@ -63,7 +69,11 @@ public sealed class TSFAutonomousLobbyVoteSystem : EntitySystem
             if (!_sequenceActive)
                 return;
 
-            _audio.PlayGlobal("/Audio/_TSF/Misc/30sec.ogg", Filter.Broadcast(), false, AudioParams.Default);
+            _audio.PlayGlobal(
+                "/Audio/_TSF/Misc/30sec.ogg",
+                Filter.Broadcast(),
+                false,
+                AudioParams.Default.AddVolume(-10f));
         });
 
         if (_voteManager is not VoteManager vm)
