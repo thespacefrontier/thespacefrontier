@@ -1647,3 +1647,57 @@
   name: tts-voice-name-kingpin
   sex: Male
   speaker: kingpin
+
+- type: ttsVoice
+  id: Garithos
+  name: tts-voice-name-garithos
+  sex: Male
+  speaker: garithos
+
+- type: ttsVoice
+  id: Maiev
+  name: tts-voice-name-maiev
+  sex: Female
+  speaker: maiev
+
+- type: ttsVoice
+  id: Chen
+  name: tts-voice-name-chen
+  sex: Male
+  speaker: chen
+
+- type: ttsVoice
+  id: Dryad
+  name: tts-voice-name-dryad
+  sex: Female
+  speaker: dryad
+
+- type: ttsVoice
+  id: Rat
+  name: tts-voice-name-rat
+  sex: Male
+  speaker: rat
+
+- type: ttsVoice
+  id: Omu
+  name: tts-voice-name-omu
+  sex: Male
+  speaker: omu
+
+- type: ttsVoice
+  id: Kelthuzad
+  name: tts-voice-name-kelthuzad
+  sex: Male
+  speaker: kelthuzad
+
+- type: ttsVoice
+  id: Meepo
+  name: tts-voice-name-meepo
+  sex: Male
+  speaker: meepo_dota_2
+
+- type: ttsVoice
+  id: Zibb
+  name: tts-voice-name-zibb
+  sex: Male
+  speaker: ziggs
