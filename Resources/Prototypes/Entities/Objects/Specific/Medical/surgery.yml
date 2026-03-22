@@ -11,7 +11,6 @@
   - type: Tag
     tags:
     - SurgeryTool
-  - type: SurgeryTool
 
 # Cautery
 
@@ -67,7 +66,6 @@
   parent: BaseToolSurgery
   description: A surgical tool used to make incisions into flesh.
   components:
-  - type: Scalpel
   - type: Sharp
     butcherDelayModifier: 1.5 # Butchering with a scalpel, regardless of the type, will take 50% longer
   - type: Tool
@@ -149,7 +147,6 @@
   parent: BaseToolSurgery
   description: A surgical tool used to hold open incisions.
   components:
-  - type: Retractor
   - type: Sprite
     sprite: Objects/Specific/Medical/Surgery/scissors.rsi
     state: retractor
@@ -163,35 +160,12 @@
   parent: Retractor
   description: A surgical tool used to compress blood vessels to prevent bleeding.
   components:
-  - type: Retractor
   - type: Sprite
     state: hemostat
   - type: Item
     heldPrefix: hemostat
     storedRotation: 90
 
-
-# Bone gel (TSF)
-- type: entity
-  name: bone gel
-  id: BoneGel
-  parent: BaseToolSurgery
-  description: Medical gel that promotes bone healing. Use on an open fracture site after incision and retraction.
-  components:
-  - type: StaticPrice
-    price: 0  # Stackable: price comes from stack prototype
-  - type: Sprite
-    sprite: _TSF/Medical/bone_gel.rsi
-    state: bone-gel
-  - type: Item
-    sprite: _TSF/Medical/bone_gel.rsi
-    heldPrefix: bone-gel
-    size: Small
-  - type: BoneGel
-  - type: Stack
-    stackType: BoneGel
-    count: 1
-    maxCountOverride: 5
 
 # Saws
 

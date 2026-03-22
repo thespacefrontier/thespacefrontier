@@ -12,3 +12,5 @@ crew-monitoring-ui-no-station-label = Неизвестная станция
 
 crew-monitoring-ui-flavor-left-label = В случае экстренной ситуации, немедленно свяжитесь с медперсоналом станции.
 crew-monitoring-ui-flavor-right-label = v1.7
+
+crew-monitoring-ui-tsf-vitals = [font="Monospace" size=10]С:{ $c } Ш:{ $s } К:{ $b }[/font]

@@ -104,17 +104,3 @@ tsf-status-after-unconscious-7 = Ох, бля... голова раскалыва
 tsf-status-after-unconscious-8 = Сейчас встать будет тяжело... но надо...
 tsf-status-after-unconscious-9 = Не узнаю это место... или узнаю?
 tsf-status-after-unconscious-10 = Больше НИКОГДА не хочу через это.
-
-tsf-status-broken-limb-0 = БЛЯТЬ, БЛЯТЬ, БЛЯТЬ! ТОЧНО СЛОМАНО
-tsf-status-broken-limb-1 = ЧУВСТВУЮ, КАК ДВИГАЮТСЯ ОСКОЛКИ
-tsf-status-broken-limb-2 = СУКА, СЛОМАНО! ВРОДЕ БЫ...
-tsf-status-broken-limb-3 = Уже от одной мысли больно. Точно сломано.
-tsf-status-broken-limb-4 = Кажется, тут так гнуться не должно.
-tsf-status-broken-limb-5 = Сука, перелом...
-tsf-status-broken-limb-6 = Открытого перелома вроде нет, но что-то сломано.
-
-tsf-status-dislocated-limb-0 = Да... Так гнуться не должно.
-tsf-status-dislocated-limb-1 = Надо вправить кость на место.
-tsf-status-dislocated-limb-2 = Нет, надо поставить кость на место.
-tsf-status-dislocated-limb-3 = Там так больно. Надо бы провериться.
-tsf-status-dislocated-limb-4 = Конечность не на месте.

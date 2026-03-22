@@ -1,6 +1,3 @@
-// TSF edit start
-using Content.Shared._TSF.Surgery;
-// TSF edit end
 using Robust.Shared.Serialization;
 
 namespace Content.Shared.MedicalScanner;
@@ -31,14 +28,10 @@ public struct HealthAnalyzerUiState
     public bool? ScanMode;
     public bool? Bleeding;
     public bool? Unrevivable;
-    // TSF edit start
-    /// <summary>TSF: which body parts are broken/dislocated (from LimbConditionComponent).</summary>
-    public List<LimbStatusEntry>? LimbStatus;
-    // TSF edit end
 
     public HealthAnalyzerUiState() {}
 
-    public HealthAnalyzerUiState(NetEntity? targetEntity, float temperature, float bloodLevel, bool? scanMode, bool? bleeding, bool? unrevivable, List<LimbStatusEntry>? limbStatus = null)
+    public HealthAnalyzerUiState(NetEntity? targetEntity, float temperature, float bloodLevel, bool? scanMode, bool? bleeding, bool? unrevivable)
     {
         TargetEntity = targetEntity;
         Temperature = temperature;
@@ -46,7 +39,5 @@ public struct HealthAnalyzerUiState
         ScanMode = scanMode;
         Bleeding = bleeding;
         Unrevivable = unrevivable;
-        // TSF edit
-        LimbStatus = limbStatus;
     }
 }

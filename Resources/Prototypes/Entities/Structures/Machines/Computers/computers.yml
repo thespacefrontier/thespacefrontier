@@ -359,6 +359,20 @@
     radius: 1.5
     energy: 4.0
     color: "#1f8c28"
+  # TSF edit start
+  - type: MedicalRecordsConsole
+  - type: UserInterface
+    interfaces:
+      enum.MedicalRecordsConsoleKey.Key:
+        type: MedicalRecordsConsoleBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: ActivatableUI
+    singleUser: true
+    key: enum.MedicalRecordsConsoleKey.Key
+  - type: AccessReader
+    access: [["Medical"]]
+  # TSF edit end
   - type: Computer
     board: MedicalRecordsComputerCircuitboard
 

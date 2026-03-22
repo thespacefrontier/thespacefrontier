@@ -1,4 +1,4 @@
-﻿## UI
+## UI
 
 crew-monitoring-ui-title = Crew Monitoring Console
 
@@ -12,3 +12,5 @@ crew-monitoring-ui-no-station-label = Unknown station
 
 crew-monitoring-ui-flavor-left-label = In case of an emergency, contact station medical staff immediately
 crew-monitoring-ui-flavor-right-label = v1.7
+
+crew-monitoring-ui-tsf-vitals = [font="Monospace" size=10]C:{ $c } S:{ $s } V:{ $b }[/font]

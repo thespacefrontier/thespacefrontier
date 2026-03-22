@@ -91,6 +91,10 @@ public sealed partial class CrewMonitoringWindow : FancyWindow
 
                 if (existingSensor.DamagePercentage != null && sensor.DamagePercentage == null)
                     continue;
+                // TSF edit
+
+                if (existingSensor.TsfConsciousness != null && sensor.TsfConsciousness == null)
+                    continue;
             }
 
             uniqueSensorsMap[sensor.OwnerUid] = sensor;
@@ -302,6 +306,21 @@ public sealed partial class CrewMonitoringWindow : FancyWindow
             };
 
             jobContainer.AddChild(jobLabel);
+
+            // TSF edit
+            if (sensor.TsfConsciousness != null || sensor.TsfTraumaticShock != null || sensor.TsfBloodVolume != null)
+            {
+                var c = sensor.TsfConsciousness?.ToString("0.00") ?? "—";
+                var s = sensor.TsfTraumaticShock?.ToString("0.00") ?? "—";
+                var b = sensor.TsfBloodVolume?.ToString("0.00") ?? "—";
+                var tsfLine = new RichTextLabel
+                {
+                    HorizontalExpand = true,
+                    Margin = new Thickness(2, 2, 2, 0),
+                };
+                tsfLine.SetMessage(Loc.GetString("crew-monitoring-ui-tsf-vitals", ("c", c), ("s", s), ("b", b)));
+                sensorButton.AddChild(tsfLine);
+            }
 
             // Add user coordinates to the navmap
             if (coordinates != null && NavMap.Visible && _blipTexture != null)

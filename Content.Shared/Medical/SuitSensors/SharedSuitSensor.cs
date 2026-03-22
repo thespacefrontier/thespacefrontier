@@ -29,6 +29,15 @@ public sealed class SuitSensorStatus
     public int? TotalDamageThreshold;
     public float? DamagePercentage => TotalDamageThreshold == null || TotalDamage == null ? null : TotalDamage / (float) TotalDamageThreshold;
     public NetCoordinates? Coordinates;
+
+    // TSF edit
+    public float? TsfConsciousness;
+
+    // TSF edit
+    public float? TsfTraumaticShock;
+
+    // TSF edit
+    public float? TsfBloodVolume;
 }
 
 [Serializable, NetSerializable]
@@ -67,6 +76,9 @@ public static class SuitSensorConstants
     public const string NET_TOTAL_DAMAGE_THRESHOLD = "vitalsThreshold";
     public const string NET_COORDINATES = "coords";
     public const string NET_SUIT_SENSOR_UID = "uid";
+    public const string NET_TSF_CONSCIOUSNESS = "tsfConc";
+    public const string NET_TSF_TRAUMATIC_SHOCK = "tsfShock";
+    public const string NET_TSF_BLOOD_VOLUME = "tsfBlood";
 
     ///Used by the CrewMonitoringServerSystem to send the status of all connected suit sensors to each crew monitor
     public const string NET_STATUS_COLLECTION = "suit-status-collection";

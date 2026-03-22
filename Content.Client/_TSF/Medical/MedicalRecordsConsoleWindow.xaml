@@ -1,0 +1,73 @@
+<DefaultWindow xmlns="https://spacestation14.io"
+               Title="{Loc 'tsf-medical-records-console-window-title'}"
+               MinSize="780 520">
+    <BoxContainer Orientation="Vertical">
+        <BoxContainer Margin="5 5 5 10" HorizontalExpand="true" VerticalAlignment="Center">
+            <OptionButton Name="StationRecordsFilterType" MinWidth="200" Margin="0 0 10 0"/>
+            <LineEdit Name="StationRecordsFiltersValue"
+                PlaceHolder="{Loc 'general-station-record-for-filter-line-placeholder'}" HorizontalExpand="True"/>
+            <Button Name="StationRecordsFilters" Text="{Loc 'general-station-record-console-search-records'}"/>
+            <Button Name="StationRecordsFiltersReset" Text="{Loc 'general-station-record-console-reset-filters'}"/>
+        </BoxContainer>
+        <BoxContainer VerticalExpand="True">
+            <BoxContainer Orientation="Vertical" Margin="5" MinWidth="250" MaxWidth="250">
+                <Label Name="RecordListingStatus" Visible="False" />
+                <ScrollContainer VerticalExpand="True">
+                    <ItemList Name="RecordListing" />
+                </ScrollContainer>
+            </BoxContainer>
+            <BoxContainer Orientation="Vertical" Margin="5" VerticalExpand="True" HorizontalExpand="True">
+                <Label Name="RecordUnselected"
+                       Text="{Loc 'general-station-record-console-select-record-info'}"
+                       Visible="True"
+                       Align="Center"
+                       FontColorOverride="DarkGray" />
+                <BoxContainer Name="PersonContainer" Orientation="Vertical" Visible="False" VerticalExpand="True">
+                    <Label Name="PersonName"
+                           Margin="0 0 0 5"
+                           StyleClasses="LabelBig" />
+                    <BoxContainer Orientation="Horizontal" Margin="0 0 0 5">
+                        <Label Text="{Loc 'crew-monitoring-ui-job-label'}"
+                               FontColorOverride="DarkGray" />
+                        <TextureRect Name="PersonJobIcon"
+                                     TextureScale="2 2"
+                                     Margin="6 0"
+                                     VerticalAlignment="Center" />
+                        <Label Name="PersonJob" />
+                    </BoxContainer>
+                    <BoxContainer Orientation="Horizontal" Margin="0 0 0 5">
+                        <Label Text="{Loc 'general-station-record-prints-filter'}"
+                               FontColorOverride="DarkGray" />
+                        <Label Text=":"
+                               Margin="0 0 6 0"
+                               FontColorOverride="DarkGray" />
+                        <Label Name="PersonPrints" />
+                    </BoxContainer>
+                    <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
+                        <Label Text="{Loc 'general-station-record-dna-filter'}"
+                               FontColorOverride="DarkGray" />
+                        <Label Text=":"
+                               Margin="0 0 6 0"
+                               FontColorOverride="DarkGray" />
+                        <Label Name="PersonDna" />
+                    </BoxContainer>
+                    <PanelContainer StyleClasses="LowDivider" Margin="0 4 0 6" />
+                    <Label Name="MedicalLogHeader"
+                           Text="{Loc 'tsf-medical-records-console-log-header'}"
+                           StyleClasses="LabelHeading" />
+                    <Label Name="BodyNotLocatedHint"
+                           Visible="False"
+                           FontColorOverride="Orange"
+                           Margin="0 0 0 4" />
+                    <Label Name="LogEmptyHint"
+                           Visible="False"
+                           FontColorOverride="DarkGray"
+                           Margin="0 0 0 4" />
+                    <ScrollContainer VerticalExpand="True" MinHeight="120">
+                        <BoxContainer Name="LogContainer" Orientation="Vertical" />
+                    </ScrollContainer>
+                </BoxContainer>
+            </BoxContainer>
+        </BoxContainer>
+    </BoxContainer>
+</DefaultWindow>

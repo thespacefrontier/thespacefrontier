@@ -1,0 +1,43 @@
+- type: entity
+  parent: BloodstreamStatusEffectDebuff
+  id: StatusEffectTsfVitalsDistress
+  name: vitals-distress
+  components:
+  - type: StatusEffect
+    whitelist:
+      components:
+      - Bloodstream
+      - MobState
+      requireAll: true
+  - type: MovementModStatusEffect
+    walkSpeedModifier: 0.9
+    sprintSpeedModifier: 0.88
+
+- type: entity
+  parent: BloodstreamStatusEffectDebuff
+  id: StatusEffectTsfHypoxiaCue
+  name: hypoxia-cue
+  components:
+  - type: StatusEffect
+    whitelist:
+      components:
+      - Damageable
+      requireAll: true
+  - type: MovementModStatusEffect
+    walkSpeedModifier: 0.94
+    sprintSpeedModifier: 0.92
+
+- type: entity
+  parent: BloodstreamStatusEffectDebuff
+  id: StatusEffectPneumothorax
+  name: pneumothorax
+  components:
+  - type: StatusEffect
+    whitelist:
+      components:
+      - Bloodstream
+      - MobState
+      requireAll: true
+  - type: MovementModStatusEffect
+    walkSpeedModifier: 0.78
+    sprintSpeedModifier: 0.72

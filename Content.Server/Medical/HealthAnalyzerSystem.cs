@@ -1,10 +1,5 @@
 using Content.Server.Body.Systems;
 using Content.Server.Medical.Components;
-// TSF edit start
-using Content.Shared._TSF.Surgery;
-using Content.Shared._TSF.Surgery.Components;
-using Content.Shared.Body.Part;
-// TSF edit end
 using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage.Components;
@@ -24,7 +19,6 @@ using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Timing;
-using Content.Server.Body.Systems;
 
 namespace Content.Server.Medical;
 
@@ -40,8 +34,6 @@ public sealed class HealthAnalyzerSystem : EntitySystem
     [Dependency] private readonly TransformSystem _transformSystem = default!;
     [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
     [Dependency] private readonly BloodstreamSystem _bloodstreamSystem = default!;
-    // TSF edit
-    [Dependency] private readonly BodySystem _bodySystem = default!;
 
     public override void Initialize()
     {
@@ -240,31 +232,13 @@ public sealed class HealthAnalyzerSystem : EntitySystem
         if (TryComp<UnrevivableComponent>(entity, out var unrevivableComp) && unrevivableComp.Analyzable)
             unrevivable = true;
 
-        // TSF edit start
-        List<LimbStatusEntry>? limbStatus = null;
-        if (TryComp<BodyComponent>(entity, out var body))
-        {
-            foreach (var (partUid, part) in _bodySystem.GetBodyChildren(entity, body))
-            {
-                if (!TryComp<LimbConditionComponent>(partUid, out var limb) || limb.Condition == LimbCondition.Ok)
-                    continue;
-                limbStatus ??= new List<LimbStatusEntry>();
-                var partName = part.Symmetry != BodyPartSymmetry.None
-                    ? $"{part.Symmetry} {part.PartType}"
-                    : part.PartType.ToString();
-                limbStatus.Add(new LimbStatusEntry(partName, limb.Condition));
-            }
-        }
-        // TSF edit end
-
         return new HealthAnalyzerUiState(
             GetNetEntity(entity),
             bodyTemperature,
             bloodAmount,
             null,
             bleeding,
-            unrevivable,
-            limbStatus // TSF edit
+            unrevivable
         );
     }
 }

@@ -49,12 +49,3 @@
   icon: {sprite: "/Textures/Objects/Specific/Medical/medical.rsi", state: regenerative-mesh}
   spawn: RegenerativeMesh
 
-# TSF: bone gel for fracture surgery
-- type: stack
-  parent: BaseSmallStack
-  id: BoneGel
-  name: stack-bone-gel
-  icon: { sprite: "/Textures/_TSF/Medical/bone_gel.rsi", state: bone-gel }
-  spawn: BoneGel
-  maxCount: 5
-

@@ -14,6 +14,7 @@ using Content.Shared.Popups;
 using Content.Shared.PowerCell;
 using Content.Shared.Timing;
 using Content.Shared.Traits.Assorted;
+using Content.Shared._TSF.Medical;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
 
@@ -205,28 +206,44 @@ public abstract class SharedDefibrillatorSystem : EntitySystem
         }
         else
         {
-            if (_mobState.IsDead(target, targetMobState))
-                _damageable.TryChangeDamage(target, ent.Comp.ZapHeal, true, origin: user);
-
-            if (TryComp<MobThresholdsComponent>(target, out var targetThresholds) &&
-                TryComp<DamageableComponent>(target, out var targetDamageable) &&
-                _mobThreshold.TryGetThresholdForState(target, MobState.Dead, out var threshold, targetThresholds) &&
-                targetDamageable.TotalDamage < threshold)
+            var reviveCheck = new TsfDefibrillatorReviveCheckEvent
             {
-                _mobState.ChangeMobState(target, MobState.Critical, targetMobState, user);
-                failedRevive = false;
-            }
+                Target = target,
+                User = user,
+                AllowRevive = true
+            };
+            RaiseLocalEvent(target, ref reviveCheck);
 
-            if (_mind.TryGetMind(target, out var mindUid, out var mindComp) &&
-                _player.TryGetSessionById(mindComp.UserId, out var playerSession))
+            if (reviveCheck.AllowRevive)
             {
-                // notify them they're being revived.
-                if (mindComp.CurrentEntity != target)
-                    OpenReturnToBodyEui((mindUid, mindComp), playerSession);
+                if (_mobState.IsDead(target, targetMobState))
+                    _damageable.TryChangeDamage(target, ent.Comp.ZapHeal, true, origin: user);
+
+                if (TryComp<MobThresholdsComponent>(target, out var targetThresholds) &&
+                    TryComp<DamageableComponent>(target, out var targetDamageable) &&
+                    _mobThreshold.TryGetThresholdForState(target, MobState.Dead, out var threshold, targetThresholds) &&
+                    targetDamageable.TotalDamage < threshold)
+                {
+                    _mobState.ChangeMobState(target, MobState.Critical, targetMobState, user);
+                    failedRevive = false;
+                }
+
+                if (_mind.TryGetMind(target, out var mindUid, out var mindComp) &&
+                    _player.TryGetSessionById(mindComp.UserId, out var playerSession))
+                {
+                    // notify them they're being revived.
+                    if (mindComp.CurrentEntity != target)
+                        OpenReturnToBodyEui((mindUid, mindComp), playerSession);
+                }
+                else
+                {
+                    _chat.TrySendInGameICMessage(ent.Owner, Loc.GetString("defibrillator-no-mind"),
+                        InGameICChatType.Speak, true);
+                }
             }
             else
             {
-                _chat.TrySendInGameICMessage(ent.Owner, Loc.GetString("defibrillator-no-mind"),
+                _chat.TrySendInGameICMessage(ent.Owner, Loc.GetString("tsf-defibrillator-revive-blocked"),
                     InGameICChatType.Speak, true);
             }
         }
