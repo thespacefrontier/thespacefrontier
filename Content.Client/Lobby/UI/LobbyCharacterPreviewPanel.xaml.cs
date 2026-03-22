@@ -13,6 +13,7 @@ public sealed partial class LobbyCharacterPreviewPanel : Control
     [Dependency] private readonly IEntityManager _entManager = default!;
 
     public Button CharacterSetupButton => CharacterSetup;
+    public Button DiscordLinkButton => DiscordLink; // TSF-Sponsors
 
     private EntityUid? _previewDummy;
 

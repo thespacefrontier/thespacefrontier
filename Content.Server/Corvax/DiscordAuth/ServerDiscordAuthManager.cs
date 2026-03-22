@@ -36,13 +36,13 @@ public sealed class ServerDiscordAuthManager : IServerDiscordAuthManager
         }, true);
     }
 
-    public async Task<string> GenerateAuthLink(NetUserId userId, CancellationToken cancel)
+    public async Task<string> GenerateAuthLink(NetUserId userId, string userName, CancellationToken cancel)
     {
         if (string.IsNullOrEmpty(_apiUrl))
             throw new InvalidOperationException("Sponsor API URL not configured");
 
         var url = $"{_apiUrl.TrimEnd('/')}/api/links/token";
-        var payload = new { ss14UserId = userId.UserId, ss14UserName = "" };
+        var payload = new { ss14UserId = userId.UserId, ss14UserName = userName };
 
         var response = await _httpClient.PostAsJsonAsync(url, payload, cancel);
         response.EnsureSuccessStatusCode();

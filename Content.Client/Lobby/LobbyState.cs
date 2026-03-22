@@ -1,4 +1,5 @@
 using Content.Client.Audio;
+using Content.Client.Corvax.DiscordAuth;
 using Content.Client.GameTicking.Managers;
 using Content.Client.LateJoin;
 using Content.Client.Lobby.UI;
@@ -33,6 +34,7 @@ namespace Content.Client.Lobby
 
         private ClientGameTicker _gameTicker = default!;
         private ContentAudioSystem _contentAudioSystem = default!;
+        private DiscordLinkSystem _discordLink = default!; // TSF-Sponsors
 
         protected override Type? LinkedScreenType { get; } = typeof(LobbyGui);
         public LobbyGui? Lobby;
@@ -49,6 +51,7 @@ namespace Content.Client.Lobby
             var chatController = _userInterfaceManager.GetUIController<ChatUIController>();
             _gameTicker = _entityManager.System<ClientGameTicker>();
             _contentAudioSystem = _entityManager.System<ContentAudioSystem>();
+            _discordLink = _entityManager.System<DiscordLinkSystem>(); // TSF-Sponsors
             _contentAudioSystem.LobbySoundtrackChanged += UpdateLobbySoundtrackInfo;
 
             chatController.SetMainChat(true);
@@ -72,6 +75,13 @@ namespace Content.Client.Lobby
             Lobby.ReadyButton.OnPressed += OnReadyPressed;
             Lobby.ReadyButton.OnToggled += OnReadyToggled;
 
+            // TSF-Sponsors-Start
+            Lobby.CharacterPreview.DiscordLinkButton.OnPressed += OnDiscordLinkPressed;
+            _discordLink.StatusUpdated += UpdateDiscordLinkButton;
+            UpdateDiscordLinkButton();
+            _discordLink.RequestStatus();
+            // TSF-Sponsors-End
+
             _gameTicker.InfoBlobUpdated += UpdateLobbyUi;
             _gameTicker.LobbyStatusUpdated += LobbyStatusUpdated;
             _gameTicker.LobbyLateJoinStatusUpdated += LobbyLateJoinStatusUpdated;
@@ -91,6 +101,11 @@ namespace Content.Client.Lobby
             Lobby!.CharacterPreview.CharacterSetupButton.OnPressed -= OnSetupPressed;
             Lobby!.ReadyButton.OnPressed -= OnReadyPressed;
             Lobby!.ReadyButton.OnToggled -= OnReadyToggled;
+
+            // TSF-Sponsors-Start
+            Lobby!.CharacterPreview.DiscordLinkButton.OnPressed -= OnDiscordLinkPressed;
+            _discordLink.StatusUpdated -= UpdateDiscordLinkButton;
+            // TSF-Sponsors-End
 
             Lobby = null;
         }
@@ -279,5 +294,36 @@ namespace Content.Client.Lobby
 
             _consoleHost.ExecuteCommand($"toggleready {newReady}");
         }
+
+        // TSF-Sponsors-Start
+        private void OnDiscordLinkPressed(BaseButton.ButtonEventArgs args)
+        {
+            if (_discordLink.IsLinked)
+                _discordLink.RequestUnlink();
+            else
+                _discordLink.RequestLink();
+        }
+
+        private void UpdateDiscordLinkButton()
+        {
+            if (Lobby == null)
+                return;
+
+            if (_discordLink.IsLinked)
+            {
+                var discordName = string.IsNullOrWhiteSpace(_discordLink.DiscordName)
+                    ? "Discord"
+                    : _discordLink.DiscordName!;
+                Lobby.CharacterPreview.DiscordLinkButton.Text =
+                    Loc.GetString("lobby-character-preview-panel-discord-unlink-button",
+                        ("discordName", discordName));
+            }
+            else
+            {
+                Lobby.CharacterPreview.DiscordLinkButton.Text =
+                    Loc.GetString("lobby-character-preview-panel-discord-link-button");
+            }
+        }
+        // TSF-Sponsors-End
     }
 }
