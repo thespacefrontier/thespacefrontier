@@ -21,7 +21,6 @@ public sealed class TSFStatusMessageUIController : UIController
     private Label? _label;
     private const float ShakeAmount = 3f;
     private const int FontSize = 22;
-    /// <summary>Margin from bottom (same style as Hotbar/Inventory use in DefaultGameScreen).</summary>
     private const int BottomMargin = 200;
 
     public override void Initialize()
@@ -40,7 +39,6 @@ public sealed class TSFStatusMessageUIController : UIController
         if (screen == null)
             return;
         var font = LoadStatusMessageFont();
-        // Same pattern as Hotbar/Inventory: root positioned with LayoutContainer.BottomWide, content centered via BoxContainer + HorizontalAlignment.Center
         _root = new LayoutContainer { MouseFilter = Control.MouseFilterMode.Ignore };
         LayoutContainer.SetAnchorAndMarginPreset(_root, LayoutContainer.LayoutPreset.BottomWide, margin: BottomMargin);
 

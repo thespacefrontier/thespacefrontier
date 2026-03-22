@@ -253,7 +253,7 @@
     - Critical
     - Dead
   - type: TTS # Corvax-TTS
-    voice: TrainingRobot
+    voice: Glados
 
 - type: entity
   abstract: true

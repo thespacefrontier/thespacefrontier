@@ -1,11 +1,7 @@
-// TSF
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._TSF.Surgery;
 
-/// <summary>
-/// One line for health analyzer / surgery UI: limb label + condition.
-/// </summary>
 [Serializable, NetSerializable]
 public readonly struct LimbStatusEntry
 {

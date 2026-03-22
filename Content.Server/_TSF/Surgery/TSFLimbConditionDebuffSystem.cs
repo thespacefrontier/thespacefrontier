@@ -1,4 +1,3 @@
-// TSF
 using Content.Server.Body.Systems;
 using Content.Shared._TSF.Surgery;
 using Content.Shared._TSF.Surgery.Components;
@@ -11,16 +10,12 @@ using Robust.Shared.Containers;
 
 namespace Content.Server._TSF.Surgery;
 
-/// <summary>
-/// Applies debuffs when limbs are dislocated or broken: slower movement for leg/foot, blocked use for arm/hand.
-/// </summary>
 public sealed class TSFLimbConditionDebuffSystem : EntitySystem
 {
     [Dependency] private readonly BodySystem _body = default!;
     [Dependency] private readonly MovementSpeedModifierSystem _movementSpeed = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
 
-    /// <summary>Speed multiplier when a leg or foot is dislocated/broken (stacked if both legs).</summary>
     private const float LegDebuffPerLimb = 0.65f;
 
     public override void Initialize()

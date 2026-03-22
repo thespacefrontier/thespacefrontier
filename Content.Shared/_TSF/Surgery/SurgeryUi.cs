@@ -9,7 +9,6 @@ public enum SurgeryUiKey : byte
     Key
 }
 
-/// <summary>One limb row in the surgery UI: part identity, condition, and which actions are available.</summary>
 [Serializable, NetSerializable]
 public sealed class SurgeryLimbEntry
 {
