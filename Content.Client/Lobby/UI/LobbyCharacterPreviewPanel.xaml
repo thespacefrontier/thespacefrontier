@@ -16,6 +16,11 @@
             <Button Name="CharacterSetup" Text="{Loc 'lobby-character-preview-panel-character-setup-button'}"
                     HorizontalAlignment="Center"
                     Margin="0 5 0 0"/>
+            <!-- TSF-Sponsors-Start -->
+            <Button Name="DiscordLink" Text="{Loc 'lobby-character-preview-panel-discord-link-button'}"
+                    HorizontalAlignment="Center"
+                    Margin="0 5 0 0"/>
+            <!-- TSF-Sponsors-End -->
         </BoxContainer>
         <Label Name="Unloaded" Text="{Loc 'lobby-character-preview-panel-unloaded-preferences-label'}"/>
     </BoxContainer>
