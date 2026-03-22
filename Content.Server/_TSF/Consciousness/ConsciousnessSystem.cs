@@ -3,6 +3,7 @@ using Content.Shared.Damage.Components;
 using Content.Shared.FixedPoint;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Rejuvenate;
 using Content.Shared.Standing;
 using Content.Shared.StatusEffectNew;
 using Content.Shared.Traits.Assorted;
@@ -33,6 +34,25 @@ public sealed class ConsciousnessSystem : EntitySystem
     private const string AirlossGroup = "Airloss";
     private const string ToxinGroup = "Toxin";
 
+    public override void Initialize()
+    {
+        base.Initialize();
+        SubscribeLocalEvent<ConsciousnessComponent, RejuvenateEvent>(OnRejuvenate);
+    }
+
+    private void OnRejuvenate(Entity<ConsciousnessComponent> ent, ref RejuvenateEvent args)
+    {
+        if (!ent.Comp.Unconscious && ent.Comp.Level >= 1f)
+            return;
+
+        var wasUnconscious = ent.Comp.Unconscious;
+        ent.Comp.Level = 1f;
+        ent.Comp.Unconscious = false;
+        Dirty(ent, ent.Comp);
+        if (wasUnconscious)
+            _standing.Stand(ent);
+    }
+
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -48,7 +68,19 @@ public sealed class ConsciousnessSystem : EntitySystem
         while (query.MoveNext(out var uid, out var consciousness, out var damageable, out var thresholds))
         {
             if (!thresholds.ShowOverlays)
+            {
+                if (consciousness.Unconscious || consciousness.Level < 1f)
+                {
+                    var hadUnconsciousFlag = consciousness.Unconscious;
+                    consciousness.Level = 1f;
+                    consciousness.Unconscious = false;
+                    Dirty(uid, consciousness);
+                    if (hadUnconsciousFlag)
+                        _standing.Stand(uid);
+                }
+
                 continue;
+            }
 
             if (!_mobThreshold.TryGetIncapThreshold(uid, out var critThreshold, thresholds) || !critThreshold.HasValue)
             {
