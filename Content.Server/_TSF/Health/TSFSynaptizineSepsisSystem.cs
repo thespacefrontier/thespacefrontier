@@ -37,7 +37,7 @@ public sealed class TSFSynaptizineSepsisSystem : EntitySystem
             tracker.SepsisAccumSeconds = 0f;
             tracker.Infected = false;
             tracker.HeavyBleedSeconds = 0f;
-            TsfWoundTrackerNetDirty.Mark(EntityManager, uid, tracker);
+            Dirty(uid, tracker);
 
             if (HasComp<PneumothoraxComponent>(uid))
                 RemCompDeferred<PneumothoraxComponent>(uid);

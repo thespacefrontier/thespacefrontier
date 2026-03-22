@@ -24,6 +24,10 @@ using Content.Server.ServerInfo;
 using Content.Server.ServerUpdates;
 using Content.Server.Voting.Managers;
 using Content.Server.Worldgen.Tools;
+using Content.Corvax.Interfaces.Server;
+using Content.Corvax.Interfaces.Shared;
+using Content.Server.Corvax.DiscordAuth;
+using Content.Server.Corvax.Sponsors;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Administration.Managers;
 using Content.Shared.Chat;
@@ -82,5 +86,9 @@ internal static class ServerContentIoC
         deps.Register<DiscordLink>();
         deps.Register<DiscordChatLink>();
         IoCManager.Register<TTSManager>(); // Corvax-TTS
+        IoCManager.Register<ISharedSponsorsManager, SponsorsManager>(); // Corvax-Sponsors
+        IoCManager.Register<ISharedDiscordAuthManager, ServerDiscordAuthManager>(); // Corvax-DiscordAuth
+        IoCManager.Register<IServerDiscordAuthManager, ServerDiscordAuthManager>(); // Corvax-DiscordAuth
+        IoCManager.Register<DiscordWhoisCommand>(); // Corvax-Sponsors
     }
 }

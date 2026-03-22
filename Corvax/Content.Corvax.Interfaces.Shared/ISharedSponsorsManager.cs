@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using Robust.Shared.Maths;
 using Robust.Shared.Network;
 
@@ -14,6 +14,8 @@ public interface ISharedSponsorsManager
     // Server
     public bool TryGetServerPrototypes(NetUserId userId, [NotNullWhen(true)] out List<string>? prototypes);
     public bool TryGetServerOocColor(NetUserId userId, [NotNullWhen(true)] out Color? color);
+    public bool TryGetServerOocPrefix(NetUserId userId, [NotNullWhen(true)] out string? prefix);
+    public bool TryGetServerGhostColor(NetUserId userId, [NotNullWhen(true)] out Color? color);
     public int GetServerExtraCharSlots(NetUserId userId);
     public bool HaveServerPriorityJoin(NetUserId userId);
 }

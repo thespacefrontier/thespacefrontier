@@ -34,6 +34,8 @@ using Robust.Shared.ContentPack;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+using Content.Corvax.Interfaces.Shared;
+using Content.Server.Corvax.Sponsors;
 using Content.Shared.Emp;
 using System.IO;
 
@@ -135,6 +137,9 @@ namespace Content.Server.Entry
             _job.Initialize();
             _rateLimit.Initialize();
             IoCManager.Resolve<TTSManager>().Initialize(); // Corvax-TTS
+            IoCManager.Resolve<ISharedSponsorsManager>().Initialize(); // Corvax-Sponsors
+            IoCManager.Resolve<ISharedDiscordAuthManager>().Initialize(); // Corvax-DiscordAuth
+            IoCManager.Resolve<DiscordWhoisCommand>().Initialize(); // Corvax-Sponsors
         }
 
         public override void PostInit()
