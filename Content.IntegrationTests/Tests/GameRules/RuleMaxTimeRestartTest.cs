@@ -38,7 +38,7 @@ namespace Content.IntegrationTests.Tests.GameRules
             {
                 Assert.That(sGameTicker.RunLevel, Is.EqualTo(GameRunLevel.PreRoundLobby));
                 maxTime.RoundMaxTime = TimeSpan.FromSeconds(3);
-                // TSF edit
+                // TSF-edit
                 sGameTicker.StartRound(force: true);
             });
 

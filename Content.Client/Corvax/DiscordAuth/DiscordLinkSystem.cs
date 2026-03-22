@@ -44,7 +44,26 @@ public sealed class DiscordLinkSystem : EntitySystem
 
     private void OnLinkUrl(DiscordLinkUrlEvent ev)
     {
-        if (!string.IsNullOrEmpty(ev.Url))
-            _uriOpener.OpenUri(new Uri(ev.Url));
+        if (string.IsNullOrEmpty(ev.Url))
+        {
+            Log.Warning("Discord link request failed (empty URL from server).");
+            return;
+        }
+
+        try
+        {
+            var uri = new Uri(ev.Url);
+            if (!uri.IsAbsoluteUri)
+            {
+                Log.Warning("Discord link URL is not absolute: {0}", ev.Url);
+                return;
+            }
+
+            _uriOpener.OpenUri(uri);
+        }
+        catch (Exception ex)
+        {
+            Log.Warning("Discord link URL is invalid: {0} ({1})", ev.Url, ex.Message);
+        }
     }
 }

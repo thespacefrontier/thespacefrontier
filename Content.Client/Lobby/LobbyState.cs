@@ -78,6 +78,7 @@ namespace Content.Client.Lobby
             // TSF-Sponsors-Start
             Lobby.CharacterPreview.DiscordLinkButton.OnPressed += OnDiscordLinkPressed;
             _discordLink.StatusUpdated += UpdateDiscordLinkButton;
+            UpdateDiscordLinkButton();
             _discordLink.RequestStatus();
             // TSF-Sponsors-End
 
@@ -310,9 +311,12 @@ namespace Content.Client.Lobby
 
             if (_discordLink.IsLinked)
             {
+                var discordName = string.IsNullOrWhiteSpace(_discordLink.DiscordName)
+                    ? "Discord"
+                    : _discordLink.DiscordName!;
                 Lobby.CharacterPreview.DiscordLinkButton.Text =
                     Loc.GetString("lobby-character-preview-panel-discord-unlink-button",
-                        ("discordName", _discordLink.DiscordName ?? "Discord"));
+                        ("discordName", discordName));
             }
             else
             {
