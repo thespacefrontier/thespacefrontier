@@ -298,12 +298,26 @@ internal sealed partial class ChatManager : IChatManager
             wrappedMessage = Loc.GetString("chat-manager-send-ooc-patron-wrap-message", ("patronColor", patronColor),("playerName", player.Name), ("message", FormattedMessage.EscapeText(message)));
         }
 
-        // Corvax-Sponsors-Start
+        // TSF-Sponsors-Start
         if (_sponsorsManager != null && _sponsorsManager.TryGetServerOocColor(player.UserId, out var oocColor))
         {
-            wrappedMessage = Loc.GetString("chat-manager-send-ooc-patron-wrap-message", ("patronColor", oocColor),("playerName", player.Name), ("message", FormattedMessage.EscapeText(message)));
+            if (_sponsorsManager.TryGetServerOocPrefix(player.UserId, out var oocPrefix))
+            {
+                wrappedMessage = Loc.GetString("chat-manager-send-ooc-sponsor-wrap-message",
+                    ("sponsorColor", oocColor),
+                    ("sponsorPrefix", oocPrefix),
+                    ("playerName", player.Name),
+                    ("message", FormattedMessage.EscapeText(message)));
+            }
+            else
+            {
+                wrappedMessage = Loc.GetString("chat-manager-send-ooc-patron-wrap-message",
+                    ("patronColor", oocColor),
+                    ("playerName", player.Name),
+                    ("message", FormattedMessage.EscapeText(message)));
+            }
         }
-        // Corvax-Sponsors-End
+        // TSF-Sponsors-End
 
         //TODO: player.Name color, this will need to change the structure of the MsgChatMessage
         ChatMessageToAll(ChatChannel.OOC, message, wrappedMessage, EntityUid.Invalid, hideChat: false, recordReplay: true, colorOverride: colorOverride, author: player.UserId);

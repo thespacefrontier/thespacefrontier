@@ -1,4 +1,4 @@
-﻿using Robust.Shared.Configuration;
+using Robust.Shared.Configuration;
 
 namespace Content.Shared.Corvax.CCCVars;
 
@@ -87,4 +87,20 @@ public sealed class CCCVars
     /// </summary>
     public static readonly CVarDef<bool> StationGoal =
         CVarDef.Create("game.station_goal", true, CVar.SERVERONLY);
+
+    /*
+     * Sponsor Service
+     */
+
+    /// <summary>
+    /// URL of the external sponsor/linking service API.
+    /// </summary>
+    public static readonly CVarDef<string> SponsorApiUrl =
+        CVarDef.Create("sponsor.api_url", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    /// <summary>
+    /// API key for authenticating with the sponsor service.
+    /// </summary>
+    public static readonly CVarDef<string> SponsorApiKey =
+        CVarDef.Create("sponsor.api_key", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
 }

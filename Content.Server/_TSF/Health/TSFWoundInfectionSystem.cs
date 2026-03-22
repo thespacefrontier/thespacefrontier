@@ -56,7 +56,7 @@ public sealed class TSFWoundInfectionSystem : EntitySystem
                         tr.Infected = false;
                         tr.SepsisStage = 0;
                         tr.SepsisAccumSeconds = 0f;
-                        TsfWoundTrackerNetDirty.Mark(EntityManager, uid, tr);
+                        Dirty(uid, tr);
                     }
                 }
 
@@ -68,13 +68,13 @@ public sealed class TSFWoundInfectionSystem : EntitySystem
 
             if (tracker.HeavyBleedSeconds < SecondsToInfect)
             {
-                TsfWoundTrackerNetDirty.Mark(EntityManager, uid, tracker);
+                Dirty(uid, tracker);
                 continue;
             }
 
             if (_timing.CurTime < tracker.NextInfectionDamage)
             {
-                TsfWoundTrackerNetDirty.Mark(EntityManager, uid, tracker);
+                Dirty(uid, tracker);
                 continue;
             }
 
@@ -91,7 +91,7 @@ public sealed class TSFWoundInfectionSystem : EntitySystem
             tracker.Infected = true;
             tracker.NextInfectionDamage = _timing.CurTime + TimeSpan.FromSeconds(InfectionIntervalSeconds);
             tracker.HeavyBleedSeconds = 0f;
-            TsfWoundTrackerNetDirty.Mark(EntityManager, uid, tracker);
+            Dirty(uid, tracker);
         }
 
         var sepsisQuery = EntityQueryEnumerator<WoundInfectionTrackerComponent>();
@@ -106,7 +106,7 @@ public sealed class TSFWoundInfectionSystem : EntitySystem
             else if (tr.SepsisAccumSeconds >= SepsisStage1Seconds)
                 tr.SepsisStage = Math.Max(tr.SepsisStage, (byte) 1);
 
-            TsfWoundTrackerNetDirty.Mark(EntityManager, uid, tr);
+            Dirty(uid, tr);
         }
     }
 }

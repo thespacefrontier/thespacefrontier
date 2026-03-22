@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Numerics;
+using Content.Corvax.Interfaces.Shared;
 using Content.Server.Administration.Logs;
 using Content.Server.Chat.Managers;
 using Content.Server.GameTicking;
@@ -69,6 +70,8 @@ namespace Content.Server.Ghost
         [Dependency] private readonly TagSystem _tag = default!;
         [Dependency] private readonly NameModifierSystem _nameMod = default!;
 
+        private ISharedSponsorsManager? _sponsorsMgr; // TSF-Sponsors
+
         private EntityQuery<GhostComponent> _ghostQuery;
         private EntityQuery<PhysicsComponent> _physicsQuery;
 
@@ -79,6 +82,7 @@ namespace Content.Server.Ghost
         {
             base.Initialize();
 
+            IoCManager.Instance!.TryResolveType(out _sponsorsMgr); // TSF-Sponsors
             _ghostQuery = GetEntityQuery<GhostComponent>();
             _physicsQuery = GetEntityQuery<PhysicsComponent>();
 
@@ -495,6 +499,16 @@ namespace Content.Server.Ghost
             }
 
             SetCanReturnToBody((ghost, ghostComponent), canReturn);
+
+            // TSF-Sponsors-Start
+            if (mind.Comp.UserId is { } ghostUserId
+                && _sponsorsMgr != null
+                && _sponsorsMgr.TryGetServerGhostColor(ghostUserId, out var ghostColor))
+            {
+                ghostComponent.Color = ghostColor.Value;
+                Dirty(ghost, ghostComponent);
+            }
+            // TSF-Sponsors-End
 
             if (canReturn)
                 _minds.Visit(mind.Owner, ghost, mind.Comp);
