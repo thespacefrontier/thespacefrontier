@@ -1,4 +1,7 @@
+using Content.Shared._TSF;
 using Content.Shared._TSF.Consciousness;
+using Content.Shared.Body.Components;
+using Content.Shared.Body.Systems;
 using Content.Shared.Damage.Components;
 using Content.Shared.FixedPoint;
 using Content.Shared.Mobs.Components;
@@ -8,6 +11,8 @@ using Content.Shared.Standing;
 using Content.Shared.StatusEffectNew;
 using Content.Shared.Traits.Assorted;
 using Robust.Server.GameObjects;
+using Robust.Shared.Configuration;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._TSF.Consciousness;
 
@@ -16,23 +21,9 @@ public sealed class ConsciousnessSystem : EntitySystem
     [Dependency] private readonly MobThresholdSystem _mobThreshold = default!;
     [Dependency] private readonly StandingStateSystem _standing = default!;
     [Dependency] private readonly StatusEffectsSystem _statusEffects = default!;
-
-    private const float UnconsciousThreshold = 0.22f;
-    private const float PainToConsciousnessFactor = 0.85f;
-    private static readonly Dictionary<string, float> PainMultipliers = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["Brute"] = 1f,
-        ["Burn"] = 1.2f,
-        ["Slash"] = 1.1f,
-        ["Piercing"] = 1f,
-        ["Blunt"] = 0.9f,
-        ["Caustic"] = 1f,
-        ["Poison"] = 0.8f,
-        ["Asphyxiation"] = 0.7f,
-        ["Bloodloss"] = 0.8f,
-    };
-    private const string AirlossGroup = "Airloss";
-    private const string ToxinGroup = "Toxin";
+    [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private readonly SharedBloodstreamSystem _bloodstream = default!;
 
     public override void Initialize()
     {
@@ -56,6 +47,22 @@ public sealed class ConsciousnessSystem : EntitySystem
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        var unconsciousThreshold = _cfg.GetCVar(TSFCVars.TsfPainUnconsciousThreshold);
+        var painToConsciousnessFactor = _cfg.GetCVar(TSFCVars.TsfPainToConsciousnessFactor);
+        var painBlend = _cfg.GetCVar(TSFCVars.TsfConsciousnessPainRatioBlend);
+        var bloodDamageBlend = _cfg.GetCVar(TSFCVars.TsfConsciousnessBloodDamageRatioBlend);
+        var hypovolemiaBlend = _cfg.GetCVar(TSFCVars.TsfConsciousnessHypovolemiaBlend);
+        var hypovolemiaBloodStart = _cfg.GetCVar(TSFCVars.TsfConsciousnessHypovolemiaBloodStart);
+        var shockBlend = _cfg.GetCVar(TSFCVars.TsfConsciousnessTraumaticShockBlend);
+        var asphyxBlend = _cfg.GetCVar(TSFCVars.TsfConsciousnessAsphyxiationBlend);
+        var painGlobal = _cfg.GetCVar(TSFCVars.TsfPainGlobalMultiplier);
+        var weightSetId = _cfg.GetCVar(TSFCVars.TsfPainWeightSet);
+        if (!_proto.TryIndex<TSFPainWeightPrototype>(weightSetId, out var painWeights) &&
+            !_proto.TryIndex<TSFPainWeightPrototype>("TSFPainWeights", out painWeights))
+        {
+            return;
+        }
 
         var ensureQuery = EntityQueryEnumerator<MobThresholdsComponent, DamageableComponent>();
         while (ensureQuery.MoveNext(out var uid, out var thresholds, out _))
@@ -102,36 +109,40 @@ public sealed class ConsciousnessSystem : EntitySystem
             float painLevel = 0f;
             if (!_statusEffects.TryEffectsWithComp<PainNumbnessStatusEffectComponent>(uid, out _))
             {
-                foreach (var painType in damageable.PainDamageGroups)
-                {
-                    var groupId = painType.ToString();
-                    if (damageable.DamagePerGroup.TryGetValue(groupId, out var pain))
-                        painLevel += pain.Float() * GetPainMultiplier(groupId);
-                }
+                painLevel = SharedPainMath.ComputePainLevel(damageable, _proto, painWeights, painGlobal);
             }
-            else
+
+            var painRatio = SharedTsfConsciousnessFormula.ComputePainRatio(painLevel, thresh);
+            var bloodDamageRatio = Math.Clamp(SharedPainMath.ComputeBloodlossStyleContribution(damageable, thresh), 0f, 1f);
+            var asphyxRatio = SharedTsfConsciousnessFormula.ComputeAsphyxiationRatio(
+                SharedPainMath.GetAsphyxiationDamage(damageable),
+                thresh);
+
+            float hypovolemiaRatio = 0f;
+            if (TryComp<BloodstreamComponent>(uid, out var bloodstream))
             {
-                painLevel = 0f;
+                var bloodLevel = _bloodstream.GetBloodLevel((uid, bloodstream));
+                hypovolemiaRatio = SharedTsfConsciousnessFormula.ComputeHypovolemiaRatio(bloodLevel, hypovolemiaBloodStart);
             }
 
-            float bloodLossContrib = 0f;
-            var deathLevel = FixedPoint2.Zero;
-            if (damageable.DamagePerGroup.TryGetValue(AirlossGroup, out var airloss))
-                deathLevel += airloss;
-            if (damageable.DamagePerGroup.TryGetValue(ToxinGroup, out var toxin))
-                deathLevel += toxin;
-            if (thresh > FixedPoint2.Zero)
-                bloodLossContrib = (deathLevel / thresh).Float();
+            var shockSeverity = TryComp<TraumaticShockComponent>(uid, out var shock) ? shock.Severity : 0f;
 
-            var painRatio = (FixedPoint2.New(painLevel) / thresh).Float();
-            painRatio = Math.Clamp(painRatio, 0f, 1.5f);
-            var bloodRatio = Math.Clamp(bloodLossContrib, 0f, 1f);
-            var combined = painRatio * 0.85f + bloodRatio * 0.25f;
-            var level = Math.Clamp(1f - combined * PainToConsciousnessFactor, 0f, 1f);
+            var level = SharedTsfConsciousnessFormula.ComputeLevel(
+                painRatio,
+                bloodDamageRatio,
+                hypovolemiaRatio,
+                shockSeverity,
+                asphyxRatio,
+                painBlend,
+                bloodDamageBlend,
+                hypovolemiaBlend,
+                shockBlend,
+                asphyxBlend,
+                painToConsciousnessFactor);
 
             var wasUnconscious = consciousness.Unconscious;
             consciousness.Level = level;
-            consciousness.Unconscious = level < UnconsciousThreshold;
+            consciousness.Unconscious = level < unconsciousThreshold;
 
             if (consciousness.Unconscious && !wasUnconscious)
                 _standing.Down(uid);
@@ -140,10 +151,5 @@ public sealed class ConsciousnessSystem : EntitySystem
 
             Dirty(uid, consciousness);
         }
-    }
-
-    private static float GetPainMultiplier(string damageGroupId)
-    {
-        return PainMultipliers.TryGetValue(damageGroupId, out var m) ? m : 1f;
     }
 }

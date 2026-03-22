@@ -104,17 +104,3 @@ tsf-status-after-unconscious-7 = Ohh-fuck... my head is aching...
 tsf-status-after-unconscious-8 = Oh it's gonna be hard to get up right now... but I have to...
 tsf-status-after-unconscious-9 = I don't recognize this place at all... or do I?
 tsf-status-after-unconscious-10 = I don't want to experience this EVER AGAIN
-
-tsf-status-broken-limb-0 = FUCK. FUCK. ITS DEFINITELY BROKEN
-tsf-status-broken-limb-1 = I CAN FEEL THE BONE PIECES MOVING
-tsf-status-broken-limb-2 = ITS FUCKING BROKEN. I THINK..
-tsf-status-broken-limb-3 = It hurts just thinking about it. Definitely broken.
-tsf-status-broken-limb-4 = I dont think it should bend here.
-tsf-status-broken-limb-5 = Oh fuck. It is snapped.
-tsf-status-broken-limb-6 = I dont see any open fracture, but I feel like I broke something
-
-tsf-status-dislocated-limb-0 = Yeah that shouldn't be bending like that.
-tsf-status-dislocated-limb-1 = I have to get this bone back in.
-tsf-status-dislocated-limb-2 = No, I have to move it back in place.
-tsf-status-dislocated-limb-3 = It just hurts so much there. I might need a check up.
-tsf-status-dislocated-limb-4 = My limb is out of place.

@@ -88,13 +88,5 @@ namespace Content.Shared.Verbs
 
         public static readonly VerbCategory Adjust =
             new("verb-categories-adjust", "/Textures/Interface/VerbIcons/screwdriver.png");
-
-        /// <summary>TSF: Fix dislocations — choose which limb to fix.</summary>
-        public static readonly VerbCategory FixDislocations =
-            new("tsf-surgery-fix-dislocations-category", "/Textures/Interface/VerbIcons/rotate_cw.svg.192dpi.png");
-
-        /// <summary>TSF: Fix fractures — choose which limb to set.</summary>
-        public static readonly VerbCategory FixFractures =
-            new("tsf-surgery-fix-fractures-category", "/Textures/Interface/VerbIcons/screwdriver.png");
     }
 }

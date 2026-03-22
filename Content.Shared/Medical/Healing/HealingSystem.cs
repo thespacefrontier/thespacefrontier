@@ -10,6 +10,7 @@ using Content.Shared.FixedPoint;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
+using Content.Shared.Medical; // TSF edit
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -112,6 +113,9 @@ public sealed class HealingSystem : EntitySystem
         // Logic to determine the whether or not to repeat the healing action
         args.Repeat = HasDamage((args.Used.Value, healing), target) && !dontRepeat;
         args.Handled = true;
+
+        // TSF edit
+        RaiseLocalEvent(target.Owner, new HealingDoAfterCompletedEvent { User = args.User, Used = args.Used }, broadcast: false);
 
         if (!args.Repeat)
         {

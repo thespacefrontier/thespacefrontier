@@ -1,4 +1,4 @@
-using Content.Server._TSF.Surgery;
+using Content.Server._TSF.Consciousness;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Events;
 using Content.Shared.Damage.Systems;
@@ -20,7 +20,6 @@ public sealed class TSFPainCrySystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly TSFLimbDamageTriggerSystem _limbTrigger = default!;
 
     private static readonly SoundSpecifier[] MaleCries = new SoundSpecifier[]
     {
@@ -44,8 +43,12 @@ public sealed class TSFPainCrySystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<DamageableComponent, DamageChangedEvent>(OnDamageChanged);
         EntityManager.EntityDeleted += OnEntityDeleted;
+    }
+
+    public void HandleDamageChangedForRelay(Entity<DamageableComponent> ent, ref DamageChangedEvent args)
+    {
+        OnDamageChanged(ent, ref args);
     }
 
     public override void Shutdown()
@@ -65,7 +68,6 @@ public sealed class TSFPainCrySystem : EntitySystem
             return;
 
         var damageDelta = args.DamageDelta;
-        _limbTrigger.OnDamageChangedForLimb(ent.Owner, ref args);
 
         var total = damageDelta.GetTotal();
         if (total < MinDamageForCry)

@@ -9,13 +9,18 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.StatusEffectNew;
 using Content.Shared.Traits.Assorted;
+using Content.Shared._TSF;
 using Content.Shared._TSF.Consciousness;
+using Content.Shared.Body.Components;
+using Content.Shared.Body.Systems;
 using Robust.Client.Audio;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Components;
 using Robust.Shared.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
@@ -31,6 +36,9 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
     [Dependency] private readonly SharedCameraRecoilSystem _cameraRecoil = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private readonly SharedBloodstreamSystem _bloodstream = default!;
 
     private TSFDamageOverlay? _overlay;
     private EntityUid? _damageMusicStream;
@@ -63,6 +71,7 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
     private const string AirlossGroup = "Airloss";
     private const string ToxinGroup = "Toxin";
 
+    /// <summary>Fallback when <see cref="TraumaticShockComponent"/> is not yet replicated.</summary>
     private float _shockLevel;
     private const float ShockDecayPerSecond = 0.35f;
     private const float ShockAddPerDamage = 0.018f;
@@ -76,19 +85,6 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
     private const float DisorientationKickMagnitude = 0.04f;
     private const float DisorientationBurstDuration = 0.4f;
     private float _disorientationBurstTime;
-
-    private static readonly Dictionary<string, float> PainMultipliers = new()
-    {
-        { "brute", 1f },
-        { "burn", 1.2f },
-        { "slash", 1.1f },
-        { "piercing", 1f },
-        { "blunt", 0.9f },
-        { "caustic", 1f },
-        { "poison", 0.8f },
-        { "asphyxiation", 0.7f },
-        { "bloodloss", 0.8f },
-    };
 
     private static readonly string[] SharpPainPhrases =
     {
@@ -137,16 +133,6 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
         "tsf-status-after-unconscious-6", "tsf-status-after-unconscious-7", "tsf-status-after-unconscious-8",
         "tsf-status-after-unconscious-9", "tsf-status-after-unconscious-10",
     };
-    private static readonly string[] BrokenLimbPhrases =
-    {
-        "tsf-status-broken-limb-0", "tsf-status-broken-limb-1", "tsf-status-broken-limb-2", "tsf-status-broken-limb-3",
-        "tsf-status-broken-limb-4", "tsf-status-broken-limb-5", "tsf-status-broken-limb-6",
-    };
-    private static readonly string[] DislocatedLimbPhrases =
-    {
-        "tsf-status-dislocated-limb-0", "tsf-status-dislocated-limb-1", "tsf-status-dislocated-limb-2",
-        "tsf-status-dislocated-limb-3", "tsf-status-dislocated-limb-4",
-    };
 
     private const float StatusMessageBucketSeconds = 5f;
     private const float StatusMessageDisplayDuration = 5f;
@@ -163,6 +149,13 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
         SubscribeLocalEvent<LocalPlayerDetachedEvent>(OnLocalPlayerDetached);
         SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<MobThresholdChecked>(OnThresholdChecked);
+        SubscribeLocalEvent<TraumaticShockComponent, AfterAutoHandleStateEvent>(OnTraumaticShockStateHandled);
+    }
+
+    private void OnTraumaticShockStateHandled(EntityUid uid, TraumaticShockComponent comp, ref AfterAutoHandleStateEvent args)
+    {
+        if (uid == _playerManager.LocalEntity)
+            UpdateOverlayIntensity(uid);
     }
 
     public override void Shutdown()
@@ -284,7 +277,7 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
         if (TryComp(uid, out DamageableComponent? damageable))
         {
             var delta = damageable.TotalDamage - _prevTotalDamage;
-            if (_hasPrevDamage && delta > FixedPoint2.Zero)
+            if (_hasPrevDamage && delta > FixedPoint2.Zero && !HasComp<TraumaticShockComponent>(uid))
             {
                 _shockLevel = Math.Min(ShockMax, _shockLevel + delta.Float() * ShockAddPerDamage);
                 if (delta >= DisorientationMinDelta)
@@ -302,9 +295,15 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
             _prevTotalDamage = damageable.TotalDamage;
             _hasPrevDamage = true;
         }
-        _shockLevel = Math.Max(0f, _shockLevel - ShockDecayPerSecond * frameTime);
+        if (!HasComp<TraumaticShockComponent>(uid))
+            _shockLevel = Math.Max(0f, _shockLevel - ShockDecayPerSecond * frameTime);
         if (_overlay != null)
-            _overlay.ShockStrength = Math.Clamp(_shockLevel, 0f, 1f);
+        {
+            if (TryComp(uid, out TraumaticShockComponent? traumatic))
+                _overlay.ShockStrength = Math.Clamp(traumatic.Severity, 0f, 1f);
+            else
+                _overlay.ShockStrength = Math.Clamp(_shockLevel, 0f, 1f);
+        }
 
         _adrenalineRemaining = Math.Max(0f, _adrenalineRemaining - frameTime);
         _adrenalineCooldown = Math.Max(0f, _adrenalineCooldown - frameTime);
@@ -439,22 +438,56 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
                     _overlay.Consciousness = 0f;
                     break;
                 }
-                FixedPoint2 painLevel = FixedPoint2.Zero;
+
+                float painScalar = 0f;
                 if (!_statusEffects.TryEffectsWithComp<PainNumbnessStatusEffectComponent>(entity, out _))
                 {
-                    foreach (var painType in damageable.PainDamageGroups)
-                    {
-                        var key = painType.ToString();
-                        if (damageable.DamagePerGroup.TryGetValue(key, out var pain))
-                            painLevel += pain * FixedPoint2.New(GetPainMultiplier(key));
-                    }
+                    var weightSetId = _cfg.GetCVar(TSFCVars.TsfPainWeightSet);
+                    var globalPain = _cfg.GetCVar(TSFCVars.TsfPainGlobalMultiplier);
+                    if (_proto.TryIndex<TSFPainWeightPrototype>(weightSetId, out var painWeights))
+                        painScalar = SharedPainMath.ComputePainLevel(damageable, _proto, painWeights, globalPain);
                 }
-                var painRatio = (painLevel / thresh).Float();
+
+                var painRatio = SharedTsfConsciousnessFormula.ComputePainRatio(painScalar, thresh);
                 _overlay.DamageStrength = Math.Clamp(painRatio, 0f, 1f);
                 if (_overlay.DamageStrength < 0.15f)
                     _overlay.DamageStrength = 0f;
                 _overlay.CritStrength = 0f;
-                _overlay.Consciousness = TryComp(entity, out ConsciousnessComponent? c) ? c.Level : Math.Clamp(1f - painRatio * 0.8f, 0f, 1f);
+
+                if (TryComp(entity, out ConsciousnessComponent? c))
+                {
+                    _overlay.Consciousness = c.Level;
+                }
+                else
+                {
+                    var bloodDamageRatio = Math.Clamp(SharedPainMath.ComputeBloodlossStyleContribution(damageable, thresh), 0f, 1f);
+                    var hypovolemiaRatio = 0f;
+                    if (TryComp(entity, out BloodstreamComponent? bloodstream))
+                    {
+                        var bloodLevel = _bloodstream.GetBloodLevel((entity, bloodstream));
+                        hypovolemiaRatio = SharedTsfConsciousnessFormula.ComputeHypovolemiaRatio(
+                            bloodLevel,
+                            _cfg.GetCVar(TSFCVars.TsfConsciousnessHypovolemiaBloodStart));
+                    }
+
+                    var shockSeverity = TryComp(entity, out TraumaticShockComponent? ts) ? ts.Severity : 0f;
+                    var asphyxRatio = SharedTsfConsciousnessFormula.ComputeAsphyxiationRatio(
+                        SharedPainMath.GetAsphyxiationDamage(damageable),
+                        thresh);
+                    _overlay.Consciousness = SharedTsfConsciousnessFormula.ComputeLevel(
+                        painRatio,
+                        bloodDamageRatio,
+                        hypovolemiaRatio,
+                        shockSeverity,
+                        asphyxRatio,
+                        _cfg.GetCVar(TSFCVars.TsfConsciousnessPainRatioBlend),
+                        _cfg.GetCVar(TSFCVars.TsfConsciousnessBloodDamageRatioBlend),
+                        _cfg.GetCVar(TSFCVars.TsfConsciousnessHypovolemiaBlend),
+                        _cfg.GetCVar(TSFCVars.TsfConsciousnessTraumaticShockBlend),
+                        _cfg.GetCVar(TSFCVars.TsfConsciousnessAsphyxiationBlend),
+                        _cfg.GetCVar(TSFCVars.TsfPainToConsciousnessFactor));
+                }
+
                 break;
             }
             case MobState.Critical:
@@ -468,11 +501,6 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
                 _overlay.Consciousness = 1f;
                 break;
         }
-    }
-
-    private static float GetPainMultiplier(string damageGroupId)
-    {
-        return PainMultipliers.TryGetValue(damageGroupId.ToLowerInvariant(), out var m) ? m : 1f;
     }
 
     private void TryUpdateStatusMessage(EntityUid uid)

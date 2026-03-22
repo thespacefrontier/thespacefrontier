@@ -1,0 +1,15 @@
+- type: tsfPainWeights
+  id: TSFPainWeights
+  defaultWeight: 1.0
+  weights:
+    Blunt: 0.9
+    Slash: 1.1
+    Piercing: 1.0
+    Heat: 1.2
+    Shock: 1.2
+    Cold: 1.0
+    Caustic: 1.0
+    Poison: 0.8
+    Asphyxiation: 0.7
+    Bloodloss: 0.8
+    Radiation: 0.5

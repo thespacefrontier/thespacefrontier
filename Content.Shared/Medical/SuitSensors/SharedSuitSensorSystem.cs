@@ -1,5 +1,8 @@
 using System.Numerics;
+using Content.Shared._TSF.Consciousness;
 using Content.Shared.Access.Systems;
+using Content.Shared.Body.Components;
+using Content.Shared.Body.Systems;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Clothing;
 using Content.Shared.Damage.Components;
@@ -40,6 +43,7 @@ public abstract class SharedSuitSensorSystem : EntitySystem
     [Dependency] private readonly SharedIdCardSystem _idCardSystem = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly SharedBloodstreamSystem _bloodstream = default!;
 
     private EntityQuery<SuitSensorComponent> _sensorQuery;
     public override void Initialize()
@@ -395,11 +399,13 @@ public abstract class SharedSuitSensorSystem : EntitySystem
                 status.IsAlive = isAlive;
                 status.TotalDamage = totalDamage;
                 status.TotalDamageThreshold = totalDamageThreshold;
+                ApplyTsfVitals(sensor.User.Value, status);
                 break;
             case SuitSensorMode.SensorCords:
                 status.IsAlive = isAlive;
                 status.TotalDamage = totalDamage;
                 status.TotalDamageThreshold = totalDamageThreshold;
+                ApplyTsfVitals(sensor.User.Value, status);
                 EntityCoordinates coordinates;
                 var xformQuery = GetEntityQuery<TransformComponent>();
 
@@ -426,6 +432,18 @@ public abstract class SharedSuitSensorSystem : EntitySystem
         return status;
     }
 
+    private void ApplyTsfVitals(EntityUid user, SuitSensorStatus status)
+    {
+        if (TryComp<ConsciousnessComponent>(user, out var conc))
+            status.TsfConsciousness = conc.Level;
+
+        if (TryComp<TraumaticShockComponent>(user, out var shock))
+            status.TsfTraumaticShock = shock.Severity;
+
+        if (TryComp<BloodstreamComponent>(user, out var blood))
+            status.TsfBloodVolume = _bloodstream.GetBloodLevel((user, blood));
+    }
+
     /// <summary>
     /// Create a device network package from the suit sensors status.
     /// </summary>
@@ -449,6 +467,12 @@ public abstract class SharedSuitSensorSystem : EntitySystem
             payload.Add(SuitSensorConstants.NET_TOTAL_DAMAGE_THRESHOLD, status.TotalDamageThreshold);
         if (status.Coordinates != null)
             payload.Add(SuitSensorConstants.NET_COORDINATES, status.Coordinates);
+        if (status.TsfConsciousness != null)
+            payload.Add(SuitSensorConstants.NET_TSF_CONSCIOUSNESS, status.TsfConsciousness.Value);
+        if (status.TsfTraumaticShock != null)
+            payload.Add(SuitSensorConstants.NET_TSF_TRAUMATIC_SHOCK, status.TsfTraumaticShock.Value);
+        if (status.TsfBloodVolume != null)
+            payload.Add(SuitSensorConstants.NET_TSF_BLOOD_VOLUME, status.TsfBloodVolume.Value);
 
         return payload;
     }
@@ -477,6 +501,9 @@ public abstract class SharedSuitSensorSystem : EntitySystem
         payload.TryGetValue(SuitSensorConstants.NET_TOTAL_DAMAGE, out int? totalDamage);
         payload.TryGetValue(SuitSensorConstants.NET_TOTAL_DAMAGE_THRESHOLD, out int? totalDamageThreshold);
         payload.TryGetValue(SuitSensorConstants.NET_COORDINATES, out NetCoordinates? coords);
+        payload.TryGetValue(SuitSensorConstants.NET_TSF_CONSCIOUSNESS, out float? tsfConc);
+        payload.TryGetValue(SuitSensorConstants.NET_TSF_TRAUMATIC_SHOCK, out float? tsfShock);
+        payload.TryGetValue(SuitSensorConstants.NET_TSF_BLOOD_VOLUME, out float? tsfBlood);
 
         var status = new SuitSensorStatus(ownerUid, suitSensorUid, name, job, jobIcon, jobDepartments)
         {
@@ -484,6 +511,9 @@ public abstract class SharedSuitSensorSystem : EntitySystem
             TotalDamage = totalDamage,
             TotalDamageThreshold = totalDamageThreshold,
             Coordinates = coords,
+            TsfConsciousness = tsfConc,
+            TsfTraumaticShock = tsfShock,
+            TsfBloodVolume = tsfBlood,
         };
         return status;
     }
