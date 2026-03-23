@@ -3,6 +3,8 @@
 Thanks for contributing to Space Station 14.
 When contributing, be sure to follow our [codebase conventions](https://docs.spacestation14.com/en/general-development/codebase-info/codebase-organization.html) and [PR guidelines](https://docs.spacestation14.com/en/general-development/codebase-info/pull-request-guidelines.html).
 
+**The Space Frontier (TSF) code** — changes under `Content.*/_TSF/`, `Resources/**/_TSF/` are licensed under [GNU AGPL v3](LICENSE-AGPLv3.txt). By submitting a pull request that modifies those paths, you agree to license your contribution accordingly.
+
 Following these guidelines helps us increase review turnaround time, so be sure to review the linked documents in full.
 
 The last major guidelines update was on **December 6th, 2025**.
