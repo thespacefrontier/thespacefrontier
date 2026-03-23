@@ -1,3 +1,6 @@
+// Copyright (C) 2026 insvrg3ncy
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Numerics;
 using Content.Shared.Camera;
 using Content.Shared.Damage;

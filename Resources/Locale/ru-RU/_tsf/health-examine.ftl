@@ -1,3 +1,6 @@
+# Copyright (C) 2026 insvrg3ncy
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 tsf-health-examine-unconscious = [color=red]Без сознания.[/color]
 tsf-health-examine-consciousness-critical = [color=orange]Жизненные показатели указывают на сильное угнетение сознания.[/color]
 tsf-health-examine-consciousness-low = Выглядит оглушённым и рассеянным.

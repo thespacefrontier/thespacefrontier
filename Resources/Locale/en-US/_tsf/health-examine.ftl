@@ -1,3 +1,6 @@
+# Copyright (C) 2026 insvrg3ncy
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 tsf-health-examine-unconscious = [color=red]They are unconscious.[/color]
 tsf-health-examine-consciousness-critical = [color=orange]Their vital signs suggest severe impairment of consciousness.[/color]
 tsf-health-examine-consciousness-low = They look dazed and unfocused.

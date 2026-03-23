@@ -1,3 +1,6 @@
+// Copyright (C) 2026 insvrg3ncy
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Server.Body.Systems;
 using Content.Server.Fluids.EntitySystems;
 using Content.Shared.Body.Components;
