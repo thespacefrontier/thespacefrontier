@@ -31,7 +31,7 @@ Space Station 14 это ремейк SS13, который работает на 
 
 Основной код форка (наследие Space Station 14 / Corvax) — по [MIT](LICENSE.TXT), с указанием правообладателей в том же файле.
 
-Оригинальный код **The Space Frontier** (`Content.Shared/_TSF/`, `Content.Server/_TSF/`, `Content.Client/_TSF/`, `Resources/**/_TSF/`, локали) — по [GNU AGPL v3](LICENSE-AGPL-TSF.txt). Новые изменения в этих путях принимаются на условиях AGPL v3.
+Оригинальный код **The Space Frontier** (`Content.Shared/_TSF/`, `Content.Server/_TSF/`, `Content.Client/_TSF/`, `Resources/**/_TSF/`) — по [GNU AGPL v3](LICENSE-AGPLv3.txt). Новые изменения в этих путях принимаются на условиях AGPL v3.
 
 Движок **Robust Toolbox** (подмодуль) лицензируется отдельно; см. [RobustToolbox/legal.md](RobustToolbox/legal.md).
 
