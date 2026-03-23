@@ -15,11 +15,13 @@ public sealed class StartEndGameRulesTest
     [Test]
     public async Task TestAllConcurrent()
     {
-        await using var pair = await PoolManager.GetServerClient(new PoolSettings
+        // TSF edit start
+        var pair = await PoolManager.GetServerClient(new PoolSettings
         {
             Dirty = true,
             DummyTicker = false
         });
+        // TSF edit end
         var server = pair.Server;
         await server.WaitIdleAsync();
         var gameTicker = server.ResolveDependency<IEntitySystemManager>().GetEntitySystem<GameTicker>();
