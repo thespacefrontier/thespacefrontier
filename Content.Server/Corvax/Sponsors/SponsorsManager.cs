@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Content.Corvax.Interfaces.Shared;
 using Content.Shared.Corvax.CCCVars;
@@ -23,7 +24,9 @@ public sealed class SponsorsManager : ISharedSponsorsManager
     private string _apiKey = string.Empty;
 
     private readonly Dictionary<NetUserId, CachedSponsor> _cache = new();
+    private readonly object _cacheLock = new();
     private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(5);
+    private static readonly TimeSpan HttpTimeout = TimeSpan.FromSeconds(10);
 
     public void Initialize()
     {
@@ -36,6 +39,8 @@ public sealed class SponsorsManager : ISharedSponsorsManager
             if (!string.IsNullOrEmpty(v))
                 _httpClient.DefaultRequestHeaders.Add("X-Api-Key", v);
         }, true);
+
+        _httpClient.Timeout = HttpTimeout;
     }
 
     public List<string> GetClientPrototypes()
@@ -107,20 +112,31 @@ public sealed class SponsorsManager : ISharedSponsorsManager
         return sponsor is { Linked: true, PriorityJoin: true };
     }
 
+    public async Task<bool> HaveServerPriorityJoinAsync(NetUserId userId)
+    {
+        var sponsor = await GetCachedOrFetchAsync(userId);
+        return sponsor is { Linked: true, PriorityJoin: true };
+    }
+
     public void InvalidateCache(NetUserId userId)
     {
-        _cache.Remove(userId);
+        lock (_cacheLock)
+            _cache.Remove(userId);
     }
 
     private SponsorApiResponse? GetCachedOrFetch(NetUserId userId)
     {
-        if (_cache.TryGetValue(userId, out var cached) && cached.ExpiresAt > DateTime.UtcNow)
-            return cached.Data;
+        lock (_cacheLock)
+        {
+            if (_cache.TryGetValue(userId, out var cached) && cached.ExpiresAt > DateTime.UtcNow)
+                return cached.Data;
+        }
 
         try
         {
-            var data = FetchSponsorDataAsync(userId).GetAwaiter().GetResult();
-            _cache[userId] = new CachedSponsor(data, DateTime.UtcNow + CacheDuration);
+            var data = FetchSponsorDataAsync(userId, CancellationToken.None).GetAwaiter().GetResult();
+            lock (_cacheLock)
+                _cache[userId] = new CachedSponsor(data, DateTime.UtcNow + CacheDuration);
             return data;
         }
         catch (Exception ex)
@@ -130,7 +146,29 @@ public sealed class SponsorsManager : ISharedSponsorsManager
         }
     }
 
-    private async Task<SponsorApiResponse?> FetchSponsorDataAsync(NetUserId userId)
+    private async Task<SponsorApiResponse?> GetCachedOrFetchAsync(NetUserId userId)
+    {
+        lock (_cacheLock)
+        {
+            if (_cache.TryGetValue(userId, out var cached) && cached.ExpiresAt > DateTime.UtcNow)
+                return cached.Data;
+        }
+
+        try
+        {
+            var data = await FetchSponsorDataAsync(userId, CancellationToken.None);
+            lock (_cacheLock)
+                _cache[userId] = new CachedSponsor(data, DateTime.UtcNow + CacheDuration);
+            return data;
+        }
+        catch (Exception ex)
+        {
+            _sawmill.Error($"Failed to fetch sponsor data for {userId}: {ex.Message}");
+            return null;
+        }
+    }
+
+    private async Task<SponsorApiResponse?> FetchSponsorDataAsync(NetUserId userId, CancellationToken cancel)
     {
         if (string.IsNullOrEmpty(_apiUrl))
         {
@@ -139,7 +177,7 @@ public sealed class SponsorsManager : ISharedSponsorsManager
         }
 
         var url = $"{_apiUrl.TrimEnd('/')}/api/sponsors/{userId.UserId}";
-        var response = await _httpClient.GetAsync(url);
+        var response = await _httpClient.GetAsync(url, cancel);
 
         if (!response.IsSuccessStatusCode)
         {

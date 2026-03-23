@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Robust.Shared.Maths;
 using Robust.Shared.Network;
 
@@ -18,4 +19,6 @@ public interface ISharedSponsorsManager
     public bool TryGetServerGhostColor(NetUserId userId, [NotNullWhen(true)] out Color? color);
     public int GetServerExtraCharSlots(NetUserId userId);
     public bool HaveServerPriorityJoin(NetUserId userId);
+
+    public Task<bool> HaveServerPriorityJoinAsync(NetUserId userId);
 }
