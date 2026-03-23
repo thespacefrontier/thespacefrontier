@@ -48,7 +48,11 @@ public sealed class ServerDiscordAuthManager : IServerDiscordAuthManager
         response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadFromJsonAsync<LinkTokenApiResponse>(cancellationToken: cancel);
-        return result?.Url ?? throw new InvalidOperationException("Failed to get link URL from API");
+        var linkUrl = result?.Url;
+        if (string.IsNullOrWhiteSpace(linkUrl))
+            throw new InvalidOperationException("Failed to get link URL from API (empty or missing url)");
+
+        return linkUrl;
     }
 
     public async Task<bool> IsVerified(NetUserId userId, CancellationToken cancel)

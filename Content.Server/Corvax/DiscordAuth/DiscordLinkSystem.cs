@@ -165,7 +165,11 @@ public sealed class DiscordLinkSystem : EntitySystem
 
             var link = await response.Content.ReadFromJsonAsync<LinkApiResponse>(cancellationToken: token)
                 .ConfigureAwait(false);
-            return (true, link?.DiscordUserName);
+            // 2xx with empty/malformed body must not be treated as "linked".
+            if (link is null)
+                return (false, null);
+
+            return (true, link.DiscordUserName);
         }
         catch (OperationCanceledException)
         {
