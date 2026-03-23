@@ -10,9 +10,6 @@ Copyright (C) 2024-2026 The Space Frontier and TSF contributors
   Content.Client/_TSF/
   Resources/Prototypes/_TSF/
   Resources/Textures/_TSF/
-  Resources/Locale/en-US/_tsf/
-  Resources/Locale/ru-RU/_tsf/
-  Pow3r/
 
 Остальные материалы репозитория остаются на условиях, указанных в LICENSE.TXT,
 в RobustToolbox/legal.md, а также в метаданных отдельных файлов и ассетов.
