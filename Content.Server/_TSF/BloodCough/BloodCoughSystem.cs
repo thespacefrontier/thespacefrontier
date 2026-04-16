@@ -1,7 +1,6 @@
 // Copyright (C) 2026 insvrg3ncy
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-using Content.Server.Body.Systems;
 using Content.Server.Fluids.EntitySystems;
 using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
@@ -19,7 +18,6 @@ namespace Content.Server._TSF.BloodCough;
 
 public sealed class BloodCoughSystem : EntitySystem
 {
-    [Dependency] private readonly BloodstreamSystem _bloodstream = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
@@ -27,6 +25,7 @@ public sealed class BloodCoughSystem : EntitySystem
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedSolutionContainerSystem _solutionContainer = default!;
     [Dependency] private readonly PuddleSystem _puddle = default!;
+    [Dependency] private readonly HumanoidProfileSystem _humanoidProfile = default!;
 
     private static readonly SoundSpecifier[] MaleCoughs =
     {
@@ -42,7 +41,7 @@ public sealed class BloodCoughSystem : EntitySystem
         new SoundPathSpecifier("/Audio/_TSF/Cough/Female/female_cough4.ogg"),
     };
 
-    private const float TriggerChance = 1f;
+    private const float TriggerChance = 0.45f;
     private const float MinBleedAmountForCough = 4f;
     private static readonly TimeSpan CheckInterval = TimeSpan.FromSeconds(45);
     private static readonly TimeSpan CooldownAfterCough = TimeSpan.FromSeconds(90);
@@ -76,8 +75,8 @@ public sealed class BloodCoughSystem : EntitySystem
         base.Update(frameTime);
 
         var now = _timing.CurTime;
-        var query = EntityQueryEnumerator<BloodstreamComponent, HumanoidAppearanceComponent>();
-        while (query.MoveNext(out var uid, out var bloodstream, out var appearance))
+        var query = EntityQueryEnumerator<BloodstreamComponent, HumanoidProfileComponent>();
+        while (query.MoveNext(out var uid, out var bloodstream, out _))
         {
             if (_mobState.IsDead(uid))
                 continue;
@@ -93,14 +92,15 @@ public sealed class BloodCoughSystem : EntitySystem
             if (!_random.Prob(TriggerChance))
                 continue;
 
-            CoughBlood(uid, bloodstream, appearance);
+            var gender = _humanoidProfile.GetGender(uid);
+            CoughBlood(uid, bloodstream, gender);
             _cooldownUntil[uid] = now + CooldownAfterCough;
         }
     }
 
-    private void CoughBlood(EntityUid uid, BloodstreamComponent bloodstream, HumanoidAppearanceComponent appearance)
+    private void CoughBlood(EntityUid uid, BloodstreamComponent bloodstream, Gender gender)
     {
-        var sound = appearance.Gender switch
+        var sound = gender switch
         {
             Gender.Male => _random.Pick(MaleCoughs),
             Gender.Female => _random.Pick(FemaleCoughs),

@@ -206,38 +206,53 @@ public abstract class SharedDefibrillatorSystem : EntitySystem
         }
         else
         {
-            var reviveCheck = new TsfDefibrillatorReviveCheckEvent
+            if (_mobState.IsDead(target, targetMobState))
+                _damageable.TryChangeDamage(target, ent.Comp.ZapHeal, true, origin: user);
+
+            // Declare these once outside the nested blocks
+            if (TryComp<MobThresholdsComponent>(target, out var targetThresholds) &&
+                _mobThreshold.TryGetThresholdForState(target, MobState.Dead, out var threshold, targetThresholds) &&
+                _damageable.GetTotalDamage(target) < threshold)
             {
-                Target = target,
-                User = user,
-                AllowRevive = true
-            };
-            RaiseLocalEvent(target, ref reviveCheck);
-
-            if (reviveCheck.AllowRevive)
-            {
-                if (_mobState.IsDead(target, targetMobState))
-                    _damageable.TryChangeDamage(target, ent.Comp.ZapHeal, true, origin: user);
-
-                if (TryComp<MobThresholdsComponent>(target, out var targetThresholds) &&
-                    TryComp<DamageableComponent>(target, out var targetDamageable) &&
-                    _mobThreshold.TryGetThresholdForState(target, MobState.Dead, out var threshold, targetThresholds) &&
-                    targetDamageable.TotalDamage < threshold)
+                var reviveCheck = new TsfDefibrillatorReviveCheckEvent
                 {
-                    _mobState.ChangeMobState(target, MobState.Critical, targetMobState, user);
-                    failedRevive = false;
-                }
+                    Target = target,
+                    User = user,
+                    AllowRevive = true
+                };
+                RaiseLocalEvent(target, ref reviveCheck);
 
-                if (_mind.TryGetMind(target, out var mindUid, out var mindComp) &&
-                    _player.TryGetSessionById(mindComp.UserId, out var playerSession))
+                if (reviveCheck.AllowRevive)
                 {
-                    // notify them they're being revived.
-                    if (mindComp.CurrentEntity != target)
-                        OpenReturnToBodyEui((mindUid, mindComp), playerSession);
+                    // Remove the duplicate TryComp and variable declarations here
+                    // The variables targetThresholds and threshold are already in scope
+                    if (_mobState.IsDead(target, targetMobState))
+                        _damageable.TryChangeDamage(target, ent.Comp.ZapHeal, true, origin: user);
+
+                    // Just use the existing variables - don't redeclare them
+                    if (TryComp<DamageableComponent>(target, out var targetDamageable) &&
+                        _damageable.GetTotalDamage(target) < threshold) // threshold already exists
+                    {
+                        _mobState.ChangeMobState(target, MobState.Critical, targetMobState, user);
+                        failedRevive = false;
+                    }
+
+                    if (_mind.TryGetMind(target, out var mindUid, out var mindComp) &&
+                        _player.TryGetSessionById(mindComp.UserId, out var playerSession))
+                    {
+                        // notify them they're being revived.
+                        if (mindComp.CurrentEntity != target)
+                            OpenReturnToBodyEui((mindUid, mindComp), playerSession);
+                    }
+                    else
+                    {
+                        _chat.TrySendInGameICMessage(ent.Owner, Loc.GetString("defibrillator-no-mind"),
+                            InGameICChatType.Speak, true);
+                    }
                 }
                 else
                 {
-                    _chat.TrySendInGameICMessage(ent.Owner, Loc.GetString("defibrillator-no-mind"),
+                    _chat.TrySendInGameICMessage(ent.Owner, Loc.GetString("tsf-defibrillator-revive-blocked"),
                         InGameICChatType.Speak, true);
                 }
             }

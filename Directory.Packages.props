@@ -1,4 +1,4 @@
-﻿<Project>
+<Project>
   <Import Project="RobustToolbox/Directory.Packages.props" />
   <ItemGroup>
     <!--
@@ -15,6 +15,8 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="10.0.0" />
     <PackageVersion Include="NetCord" Version="1.0.0-alpha.388" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+    <!-- Override transitive 9.0.0 (NU1901 GHSA-37gx-xxp4-5rgx, GHSA-w3x6-4m5h-cxqf) from EF tooling chain -->
+    <PackageVersion Include="System.Security.Cryptography.Xml" Version="10.0.6" />
     <PackageVersion Include="OpenTK" Version="4.9.4" />
     <PackageVersion Include="Veldrid" Version="4.8.0" />
     <PackageVersion Include="Veldrid.SPIRV" Version="1.0.15" />

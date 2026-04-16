@@ -6,6 +6,8 @@
   sounds:
     Scream:
       collection: MaleScreams
+    PainScream:
+      collection: MaleScreams
     Laugh:
       collection: MaleLaugh
     Sneeze:
@@ -47,6 +49,8 @@
     variation: 0.125
   sounds:
     Scream:
+      collection: FemaleScreams
+    PainScream:
       collection: FemaleScreams
     Laugh:
       collection: FemaleLaugh
@@ -90,6 +94,8 @@
   sounds:
     Scream:
       path: /Audio/Voice/Reptilian/reptilian_scream.ogg
+    PainScream:
+      path: /Audio/Voice/Reptilian/reptilian_scream.ogg
     Laugh:
       path: /Audio/Animals/lizard_happy.ogg
     Honk:
@@ -114,6 +120,8 @@
   sounds:
     Scream:
       path: /Audio/Voice/Reptilian/reptilian_scream.ogg
+    PainScream:
+      path: /Audio/Voice/Reptilian/reptilian_scream.ogg
     Laugh:
       path: /Audio/Animals/lizard_happy.ogg
     Honk:
@@ -137,6 +145,8 @@
     Squish:
       collection: Squishes
     Scream:
+      collection: MaleScreams
+    PainScream:
       collection: MaleScreams
     Laugh:
       collection: MaleLaugh
@@ -182,6 +192,8 @@
       collection: Squishes
     Scream:
       collection: FemaleScreams
+    PainScream:
+      collection: FemaleScreams
     Laugh:
       collection: FemaleLaugh
     Sneeze:
@@ -224,8 +236,12 @@
   sounds:
     Scream:
       path: /Audio/Voice/Vox/shriek1.ogg
+    PainScream:
+      path: /Audio/Voice/Vox/shriek1.ogg
     Laugh:
       path: /Audio/Voice/Vox/vox_laugh.ogg
+    Sneeze:
+      path: /Audio/Voice/Vox/vox_sneeze.ogg
     Cough:
       path: /Audio/Voice/Vox/vox_cough.ogg
     Sigh:
@@ -255,8 +271,12 @@
   sounds:
     Scream:
       path: /Audio/Voice/Diona/diona_scream.ogg
+    PainScream:
+      path: /Audio/Voice/Diona/diona_scream.ogg
     Laugh:
       collection: DionaLaugh
+    Sneeze:
+      collection: DionaSneeze
     Chirp:
       path: /Audio/Animals/nymph_chirp.ogg
     Honk:
@@ -279,6 +299,8 @@
   sounds:
     Scream:
       path: /Audio/Voice/Arachnid/arachnid_scream.ogg
+    PainScream:
+      path: /Audio/Voice/Arachnid/arachnid_scream.ogg
     Laugh:
       path: /Audio/Voice/Arachnid/arachnid_laugh.ogg
     Chitter:
@@ -299,6 +321,8 @@
 - type: emoteSounds
   id: UnisexDwarf
   sounds:
+    PainScream:
+      collection: MaleScreams
     Scream:
       collection: MaleScreams
     Laugh:
@@ -342,6 +366,8 @@
 - type: emoteSounds
   id: FemaleDwarf
   sounds:
+    PainScream:
+      collection: FemaleScreams
     Scream:
       collection: FemaleScreams
     Laugh:
@@ -387,6 +413,8 @@
   params:
     variation: 0.125
   sounds:
+    PainScream:
+      path: /Audio/Voice/Moth/moth_scream.ogg
     Buzz:
       path: /Audio/Voice/Moth/moth_scream.ogg
     Scream:
@@ -481,14 +509,18 @@
     Laugh:
       collection: MaleLaugh
     Sneeze:
-      collection: MaleSneezes
+      collection: VulpkaninSneeze
     Cough:
       collection: MaleCoughs
     Whistle:
       collection: Whistles
     Sigh:
       collection: MaleSigh
+    Yawn:
+      collection: VulpkaninYawns
     Scream:
+      collection: VulpkaninScreams
+    PainScream:
       collection: VulpkaninScreams
     Growl:
       collection: VulpkaninGrowls
@@ -521,14 +553,18 @@
     Laugh:
       collection: FemaleLaugh
     Sneeze:
-      collection: FemaleSneezes
+      collection: VulpkaninSneeze
     Cough:
       collection: FemaleCoughs
     Whistle:
       collection: Whistles
     Sigh:
       collection: FemaleSigh
+    Yawn:
+      collection: VulpkaninYawns
     Scream:
+      collection: VulpkaninScreams
+    PainScream:
       collection: VulpkaninScreams
     Growl:
       collection: VulpkaninGrowls
@@ -603,6 +639,22 @@
     Salute:
       collection: Salutes
 
+- type: emoteSounds
+  id: MothBodyEmotes
+  sounds:
+    Flap:
+      path: /Audio/Voice/Moth/moth_flap.ogg
+    Clap:
+      collection: Claps
+    ClapSingle:
+      collection: ClapSingle
+    Snap:
+      collection: Snaps
+      params:
+        volume: -6
+    Salute:
+      collection: Salutes
+
 # mobs
 - type: emoteSounds
   id: Zombie
@@ -657,6 +709,8 @@
   id: Nymph
   sounds:
     Chirp:
+      path: /Audio/Animals/nymph_chirp.ogg
+    PainScream:
       path: /Audio/Animals/nymph_chirp.ogg
 
 - type: emoteSounds

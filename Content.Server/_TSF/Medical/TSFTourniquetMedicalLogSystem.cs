@@ -5,12 +5,15 @@ using Content.Shared._TSF.Health;
 using Content.Shared.Damage.Components;
 using Content.Shared.Medical;
 using Content.Shared.Tag;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
 namespace Content.Server._TSF.Medical;
 
 public sealed class TSFTourniquetMedicalLogSystem : EntitySystem
 {
+    private static readonly ProtoId<TagPrototype> TourniquetTag = new("Tourniquet");
+
     [Dependency] private readonly TagSystem _tag = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
@@ -25,7 +28,7 @@ public sealed class TSFTourniquetMedicalLogSystem : EntitySystem
         if (args.Used is not { } used || !Exists(used))
             return;
 
-        if (!_tag.HasTag(used, "Tourniquet"))
+        if (!_tag.HasTag(used, TourniquetTag))
             return;
 
         var log = EnsureComp<MedicalRecordLogComponent>(target);

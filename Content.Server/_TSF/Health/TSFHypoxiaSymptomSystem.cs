@@ -3,6 +3,7 @@
 
 using Content.Shared._TSF.Consciousness;
 using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -16,6 +17,7 @@ public sealed class TSFHypoxiaSymptomSystem : EntitySystem
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly MobThresholdSystem _mobThreshold = default!;
     [Dependency] private readonly StatusEffectsSystem _statusEffects = default!;
+    [Dependency] private readonly DamageableSystem _damageable = default!;
 
     private static readonly TimeSpan Refresh = TimeSpan.FromSeconds(4);
 
@@ -32,7 +34,7 @@ public sealed class TSFHypoxiaSymptomSystem : EntitySystem
             if (!_mobThreshold.TryGetIncapThreshold(uid, out var crit, thresholds) || !crit.HasValue || crit.Value <= FixedPoint2.Zero)
                 continue;
 
-            var asphyx = SharedPainMath.GetAsphyxiationDamage(dmg);
+            var asphyx = SharedPainMath.GetAsphyxiationDamage((uid, dmg), _damageable);
             var ratio = asphyx / crit.Value.Float();
             if (ratio >= 0.22f)
                 _statusEffects.TryAddStatusEffectDuration(uid, "StatusEffectTsfHypoxiaCue", Refresh);
