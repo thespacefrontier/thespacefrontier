@@ -4,6 +4,7 @@
   abstract: true
   components:
   - type: Sprite
+    drawdepth: AboveFovOverlay # TSF edit
     sprite: Structures/Wallmounts/posters.rsi
   - type: Damageable
     damageContainer: StructuralInorganic

@@ -32,6 +32,7 @@
     - map: [ "enum.EdgeLayer.West" ]
       state: rock_asteroid_west
   - type: MiningScannerViewable
+  - type: FoVOverlay
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: Rock

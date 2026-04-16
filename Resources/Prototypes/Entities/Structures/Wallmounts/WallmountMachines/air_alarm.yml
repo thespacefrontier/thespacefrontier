@@ -73,6 +73,7 @@
   - type: Appearance
   - type: WiresVisuals
   - type: Sprite
+    drawdepth: AboveFovOverlay # TSF
     sprite: Structures/Wallmounts/air_monitors.rsi
     layers:
     - state: alarmp
@@ -118,6 +119,7 @@
   description: An air alarm. Doesn't look like it'll be alarming air any time soon.
   components:
   - type: Sprite
+    drawdepth: AboveFovOverlay # TSF
     sprite: Structures/Wallmounts/air_monitors.rsi
     layers:
     - state: alarm_b1
@@ -160,6 +162,7 @@
   description: An alien air alarm. Hopefully they didn't breathe poison.
   components:
   - type: Sprite
+    drawdepth: AboveFovOverlay # TSF
     sprite: Structures/Wallmounts/air_monitors_xeno.rsi
     layers:
     - state: alarmp
@@ -175,4 +178,5 @@
   description: An alien air alarm. Why are the wires pulsating?...
   components:
   - type: Sprite
+    drawdepth: AboveFovOverlay # TSF
     sprite: Structures/Wallmounts/air_monitors_xeno.rsi

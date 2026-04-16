@@ -9,6 +9,7 @@
     graph: WallmountTelevision
     node: Television
   - type: Sprite
+    drawdepth: AboveFovOverlay # TSF
     sprite: Structures/Wallmounts/flatscreentv.rsi
     layers:
       - map: ["computerLayerBody"]

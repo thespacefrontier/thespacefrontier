@@ -14,6 +14,47 @@ highp float flickerNoise(highp vec2 uv) {
     return fract(sin(dot(seed, vec3(12.9898, 78.233, 43.456))) * 43758.5453);
 }
 
+// Функция для красных точек - чуть крупнее и ОЧЕНЬ КРАСНЫЕ
+highp float redDots(highp vec2 uv) {
+    // Чуть меньше частота = чуть крупнее точки
+    highp vec2 scaledUV = uv * 800.0;
+    highp vec2 grid = floor(scaledUV);
+    highp vec2 fracUV = fract(scaledUV);
+
+    // Рандом для каждой ячейки
+    highp float random = fract(sin(dot(grid, vec2(12.9898, 78.233))) * 43758.5453);
+
+    // Немного больше размер точки - 0.08 вместо 0.03
+    highp float dotSize = 0.08;
+    highp vec2 center = vec2(0.5, 0.5);
+    highp float distToCenter = length(fracUV - center);
+
+    highp float dot = 1.0 - smoothstep(0.0, dotSize, distToCenter);
+    return dot * random;
+}
+
+// Ещё один слой красных точек для плотности
+highp float redDotsLayer2(highp vec2 uv) {
+    highp vec2 scaledUV = uv * 650.0 + 0.5;
+    highp vec2 grid = floor(scaledUV);
+    highp vec2 fracUV = fract(scaledUV);
+
+    highp float random = fract(sin(dot(grid, vec2(45.6789, 98.7654))) * 43758.5453);
+    highp float dotSize = 0.07;
+    highp vec2 center = vec2(0.5, 0.5);
+    highp float distToCenter = length(fracUV - center);
+
+    highp float dot = 1.0 - smoothstep(0.0, dotSize, distToCenter);
+    return dot * random;
+}
+
+// Субпиксельный шум для финальной зернистости
+highp float subPixelNoise(highp vec2 uv) {
+    highp vec2 fineUV = uv * 1600.0;
+    highp vec3 seed = vec3(floor(fineUV.x), floor(fineUV.y), floor(TIME * 30.0));
+    return fract(sin(dot(seed, vec3(12.9898, 78.233, 43.456))) * 43758.5453);
+}
+
 void fragment() {
     highp vec4 color = zTextureSpec(SCREEN_TEXTURE, UV);
     highp vec3 rgb = color.rgb;
@@ -23,6 +64,7 @@ void fragment() {
     highp float strobe = 0.5 * painBase * abs(cos(TIME * 2.0));
     highp float intensity = min(painBase + strobe + shockAdd, 1.0);
     intensity *= (1.0 - AdrenalineStrength * 0.25);
+
     if (intensity > 0.01) {
         highp vec2 center = vec2(0.5, 0.5);
         highp float dist = length(UV - center);
@@ -30,21 +72,43 @@ void fragment() {
         highp float outer = 0.75;
         highp float vignette = smoothstep(inner, outer, dist);
 
-        highp float n = flickerNoise(UV);
-        highp vec3 darkRed = vec3(0.38, 0.02, 0.02);
-        highp vec3 brightRed = vec3(1.0, 0.15, 0.08);
-        highp vec3 redNoise = mix(darkRed, brightRed, n);
+        // КРАСНЫЕ точки - ЯРКИЕ и НАСЫЩЕННЫЕ
+        highp float dot1 = redDots(UV);
+        highp float dot2 = redDotsLayer2(UV);
+        highp float dot3 = redDots(UV + 0.23);
 
-        highp float blend = vignette * intensity * 0.48;
+        // Объединяем слои для максимальной плотности красных точек
+        highp float dotDensity = clamp((dot1 + dot2 + dot3) * 1.2, 0.0, 1.0);
+
+        // Варьируем яркость каждой точки
+        highp float dotBrightness = dotDensity * (0.7 + flickerNoise(UV) * 0.9);
+
+        // ОЧЕНЬ КРАСНЫЙ цвет - максимальная насыщенность
+        // Чистый красный с небольшими вариациями для глубины
+        highp vec3 darkRed = vec3(0.65, 0.0, 0.02);      // Тёмно-красный, но всё ещё насыщенный
+        highp vec3 brightRed = vec3(1.0, 0.05, 0.05);    // Ярко-КРАСНЫЙ, почти чистый красный
+
+        highp vec3 redNoise = mix(darkRed, brightRed, dotBrightness);
+
+        // Добавляем дополнительный красный слой для интенсивности
+        highp float extraRed = dotBrightness * 0.5;
+        redNoise.r += extraRed;
+        redNoise = clamp(redNoise, 0.0, 1.0);
+
+        highp float blend = vignette * intensity * 0.55;  // Немного больше смешивания
         rgb = mix(rgb, redNoise, blend);
-        highp float grain = (flickerNoise(UV) - 0.5) * 0.04 * intensity;
-        rgb = clamp(rgb + grain, 0.0, 1.0);
+
+        // Отдельная красная зернистость
+        highp float grain = (subPixelNoise(UV) - 0.5) * 0.05 * intensity;
+        rgb.r += abs(grain) * 0.8;  // Добавляем зерно преимущественно в красный канал
+        rgb = clamp(rgb, 0.0, 1.0);
     }
 
     highp float consciousnessGrain = (1.0 - Consciousness) * Consciousness * 0.06;
     if (consciousnessGrain > 0.01) {
-        highp float cg = (flickerNoise(UV + vec2(TIME * 0.5, 0.0)) - 0.5) * consciousnessGrain;
-        rgb = clamp(rgb + cg, 0.0, 1.0);
+        highp float cg1 = (subPixelNoise(UV + vec2(TIME * 0.5, 0.0)) - 0.5) * consciousnessGrain;
+        highp float cg2 = (redDots(UV + vec2(TIME * 0.3, TIME * 0.2)) - 0.5) * consciousnessGrain * 0.5;
+        rgb = clamp(rgb + cg1 + cg2, 0.0, 1.0);
     }
 
     if (AdrenalineStrength > 0.01) {
@@ -66,10 +130,16 @@ void fragment() {
         highp float outer = 0.75;
         highp float vignette = smoothstep(inner, outer, dist);
 
-        highp float n = flickerNoise(UV);
-        highp vec3 darkWhite = vec3(0.12, 0.12, 0.12);
-        highp vec3 brightWhite = vec3(0.92, 0.92, 0.92);
-        highp vec3 whiteNoise = mix(darkWhite, brightWhite, n);
+        // Белые точки для кровопотери (чуть крупнее)
+        highp float dot1 = redDots(UV);
+        highp float dot2 = redDotsLayer2(UV);
+        highp float dotDensity = clamp((dot1 + dot2) * 1.1, 0.0, 1.0);
+
+        highp float dotBrightness = dotDensity * (0.5 + flickerNoise(UV) * 0.7);
+
+        highp vec3 darkWhite = vec3(0.15, 0.12, 0.12);
+        highp vec3 brightWhite = vec3(0.95, 0.92, 0.92);
+        highp vec3 whiteNoise = mix(darkWhite, brightWhite, dotBrightness);
 
         highp float blend = vignette * BloodLossStrength * 0.48;
         rgb = mix(rgb, whiteNoise, blend);
