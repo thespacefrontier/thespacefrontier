@@ -6,6 +6,7 @@ using Content.Shared._TSF.Consciousness;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Systems;
 using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -21,12 +22,15 @@ namespace Content.Server._TSF.Consciousness;
 
 public sealed class ConsciousnessSystem : EntitySystem
 {
+    private static readonly ProtoId<TSFPainWeightPrototype> FallbackPainWeightSetId = new("TSFPainWeights");
+
     [Dependency] private readonly MobThresholdSystem _mobThreshold = default!;
     [Dependency] private readonly StandingStateSystem _standing = default!;
     [Dependency] private readonly StatusEffectsSystem _statusEffects = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly SharedBloodstreamSystem _bloodstream = default!;
+    [Dependency] private readonly DamageableSystem _damageable = default!;
 
     public override void Initialize()
     {
@@ -62,7 +66,7 @@ public sealed class ConsciousnessSystem : EntitySystem
         var painGlobal = _cfg.GetCVar(TSFCVars.TsfPainGlobalMultiplier);
         var weightSetId = _cfg.GetCVar(TSFCVars.TsfPainWeightSet);
         if (!_proto.TryIndex<TSFPainWeightPrototype>(weightSetId, out var painWeights) &&
-            !_proto.TryIndex<TSFPainWeightPrototype>("TSFPainWeights", out painWeights))
+            !_proto.TryIndex(FallbackPainWeightSetId, out painWeights))
         {
             return;
         }
@@ -112,13 +116,13 @@ public sealed class ConsciousnessSystem : EntitySystem
             float painLevel = 0f;
             if (!_statusEffects.TryEffectsWithComp<PainNumbnessStatusEffectComponent>(uid, out _))
             {
-                painLevel = SharedPainMath.ComputePainLevel(damageable, _proto, painWeights, painGlobal);
+                painLevel = SharedPainMath.ComputePainLevel((uid, damageable), _damageable, _proto, painWeights, painGlobal);
             }
 
             var painRatio = SharedTsfConsciousnessFormula.ComputePainRatio(painLevel, thresh);
-            var bloodDamageRatio = Math.Clamp(SharedPainMath.ComputeBloodlossStyleContribution(damageable, thresh), 0f, 1f);
+            var bloodDamageRatio = Math.Clamp(SharedPainMath.ComputeBloodlossStyleContribution((uid, damageable), _damageable, thresh), 0f, 1f);
             var asphyxRatio = SharedTsfConsciousnessFormula.ComputeAsphyxiationRatio(
-                SharedPainMath.GetAsphyxiationDamage(damageable),
+                SharedPainMath.GetAsphyxiationDamage((uid, damageable), _damageable),
                 thresh);
 
             float hypovolemiaRatio = 0f;

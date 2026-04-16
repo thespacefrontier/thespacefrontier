@@ -1,0 +1,13 @@
+- type: emote
+  id: PainScream
+  name: chat-emote-name-pain-scream
+  category: Vocal
+  icon: Interface/Emotes/scream.png
+  whitelist:
+    components:
+    - Vocal
+  blacklist:
+    tags:
+    - Ipc
+    - SiliconEmotes
+  chatMessages: ["chat-emote-msg-pain-scream"]

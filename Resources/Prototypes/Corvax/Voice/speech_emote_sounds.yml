@@ -75,6 +75,8 @@
   sounds:
     Scream:
       path: /Audio/Corvax/Effects/Tajaran/scream.ogg
+    PainScream:
+      path: /Audio/Corvax/Effects/Tajaran/scream.ogg
     Laugh:
       path: /Audio/Corvax/Effects/Tajaran/laugh.ogg
     Sneeze:
@@ -106,6 +108,8 @@
     variation: 0.125
   sounds:
     Scream:
+      path: /Audio/Corvax/Effects/Tajaran/scream.ogg
+    PainScream:
       path: /Audio/Corvax/Effects/Tajaran/scream.ogg
     Laugh:
       path: /Audio/Corvax/Effects/Tajaran/laugh.ogg

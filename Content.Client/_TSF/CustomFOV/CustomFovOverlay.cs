@@ -29,6 +29,8 @@ public sealed class CustomFovOverlay : Overlay
 
     public override OverlaySpace Space => OverlaySpace.WorldSpaceEntities;
 
+    private static readonly ProtoId<ShaderPrototype> UnshadedShaderId = new("unshaded");
+
     private readonly SpriteSpecifier _fovCorner;
     private readonly ShaderInstance _shader;
 
@@ -53,7 +55,7 @@ public sealed class CustomFovOverlay : Overlay
         _fovCorner = new SpriteSpecifier.Texture(new ResPath("_TSF/Misc/fov_corner.png"));
         _sprite = entMan.System<SpriteSystem>();
         _transform = entMan.System<SharedTransformSystem>();
-        _shader = _prototype.Index<ShaderPrototype>("unshaded").InstanceUnique();
+        _shader = _prototype.Index(UnshadedShaderId).InstanceUnique();
 
         ZIndex = (int) Content.Shared.DrawDepth.DrawDepth.WallFovOverlay;
     }

@@ -6,11 +6,14 @@ using Content.Shared._TSF.Medical;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Systems;
 using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Prototypes;
+using Content.Shared.Damage.Systems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Robust.Shared.Configuration;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
 namespace Content.Server._TSF.Medical;
@@ -21,6 +24,7 @@ public sealed class TSFDefibrillatorGatingSystem : EntitySystem
     [Dependency] private readonly MobThresholdSystem _mobThreshold = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private readonly DamageableSystem _damageable = default!;
 
     public override void Initialize()
     {
@@ -56,9 +60,13 @@ public sealed class TSFDefibrillatorGatingSystem : EntitySystem
             ratioDen = crit;
 
         float asphyxRatio = 0f;
-        if (ratioDen is { } den && den > FixedPoint2.Zero &&
-            damageable.Damage.DamageDict.TryGetValue("Asphyxiation", out var asphyx))
-            asphyxRatio = (asphyx / den).Float();
+        if (ratioDen is { } den && den > FixedPoint2.Zero)
+        {
+            var dict = _damageable.GetAllDamage((uid, damageable)).DamageDict;
+            var asphyxKey = new ProtoId<DamageTypePrototype>("Asphyxiation");
+            if (dict.TryGetValue(asphyxKey, out var asphyx))
+                asphyxRatio = (asphyx / den).Float();
+        }
 
         if (asphyxRatio >= _cfg.GetCVar(TSFCVars.TsfDefibrillatorAsphyxBlockRatio) && _random.Prob(0.5f))
         {
