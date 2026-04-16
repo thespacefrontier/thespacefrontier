@@ -6,6 +6,7 @@
   abstract: true
   components:
   - type: Sprite
+    drawdepth: AboveFovOverlay # TSF
     sprite: Structures/Decoration/banner.rsi
     state: banner
     noRot: true

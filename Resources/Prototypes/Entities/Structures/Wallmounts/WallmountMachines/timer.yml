@@ -8,7 +8,7 @@
   - type: WallMount
     arc: 360
   - type: Sprite
-    drawdepth: SmallObjects
+    drawdepth: AboveFovOverlay # TSF
     sprite: Structures/Wallmounts/switch.rsi
     state: on
   - type: Appearance

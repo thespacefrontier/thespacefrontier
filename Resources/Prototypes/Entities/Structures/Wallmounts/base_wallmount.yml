@@ -21,7 +21,7 @@
     tags:
     - Structure
   - type: Sprite
-    drawdepth: WallMountedItems
+    drawdepth: AboveFovOverlay
 
 - type: entity
   parent: BaseWallmount

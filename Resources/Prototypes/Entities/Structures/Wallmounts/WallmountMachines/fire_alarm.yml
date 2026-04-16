@@ -68,6 +68,7 @@
     boardName: wires-board-name-firealarm
     layoutId: FireAlarm
   - type: Sprite
+    drawdepth: AboveFovOverlay # TSF
     sprite: Structures/Wallmounts/air_monitors.rsi
     layers:
     - state: fire0

@@ -25,6 +25,7 @@
         sound:
           collection: MetalGlassBreak
   - type: Sprite
+    drawdepth: AboveFovOverlay # TSF
     sprite: Structures/Wallmounts/fireaxe_cabinet.rsi
     layers:
     - state: cabinet

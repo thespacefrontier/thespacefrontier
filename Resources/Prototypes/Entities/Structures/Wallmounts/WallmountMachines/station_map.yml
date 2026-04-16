@@ -7,7 +7,7 @@
   components:
     - type: Sprite
       sprite: Structures/Machines/station_map.rsi
-      drawdepth: WallMountedItems
+      drawdepth: AboveFovOverlay # TSF
       layers:
         - state: station_map_broken
     - type: Destructible
@@ -34,6 +34,7 @@
     - type: Appearance
     - type: StationMap
     - type: Sprite
+      drawdepth: AboveFovOverlay # TSF
       sprite: Structures/Machines/station_map.rsi
       layers:
       - state: station_map0
@@ -109,6 +110,7 @@
   - type: WallMount
     arc: 360
   - type: Sprite
+    drawdepth: AboveFovOverlay # TSF
     sprite: Structures/Machines/station_map.rsi
     layers:
     - state: station_map_frame1

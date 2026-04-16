@@ -4,6 +4,7 @@
   abstract: true
   components:
   - type: Sprite
+    drawdepth: AboveFovOverlay # TSF
     sprite: Structures/Wallmounts/paintings.rsi
 
 - type: entity

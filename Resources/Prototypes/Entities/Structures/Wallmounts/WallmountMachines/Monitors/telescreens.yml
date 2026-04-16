@@ -6,6 +6,7 @@
   description: Finally, some decent reception around here...
   components:
   - type: Sprite
+    drawdepth: AboveFovOverlay # TSF
     sprite: Structures/Machines/computers.rsi
     layers:
       - map: ["computerLayerBody"]
@@ -56,6 +57,7 @@
     graph: WallmountTelescreen
     node: TelescreenFrame
   - type: Sprite
+    drawdepth: AboveFovOverlay # TSF
     sprite: Structures/Machines/computers.rsi
     layers:
       - map: ["computerLayerBody"]

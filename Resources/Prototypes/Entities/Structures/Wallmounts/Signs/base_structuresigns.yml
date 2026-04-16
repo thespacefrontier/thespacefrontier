@@ -16,6 +16,7 @@
       - !type:DoActsBehavior
         acts: ["Destruction"]
   - type: Sprite
+    drawdepth: AboveFovOverlay # TSF
     sprite: Structures/Wallmounts/signs.rsi
     snapCardinals: true
   - type: StaticPrice
