@@ -1,21 +1,3 @@
-Copyright (C) 2024-2026 The Space Frontier and TSF contributors
-
-Исходный код на C#, прототипы YAML, шейдеры и прочие
-человекочитаемые материалы в перечисленных ниже путях этого репозитория
-распространяются на условиях GNU Affero General Public License v3.0
-(полный текст лицензии следует ниже).
-
-  Content.Shared/_TSF/
-  Content.Server/_TSF/
-  Content.Client/_TSF/
-  Resources/Prototypes/_TSF/
-  Resources/Textures/_TSF/
-
-Остальные материалы репозитория остаются на условиях, указанных в LICENSE.TXT,
-в RobustToolbox/legal.md, а также в метаданных отдельных файлов и ассетов.
-
-------------------------------------------------------------------------
-
                     GNU AFFERO GENERAL PUBLIC LICENSE
                        Version 3, 19 November 2007
 
