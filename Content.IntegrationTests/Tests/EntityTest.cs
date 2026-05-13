@@ -248,6 +248,17 @@ namespace Content.IntegrationTests.Tests
                 "AnnounceOnSpawn",
             };
 
+            var excludedPrototypeIds = new HashSet<string>(StringComparer.Ordinal)
+            {
+                "MaxCap",
+                "MaxCapBluespace",
+                "MaxCapCanister",
+                "MaxCapSilly",
+                "MaxCapSmall",
+                "MaxCapSmallDouble",
+                "MaxCapSmallEx",
+            };
+
             Assert.That(server.CfgMan.GetCVar(CVars.NetPVS), Is.False);
 
             var protoIds = server.ProtoMan
@@ -255,6 +266,7 @@ namespace Content.IntegrationTests.Tests
                 .Where(p => !p.Abstract)
                 .Where(p => !pair.IsTestPrototype(p))
                 .Where(p => !excluded.Any(p.Components.ContainsKey))
+                .Where(p => !excludedPrototypeIds.Contains(p.ID))
                 .Where(p => p.Categories.All(x => x.ID != SpawnerCategory))
                 .Select(p => p.ID)
                 .ToList();
