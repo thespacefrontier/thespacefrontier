@@ -33,7 +33,6 @@ public sealed class TSFPneumothoraxDamageSystem : EntitySystem
                 continue;
 
             pn.NextDamage = _timing.CurTime + Interval;
-            Dirty(uid, pn);
 
             var spec = new DamageSpecifier();
             spec.DamageDict["Asphyxiation"] = AsphyxPerTick;

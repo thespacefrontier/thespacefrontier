@@ -24,6 +24,7 @@ using Robust.Shared.Audio;
 using Robust.Shared.Audio.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Configuration;
+using Robust.Shared.Localization;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
@@ -558,7 +559,18 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
         var bucket = (int)(now / StatusMessageBucketSeconds);
         var seed = bucket * 13 + phraseList.Length;
         var idx = Math.Abs(seed % phraseList.Length);
-        TSFStatusMessageState.Message = phraseList[idx];
-        TSFStatusMessageState.DisplayUntil = now + StatusMessageDisplayDuration;
+        var phraseId = phraseList[idx];
+        var resolved = Loc.GetString(phraseId);
+        var revealSeconds = CountRunes(resolved) * TSFStatusMessageState.RevealSecondsPerRune;
+        TSFStatusMessageState.Message = phraseId;
+        TSFStatusMessageState.DisplayUntil = now + StatusMessageDisplayDuration + revealSeconds;
+    }
+
+    private static int CountRunes(string s)
+    {
+        var n = 0;
+        foreach (var _ in s.EnumerateRunes())
+            n++;
+        return n;
     }
 }
