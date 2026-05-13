@@ -167,6 +167,7 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
     public override void Shutdown()
     {
         base.Shutdown();
+        CleanupLocalPlayerDamageEffects();
         if (_overlay != null)
         {
             _overlayManager.RemoveOverlay(_overlay);
@@ -176,6 +177,7 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
 
     private void OnLocalPlayerAttached(LocalPlayerAttachedEvent ev)
     {
+        CleanupLocalPlayerDamageEffects();
         _overlayManager.AddOverlay(_overlay!);
         UpdateOverlayIntensity(ev.Entity);
         var result = _audio.PlayGlobal(DamageMusic, Filter.Local(), true);
@@ -199,10 +201,33 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
 
     private void OnLocalPlayerDetached(LocalPlayerDetachedEvent ev)
     {
-        _overlayManager.RemoveOverlay(_overlay!);
-        _damageMusicStream = _audio.Stop(_damageMusicStream);
-        _painSoundStream = _audio.Stop(_painSoundStream);
-        _tinnitusStream = _audio.Stop(_tinnitusStream);
+        CleanupLocalPlayerDamageEffects();
+    }
+
+    private void CleanupLocalPlayerDamageEffects()
+    {
+        if (_overlay != null)
+            _overlayManager.RemoveOverlay(_overlay);
+        if (_damageMusicStream is {} dm)
+        {
+            _damageMusicStream = null;
+            if (Exists(dm))
+                QueueDel(dm);
+        }
+
+        if (_painSoundStream is {} ps)
+        {
+            _painSoundStream = null;
+            if (Exists(ps))
+                QueueDel(ps);
+        }
+
+        if (_tinnitusStream is {} ts)
+        {
+            _tinnitusStream = null;
+            if (Exists(ts))
+                QueueDel(ts);
+        }
         if (_overlay != null)
         {
             _overlay.DamageStrength = 0f;
@@ -221,6 +246,24 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
         _afterUnconsciousUntil = 0;
         _statusMessageCooldownUntil = 0;
         TSFStatusMessageState.Message = null;
+    }
+
+    private bool HasLiveLocalControlledEntity()
+    {
+        return _playerManager.LocalEntity is { } le && Exists(le);
+    }
+
+    private void TryCleanupOrphanedLocalPlayerEffects()
+    {
+        if (HasLiveLocalControlledEntity())
+            return;
+        CleanupLocalPlayerDamageEffects();
+    }
+
+    public override void Update(float frameTime)
+    {
+        TryCleanupOrphanedLocalPlayerEffects();
+        base.Update(frameTime);
     }
 
     private bool ShouldTriggerTinnitus(EntityUid uid, DamageableComponent damageable)
@@ -274,11 +317,14 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
     public override void FrameUpdate(float frameTime)
     {
         base.FrameUpdate(frameTime);
-        var local = _playerManager.LocalEntity;
-        if (local == null || _overlay == null)
+        TryCleanupOrphanedLocalPlayerEffects();
+        if (!HasLiveLocalControlledEntity())
             return;
 
-        var uid = local.Value;
+        if (_overlay == null)
+            return;
+
+        var uid = _playerManager.LocalEntity!.Value;
         if (TryComp(uid, out DamageableComponent? damageable))
         {
             var totalDamage = _damageable.GetTotalDamage((uid, damageable));
@@ -350,13 +396,13 @@ public sealed class TSFDamageEffectsSystem : EntitySystem
         }
 
         _disorientationBurstTime = Math.Max(0f, _disorientationBurstTime - frameTime);
-        if (local != null && _disorientationBurstTime > 0f && TryComp(local, out MobStateComponent? mobState) && mobState.CurrentState == MobState.Alive)
+        if (_disorientationBurstTime > 0f && TryComp(uid, out MobStateComponent? mobState) && mobState.CurrentState == MobState.Alive)
         {
             var strength = _disorientationBurstTime / DisorientationBurstDuration;
             var kick = new Vector2(
                 (_random.NextFloat() - 0.5f) * 2f * DisorientationKickMagnitude * strength,
                 (_random.NextFloat() - 0.5f) * 2f * DisorientationKickMagnitude * strength);
-            _cameraRecoil.KickCamera(local.Value, kick);
+            _cameraRecoil.KickCamera(uid, kick);
         }
     }
 
