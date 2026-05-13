@@ -20,10 +20,7 @@ public sealed partial class VoteManager
     private static readonly string[] TSFLobbyVotePresetIds =
     {
         "Extended",
-        "Nukeops",
-        "Secret",
-        "Zombie",
-        "Revolutionary",
+        "Secret"
     };
 
     private Dictionary<string, string> TSFGetLobbyVotePresets()

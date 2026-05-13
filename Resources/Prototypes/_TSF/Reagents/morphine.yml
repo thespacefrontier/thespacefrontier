@@ -12,7 +12,7 @@
   flavor: medicine
   color: "#8B7355"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:ModifyStatusEffect
         effectProto: StatusEffectPainNumbness

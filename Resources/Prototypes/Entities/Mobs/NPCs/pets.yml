@@ -928,7 +928,7 @@
   description: An expert in quantum cracker theory
   components:
   - type: TTS # Corvax-TTS
-    voice: Meiow
+    voice: Meepo
   - type: Vocalizer
     maxVocalizeInterval: 240 # polly is chattier
   - type: RadioVocalizer

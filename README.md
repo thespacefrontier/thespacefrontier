@@ -1,40 +1,104 @@
-<div class="header" align="center">
-<img alt="Space Station 14" width="880" height="300" src="https://raw.githubusercontent.com/space-wizards/asset-dump/de329a7898bb716b9d5ba9a0cd07f38e61f1ed05/github-logo.svg">
+<div align="center">
+
+# TSF · The Space Frontier
+
+Форк Space Station 14 для проекта The Space Frontier.
+
+<br/>
+
+### Стек
+
+<p align="center">
+  <a href="https://dotnet.microsoft.com/" title=".NET"><img height="44" src="https://skillicons.dev/icons?i=dotnet&theme=dark"/></a>
+  &nbsp;
+  <a href="https://learn.microsoft.com/dotnet/csharp/" title="C#"><img height="44" src="https://skillicons.dev/icons?i=cs&theme=dark"/></a>
+  &nbsp;
+  <a href="https://github.com/TheSpaceFrontier/TSF" title="Этот репозиторий"><img height="44" src="https://skillicons.dev/icons?i=github&theme=dark"/></a>
+  &nbsp;
+  <a href="https://github.com/space-syndicate/space-station-14" title="Upstream Corvax"><img height="44" src="https://skillicons.dev/icons?i=git&theme=dark"/></a>
+</p>
+
+
+<p align="center">
+  <a href="LICENSE-AGPLv3.txt"><img src="https://img.shields.io/badge/license-AGPLv3-2d3748?style=flat-square&logo=gnu&logoColor=a0aec0"/></a>
+  <a href="https://spacestation14.io/"><img src="https://img.shields.io/badge/Space_Station-14-2d3748?style=flat-square&logo=rocket&logoColor=a0aec0"/></a>
+  <a href="https://github.com/TheSpaceFrontier/TSF"><img src="https://img.shields.io/github/stars/TheSpaceFrontier/TSF?style=social&label=Stars"/></a>
+</p>
+
+<br/>
+
+### Ссылки
+
+<table>
+<tr>
+<td align="center" width="33%">
+<a href="https://discord.gg/gbxTQSeGpq"><img src="https://img.shields.io/badge/discord-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB-334155?style=flat-square&logo=discord&logoColor=94a3b8&labelColor=1e293b"/></a>
+</td>
+<td align="center" width="33%">
+<a href="https://wiki.station14.ru"><img src="https://img.shields.io/badge/wiki-station14.ru-334155?style=flat-square&logo=gitbook&logoColor=94a3b8&labelColor=1e293b"/></a>
+</td>
+<td align="center" width="33%">
+<a href="https://store.steampowered.com/app/1255460/Space_Station_14/"><img src="https://img.shields.io/badge/steam-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82-334155?style=flat-square&logo=steam&logoColor=94a3b8&labelColor=1e293b"/></a>
+</td>
+</tr>
+<tr>
+<td align="center" width="33%">
+<a href="https://spacestation14.io/about/nightlies/"><img src="https://img.shields.io/badge/nightlies-%D0%B1%D0%B5%D0%B7%20steam-334155?style=flat-square&logo=firefox&logoColor=94a3b8&labelColor=1e293b"/></a>
+</td>
+<td align="center" width="33%">
+<a href="https://github.com/space-syndicate/space-station-14"><img src="https://img.shields.io/badge/upstream-Corvax-334155?style=flat-square&logo=github&logoColor=94a3b8&labelColor=1e293b"/></a>
+</td>
+<td align="center" width="33%">
+<a href="https://github.com/TheSpaceFrontier/TSF"><img src="https://img.shields.io/badge/repo-TSF-334155?style=flat-square&logo=github&logoColor=94a3b8&labelColor=1e293b"/></a>
+</td>
+</tr>
+</table>
+
+<br/>
+
 </div>
 
-Space Station 14 это ремейк SS13, который работает на собственном движке [Robust Toolbox](https://github.com/space-wizards/RobustToolbox), написанном на C#.
+---
 
-Это репозиторий первого русскоязычного сервера по Space Station 14, целью которого является полный перевод игры на русский язык, поддержка актуальных изменений из основного репозитория, а так же добавление собственных изменений по необходимости.
+## О проекте
 
-## Ссылки
+**Space Station 14** - ремейк SS13. Игровой клиент и движок - **[Robust Toolbox](https://github.com/space-wizards/RobustToolbox)** написаны на C#.
 
-[Наш Discord](https://discord.station14.ru) | [Наша Вики](https://wiki.station14.ru) | [Steam](https://store.steampowered.com/app/1255460/Space_Station_14/) | [Клиент без Steam](https://spacestation14.io/about/nightlies/) | [Основной репозиторий](https://github.com/space-wizards/space-station-14)
+**The Space Frontier** - репозиторий проекта The Space Frontier (aka Космический рубеж). Контент и код мы ведём здесь. **Upstream по игровому контенту - Corvax** ([space-syndicate/space-station-14](https://github.com/space-syndicate/space-station-14)).
+
+---
 
 ## Документация
 
-На официальном сайте с [документацией](https://docs.spacestation14.io/) имеется вся необходимая информация о контенте SS14, движке, дизайне игры и многом другом. Также имеется много информации для начинающих разработчиков.
+На **[docs.spacestation14.io](https://docs.spacestation14.io/)** собраны материалы по контенту, движку и дизайну - удобная отправная точка и для новичков в разработке.
 
-## Контрибьют
+---
 
-Мы рады принять вклад от любого человека. Заходите в Discord, если хотите помочь. У нас есть [список проблем](https://github.com/space-syndicate/space-station-14-content/issues), которые нужно решить, и любой может за них взяться. Не бойтесь просить о помощи!
-Только убедитесь, что ваши изменения и PRы соответствуют [руководству по контрибьюту](https://docs.spacestation14.com/en/general-development/codebase-info/pull-request-guidelines.html).
+## Участие в разработке
+
+Мы рады вкладу от сообщества. Заходите в **Discord**, если хотите помочь. Есть **[issues](https://github.com/TheSpaceFrontier/TSF/issues)** - можно брать задачи и не стесняться спрашивать совета.
+
+Пожалуйста, придерживайтесь **[руководства по PR](https://docs.spacestation14.com/en/general-development/codebase-info/pull-request-guidelines.html)** для изменений и пулл-реквестов.
+
+---
 
 ## Сборка
 
-1. Склонируйте этот репозиторий локально
-2. Запустите `RUN_THIS.py` для инициализации подмодулей и скачивания движка.
-3. Скомпилируйте проект.
+1. Клонируйте репозиторий.
+2. Запустите `RUN_THIS.py` - инициализация субмодулей и движка.
+3. Соберите решение в IDE или через `dotnet build`.
 
-[Более подробная инструкция по запуску проекта.](https://docs.spacestation14.com/en/general-development/setup.html)
+Подробнее: **[настройка окружения](https://docs.spacestation14.com/en/general-development/setup.html)**.
+
+---
 
 ## Лицензия
 
-Основной код форка (наследие Space Station 14 / Corvax) — по [MIT](LICENSE.TXT), с указанием правообладателей в том же файле.
 
-Оригинальный код **The Space Frontier** (`Content.Shared/_TSF/`, `Content.Server/_TSF/`, `Content.Client/_TSF/`) — по [GNU AGPLv3](LICENSE-AGPLv3.txt). Новые изменения в этих путях принимаются на условиях AGPLv3.
+|                         |                                                                                                                                                                                                                                               |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Код**                 | [AGPLv3](LICENSE-AGPLv3.txt)                                                                                                                                                                                                                  |
+| **Большинство ассетов** | [CC-BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) - лицензия и авторы указаны в метаданных RSI, [пример](https://github.com/space-syndicate/space-station-14/blob/master/Resources/Textures/Objects/Tools/crowbar.rsi/meta.json). |
 
-Движок **Robust Toolbox** (подмодуль) лицензируется отдельно; см. [RobustToolbox/legal.md](RobustToolbox/legal.md).
 
-Большинство ассетов лицензированы под [CC-BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), если не указано иное. Ассеты имеют свою лицензию и авторские права в файле метаданных. [Пример](https://github.com/space-syndicate/space-station-14/blob/master/Resources/Textures/Objects/Tools/crowbar.rsi/meta.json).
-
-Обратите внимание, что некоторые ассеты лицензированы на некоммерческой основе [CC-BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/) или аналогичной некоммерческой лицензией, и их необходимо удалить, если вы хотите использовать этот проект в коммерческих целях.
+Часть ассетов распространяется на **некоммерческой** основе ([CC-BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/) и аналоги) - перед коммерческим использованием такие файлы нужно удалить или заменить.
