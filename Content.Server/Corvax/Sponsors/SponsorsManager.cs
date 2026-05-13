@@ -156,7 +156,7 @@ public sealed class SponsorsManager : ISharedSponsorsManager
 
         try
         {
-            var data = await FetchSponsorDataAsync(userId, CancellationToken.None);
+            var data = await FetchSponsorDataAsync(userId, CancellationToken.None).ConfigureAwait(false);
             lock (_cacheLock)
                 _cache[userId] = new CachedSponsor(data, DateTime.UtcNow + CacheDuration);
             return data;
@@ -177,7 +177,8 @@ public sealed class SponsorsManager : ISharedSponsorsManager
         }
 
         var url = $"{_apiUrl.TrimEnd('/')}/api/sponsors/{userId.UserId}";
-        var response = await _httpClient.GetAsync(url, cancel);
+        // GetCachedOrFetch uses GetResult() on the main thread; ConfigureAwait(false) avoids sync-context deadlock.
+        var response = await _httpClient.GetAsync(url, cancel).ConfigureAwait(false);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -185,7 +186,8 @@ public sealed class SponsorsManager : ISharedSponsorsManager
             return null;
         }
 
-        return await response.Content.ReadFromJsonAsync<SponsorApiResponse>();
+        return await response.Content.ReadFromJsonAsync<SponsorApiResponse>(cancellationToken: cancel)
+            .ConfigureAwait(false);
     }
 
     private sealed record CachedSponsor(SponsorApiResponse? Data, DateTime ExpiresAt);
