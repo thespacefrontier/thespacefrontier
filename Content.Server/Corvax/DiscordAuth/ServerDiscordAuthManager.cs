@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
@@ -45,6 +46,24 @@ public sealed class ServerDiscordAuthManager : IServerDiscordAuthManager
         var payload = new { ss14UserId = userId.UserId, ss14UserName = userName };
 
         var response = await _httpClient.PostAsJsonAsync(url, payload, cancel);
+
+        if (response.StatusCode == HttpStatusCode.Conflict)
+        {
+            // Often returned when requesting a new token while already linked (or a token already exists).
+            var statusUrl = $"{_apiUrl.TrimEnd('/')}/api/links/by-ss14/{userId.UserId}";
+            var statusResponse = await _httpClient.GetAsync(statusUrl, cancel);
+            if (statusResponse.IsSuccessStatusCode)
+            {
+                var link = await statusResponse.Content.ReadFromJsonAsync<LinkApiResponse>(cancellationToken: cancel)
+                    .ConfigureAwait(false);
+                throw new DiscordAlreadyLinkedException(link?.DiscordUserName);
+            }
+
+            _sawmill.Warning(
+                "POST /api/links/token returned 409 but GET by-ss14 was not successful for {0}",
+                userId);
+        }
+
         response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadFromJsonAsync<LinkTokenApiResponse>(cancellationToken: cancel);

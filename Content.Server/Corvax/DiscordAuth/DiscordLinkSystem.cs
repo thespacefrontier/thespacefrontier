@@ -100,6 +100,16 @@ public sealed class DiscordLinkSystem : EntitySystem
                 RaiseNetworkEvent(new DiscordLinkUrlEvent { Url = url }, session);
             });
         }
+        catch (DiscordAlreadyLinkedException ex)
+        {
+            _sponsorsManager?.InvalidateCache(session.UserId);
+            _taskManager.RunOnMainThread(() =>
+            {
+                RaiseNetworkEvent(
+                    new DiscordLinkStatusEvent { IsLinked = true, DiscordName = ex.DiscordUserName },
+                    session);
+            });
+        }
         catch (Exception ex)
         {
             Log.Error(
