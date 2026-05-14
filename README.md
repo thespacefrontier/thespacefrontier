@@ -32,7 +32,7 @@
 <table>
 <tr>
 <td align="center" width="33%">
-<a href="https://discord.gg/gbxTQSeGpq"><img src="https://img.shields.io/badge/discord-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB-334155?style=flat-square&logo=discord&logoColor=94a3b8&labelColor=1e293b"/></a>
+<a href="https://discord.gg/ywSgrUrnK8"><img src="https://img.shields.io/badge/discord-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB-334155?style=flat-square&logo=discord&logoColor=94a3b8&labelColor=1e293b"/></a>
 </td>
 <td align="center" width="33%">
 <a href="https://wiki.station14.ru"><img src="https://img.shields.io/badge/wiki-station14.ru-334155?style=flat-square&logo=gitbook&logoColor=94a3b8&labelColor=1e293b"/></a>
