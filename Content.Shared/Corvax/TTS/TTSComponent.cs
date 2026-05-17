@@ -1,3 +1,4 @@
+using Content.Shared.Humanoid;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
@@ -15,5 +16,5 @@ public sealed partial class TTSComponent : Component
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("voice", customTypeSerializer: typeof(PrototypeIdSerializer<TTSVoicePrototype>))]
-    public string? VoicePrototypeId { get; set; } = "Geralt";
+    public string? VoicePrototypeId { get; set; } = HumanoidProfileSystem.DefaultVoice;
 }
